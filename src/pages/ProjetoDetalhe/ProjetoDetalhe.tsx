@@ -100,7 +100,7 @@ export function ProjetoDetalhe() {
               className="lg:col-span-2 grid grid-cols-1 gap-4"
             >
               {project.images.map((image, index) => (
-                <motion.div key={image} variants={fadeInUp}>
+                <motion.div key={`${image}-${index}`} variants={fadeInUp}>
                   <img
                     src={image}
                     alt={`${project.title} — foto ${index + 1}`}

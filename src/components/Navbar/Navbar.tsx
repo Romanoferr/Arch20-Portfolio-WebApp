@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { navLinks, siteInfo } from '@/data/navigation'
 import { cn } from '@/utils/cn'
 import { slideInRight } from '@/utils/animations'
-import logo from '@/assets/logos/logo.svg'
+import logo from '@/assets/logos/Logo-BC.png'
 
 export function Navbar(): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
