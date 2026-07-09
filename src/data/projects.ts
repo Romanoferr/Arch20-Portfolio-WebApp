@@ -23,19 +23,19 @@ export const projectCategories: { value: ProjectCategory | 'todos'; label: strin
 export const projects: Project[] = [
   {
     id: '1',
-    slug: 'casa-jardim-europa',
-    title: 'Casa Jardim Europa',
+    slug: 'flat-praia-de-itacoatiara',
+    title: 'Flat Praia de Itacoatiara',
     category: 'residencial',
     year: 2024,
-    location: 'São Paulo, SP',
-    area: '420 m²',
+    location: 'Niterói, RJ',
+    area: '980 m²',
     description:
-      'Residência contemporânea que integra living, jardim e piscina em um único plano fluido. Materiais naturais — pedra, madeira e concreto aparente — criam uma atmosfera acolhedora e atemporal.',
-    coverImage: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+      'Reforma de fachada predial completa com foco em iluminação cênica e valorização da vista para o mar. Projeto de interiores com conceito minimalista e integração dos ambientes.',
+    coverImage: 'https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Itacoatira-Cen-1.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvSXRhY29hdGlyYS1DZW4tMS5wbmciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzgzNjI4NjYwLCJleHAiOjE4MTUxNjQ2NjB9.RhlAbKJAoRRWRfPBPsyFqjUlgkYHf2k_WwYmlFbA7Wc',
     images: [
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80',
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&q=80',
+      'https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Itacoatira-Cen-1.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvSXRhY29hdGlyYS1DZW4tMS5wbmciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzgzNjI4NjYwLCJleHAiOjE4MTUxNjQ2NjB9.RhlAbKJAoRRWRfPBPsyFqjUlgkYHf2k_WwYmlFbA7Wc',
+      'https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Itacoatira-Cen-1.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvSXRhY29hdGlyYS1DZW4tMS5wbmciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzgzNjI4NjYwLCJleHAiOjE4MTUxNjQ2NjB9.RhlAbKJAoRRWRfPBPsyFqjUlgkYHf2k_WwYmlFbA7Wc',
+      'https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Itacoatira-Cen-1.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvSXRhY29hdGlyYS1DZW4tMS5wbmciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzgzNjI4NjYwLCJleHAiOjE4MTUxNjQ2NjB9.RhlAbKJAoRRWRfPBPsyFqjUlgkYHf2k_WwYmlFbA7Wc',
     ],
   },
   {
