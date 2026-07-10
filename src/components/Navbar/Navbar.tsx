@@ -3,23 +3,14 @@ import { Link, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { navLinks, siteInfo } from '@/data/navigation'
 import { cn } from '@/utils/cn'
-import { slideInRight } from '@/utils/animations'
 import logo from '@/assets/logos/Logo-BC.png'
 
 export function Navbar(): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
   const location = useLocation()
 
   const menuButtonRef = useRef<HTMLButtonElement | null>(null)
   const firstLinkRef = useRef<HTMLAnchorElement | null>(null)
-
-  useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 24)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   useEffect(() => {
     setIsOpen(false)
@@ -50,16 +41,7 @@ export function Navbar(): JSX.Element {
 
   return (
     <>
-      <header
-        className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-colors duration-300',
-          'backdrop-blur-sm',
-          isScrolled
-            ? 'bg-white/95 shadow-sm border-b border-gray-100'
-            : 'bg-transparent',
-        )}
-      >
-        <nav className="container-main flex items-center justify-between h-16 md:h-20">
+        <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/80 bg-white/90 shadow-[0_1px_0_rgba(0,0,0,0.04)]">        <nav className="container-main flex items-center justify-between h-16 md:h-20">
           <Link to="/" className="flex items-center gap-3 group">
             <img src={logo} alt={siteInfo.name} className="w-8 h-8" />
             <div className="hidden sm:block">

@@ -4,10 +4,10 @@ import { ArrowRight } from 'lucide-react'
 import { Hero } from '@/components/Hero/Hero'
 import { Gallery } from '@/components/Gallery/Gallery'
 import { ServiceCard } from '@/components/ServiceCard/ServiceCard'
-import { Testimonial } from '@/components/Testimonial/Testimonial'
+import { TestimonialCarousel } from '@/components/Testimonial/TestimonialCarousel'
 import { getFeaturedProjects } from '@/data/projects'
 import { services } from '@/data/services'
-import { featuredTestimonial } from '@/data/testimonials'
+import { testimonials } from '@/data/testimonials'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 
 export function Home() {
@@ -89,7 +89,7 @@ export function Home() {
 
       <section className="section-padding">
         <div className="container-main">
-          <Testimonial testimonial={featuredTestimonial} />
+          <TestimonialCarousel testimonials={testimonials} />
         </div>
       </section>
 

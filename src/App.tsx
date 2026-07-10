@@ -8,7 +8,7 @@ import { Servicos } from '@/pages/Servicos/Servicos'
 import { Sobre } from '@/pages/Sobre/Sobre'
 import { Contato } from '@/pages/Contato/Contato'
 import { pageTransition } from '@/utils/animations'
-import { Component, ErrorInfo, ReactNode } from 'react'
+import { Component, type ErrorInfo, type ReactNode } from 'react'
 
 function AnimatedRoutes() {
   const location = useLocation()
@@ -55,11 +55,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
 
   render() {
     if (this.state.hasError) {
-      return (
-        <Layout>
-          <Home />
-        </Layout>
-      )
+      return <Home />
     }
 
     return this.props.children
