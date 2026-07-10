@@ -41,13 +41,6 @@ export function ProjetoDetalhe() {
 
         <div className="container-main relative z-10 pb-12 pt-32">
           <motion.div variants={fadeInUp} initial="hidden" animate="visible">
-            <Link
-              to="/projetos"
-              className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-6 transition-colors"
-            >
-              <ArrowLeft size={16} />
-              Voltar aos projetos
-            </Link>
             <span className="block text-xs tracking-[0.2em] uppercase text-white/60 mb-2">
               {categoryLabels[project.category]}
             </span>
