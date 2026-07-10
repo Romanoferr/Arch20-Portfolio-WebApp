@@ -3,8 +3,10 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
-export default defineConfig({
-  base: '/',
+const repoBase = '/Arch20-Portfolio-WebApp/'
+
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? repoBase : '/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
@@ -12,4 +14,4 @@ export default defineConfig({
       'lucide-react': path.resolve(__dirname, './src/shims/lucide-react.tsx'),
     },
   },
-})
+}))
