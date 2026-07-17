@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Mail, MapPin, Phone } from 'lucide-react'
+import { Mail, Phone } from 'lucide-react'
 import { Hero } from '@/components/Hero/Hero'
 import { ContactForm } from '@/components/ContactForm/ContactForm'
 import { siteInfo } from '@/data/navigation'

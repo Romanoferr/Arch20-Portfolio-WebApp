@@ -1,54 +1,22 @@
 import { Link } from 'react-router-dom'
-import { navLinks, siteInfo } from '@/data/navigation'
+import { siteInfo } from '@/data/navigation'
 import logo from '@/assets/logos/bc-logo-site.png'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-[var(--color-text)] text-white/80">
+    <footer className="bg-[#94714D] text-white/90">
       <div className="container-main py-8 md:py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
-          <div>
-            <Link to="/" className="flex items-center gap-3 mb-4">
-              <img src={logo} alt="" className="w-8 h-8 brightness-0 invert" />
-              <div>
-                <span className="block font-serif text-lg tracking-widest uppercase text-white leading-none">
-                  {siteInfo.name}
-                </span>
-                <span className="block text-[10px] tracking-[0.2em] uppercase text-white/50 mt-0.5">
-                  {siteInfo.tagline}
-                </span>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center">
+          <div className="flex items-center justify-end md:pr-6">
+            <Link to="/" className="flex items-center h-16">
+              <img src={logo} alt={siteInfo.name} className="h-16 w-auto filter brightness-0 invert object-contain" />
             </Link>
-            <p className="text-sm text-white/60 leading-relaxed max-w-xs">
-              Criamos espaços que traduzem identidade, funcionalidade e bem-estar em cada detalhe.
-            </p>
           </div>
 
-          <div>
-            <h3 className="text-xs tracking-[0.2em] uppercase text-white mb-4">
-              Navegação
-            </h3>
-            <ul className="space-y-2">
-              {navLinks.map((link) => (
-                <li key={link.path}>
-                  <Link
-                    to={link.path}
-                    className="text-sm text-white/60 hover:text-white transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-xs tracking-[0.2em] uppercase text-white mb-4">
-              Contato
-            </h3>
-            <ul className="space-y-3 text-sm text-white/60">
+          <div className="flex items-center">
+            <ul className="space-y-3 text-sm text-white/80">
               <li className="flex items-center gap-2">
                 <svg
                   width="16"
@@ -83,7 +51,7 @@ export function Footer() {
                   href={siteInfo.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-white"
+                  className="flex items-center gap-2 text-sm text-white/80 transition-colors hover:text-white"
                   aria-label="Instagram"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0" aria-hidden>
@@ -98,7 +66,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-4 pt-4 border-t border-white/10 text-center text-xs text-white/40 tracking-wide">
+        <div className="mt-4 pt-4 border-t border-white/10 text-center text-xs text-white/60 tracking-wide">
           © {currentYear} {siteInfo.name}. Todos os direitos reservados.
         </div>
       </div>

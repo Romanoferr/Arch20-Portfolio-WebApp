@@ -40,7 +40,10 @@ export function Home() {
           <Gallery projects={featuredProjects} />
 
           <div className="text-center mt-10">
-            <Link to="/projetos" className="btn-outline">
+            <Link
+              to="/projetos"
+              className="btn-primary bg-[var(--color-accent)] text-white hover:bg-[var(--color-text)] hover:text-white"
+            >
               Ver todos os projetos
               <ArrowRight size={16} />
             </Link>
@@ -79,7 +82,10 @@ export function Home() {
           </motion.div>
 
           <div className="text-center mt-10">
-            <Link to="/servicos" className="btn-outline">
+            <Link
+              to="/servicos"
+              className="btn-primary bg-[var(--color-accent)] text-white hover:bg-[var(--color-text)] hover:text-white"
+            >
               Conheça todos os serviços
               <ArrowRight size={16} />
             </Link>
@@ -93,7 +99,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="section-padding bg-[var(--color-text)] text-white">
+      <section className="section-padding bg-white">
         <div className="container-main text-center">
           <motion.div
             variants={fadeInUp}
@@ -101,15 +107,15 @@ export function Home() {
             whileInView="visible"
             viewport={{ once: true }}
           >
-            <h2 className="heading-section text-white mb-4">
+            <h2 className="heading-section text-[var(--color-accent)] mb-4">
               Vamos criar juntos?
             </h2>
-            <p className="text-white/70 max-w-lg mx-auto mb-8">
+            <p className="text-[var(--color-text)]/80 max-w-lg mx-auto mb-8">
               Conte-nos sobre seu projeto e descubra como podemos transformar suas ideias em espaços únicos.
             </p>
             <Link
               to="/contato"
-              className="btn-primary bg-white text-[var(--color-text)] hover:bg-[var(--color-accent)] hover:text-white"
+              className="btn-primary bg-[var(--color-accent)] text-white hover:bg-[var(--color-text)] hover:text-white"
             >
               Iniciar conversa
               <ArrowRight size={16} />
