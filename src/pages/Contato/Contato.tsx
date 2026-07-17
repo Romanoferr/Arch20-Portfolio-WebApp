@@ -34,15 +34,6 @@ export function Contato() {
               <ul className="space-y-6">
                 <li className="flex items-start gap-4">
                   <div className="w-10 h-10 flex items-center justify-center border border-[var(--color-border)] text-[var(--color-accent)] shrink-0">
-                    <MapPin size={18} />
-                  </div>
-                  <div>
-                    <p className="text-xs tracking-[0.15em] uppercase text-muted mb-1">Endereço</p>
-                    <p className="text-sm">{siteInfo.address}</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-4">
-                  <div className="w-10 h-10 flex items-center justify-center border border-[var(--color-border)] text-[var(--color-accent)] shrink-0">
                     <Phone size={18} />
                   </div>
                   <div>

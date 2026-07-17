@@ -15,7 +15,6 @@ export const siteInfo = {
   name: 'Bruna Câmara',
   tagline: 'Arquitetura & Design de Interiores',
   email: 'camarabruna.arq@gmail.com',
-  phone: '+55 (22) 98533-0175',
-  address: 'Rua Oscar Freire, 1200 — São Paulo, SP',
+  phone: '+55 (21) 98533-0175',
   instagram: 'https://instagram.com/brunacamara.arq'
 }
