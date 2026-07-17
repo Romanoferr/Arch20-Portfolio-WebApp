@@ -8,6 +8,7 @@ export function Sobre() {
       <Hero
         compact
         title="Sobre"
+        subtitle=""
         showCta={false}
         image="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=80"
       />
