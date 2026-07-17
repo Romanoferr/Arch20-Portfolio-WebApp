@@ -14,10 +14,8 @@ export const navLinks: NavLink[] = [
 export const siteInfo = {
   name: 'Bruna Câmara',
   tagline: 'Arquitetura & Design de Interiores',
-  email: 'contato@estudioforma.com.br',
-  phone: '+55 (11) 98765-4321',
+  email: 'camarabruna.arq@gmail.com',
+  phone: '+55 (22) 98533-0175',
   address: 'Rua Oscar Freire, 1200 — São Paulo, SP',
-  instagram: 'https://instagram.com/brunacamara.arq',
-  linkedin: 'https://linkedin.com',
-  pinterest: 'https://pinterest.com',
+  instagram: 'https://instagram.com/brunacamara.arq'
 }

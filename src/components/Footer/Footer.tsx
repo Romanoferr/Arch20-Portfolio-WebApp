@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { navLinks, siteInfo } from '@/data/navigation'
-import logo from '@/assets/logos/logo-bc2.png'
+import logo from '@/assets/logos/bc-logo-site.png'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -107,18 +107,6 @@ export function Footer() {
                   <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.2" />
                   <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.2" />
                   <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
-                </svg>
-              </a>
-              <a
-                href={siteInfo.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white/60 hover:text-white transition-colors"
-                aria-label="LinkedIn"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                  <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" strokeWidth="1.2" />
-                  <path d="M6 9h3v8H6zM7.5 6.5a1.75 1.75 0 1 1 0 3.5 1.75 1.75 0 0 1 0-3.5zM13 12v5h3v-3c0-1.5 0-3-2-3s-1 1.5-1 1v5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </a>
             </div>

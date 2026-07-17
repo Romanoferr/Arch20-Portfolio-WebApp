@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { navLinks, siteInfo } from '@/data/navigation'
 import { cn } from '@/utils/cn'
-import logo from '@/assets/logos/logo-bc2.png'
+import logo from '@/assets/logos/bc-logo-site.png'
 
 export function Navbar(): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
@@ -41,20 +41,20 @@ export function Navbar(): JSX.Element {
 
   return (
     <>
-        <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/80 bg-white/90 shadow-[0_1px_0_rgba(0,0,0,0.04)]">        <nav className="container-main flex items-center justify-between h-16 md:h-20">
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/80 bg-white/90 shadow-[0_1px_0_rgba(0,0,0,0.04)]">        <nav className="container-main flex h-16 items-center justify-between md:h-20">
           <Link to="/" className="flex items-center gap-3 group">
             <img src={logo} alt={siteInfo.name} className="w-8 h-8" />
             <div className="hidden sm:block">
-              <span className="block font-serif text-lg tracking-widest uppercase leading-none">
+              <span className="block text-sm tracking-[0.15em] leading-none text-[#94714D]">
                 {siteInfo.name}
               </span>
-              <span className="block text-[10px] tracking-[0.2em] uppercase text-muted mt-0.5">
+              <span className="mt-0.5 block text-[10px] tracking-[0.2em] text-[#94714D]">
                 {siteInfo.tagline}
               </span>
             </div>
           </Link>
 
-          <ul className="hidden md:flex items-center gap-8">
+          <ul className="hidden md:ml-auto md:flex items-center gap-8">
             {navLinks.map((link) => (
               <li key={link.path}>
                 <Link
@@ -72,19 +72,35 @@ export function Navbar(): JSX.Element {
             ))}
           </ul>
 
-          <button
-            ref={menuButtonRef}
-            type="button"
-            onClick={() => setIsOpen(true)}
-            className="md:hidden p-2 -mr-2 text-[var(--color-text)]"
-            aria-label="Abrir menu"
-            aria-expanded={isOpen}
-            aria-controls="mobile-menu"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-              <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
+          <div className="ml-4 flex items-center gap-3">
+            <a
+              href={siteInfo.instagram}
+              target="_blank"
+              rel="noreferrer"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#94714D]/20 text-[#94714D] transition-colors hover:bg-[#94714D]/10"
+              aria-label="Instagram"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.6" />
+                <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.6" />
+                <circle cx="17" cy="7" r="1" fill="currentColor" />
+              </svg>
+            </a>
+
+            <button
+              ref={menuButtonRef}
+              type="button"
+              onClick={() => setIsOpen(true)}
+              className="p-2 -mr-2 text-[var(--color-text)] md:hidden"
+              aria-label="Abrir menu"
+              aria-expanded={isOpen}
+              aria-controls="mobile-menu"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
         </nav>
       </header>
 
