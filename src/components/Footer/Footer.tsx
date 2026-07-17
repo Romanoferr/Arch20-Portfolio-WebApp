@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { navLinks, siteInfo } from '@/data/navigation'
-import logo from '@/assets/logos/logo.svg'
+import logo from '@/assets/logos/logo-bc2.png'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()

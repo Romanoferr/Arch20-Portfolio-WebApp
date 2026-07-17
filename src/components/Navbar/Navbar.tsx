@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { navLinks, siteInfo } from '@/data/navigation'
 import { cn } from '@/utils/cn'
-import logo from '@/assets/logos/Logo-BC.png'
+import logo from '@/assets/logos/logo-bc2.png'
 
 export function Navbar(): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
