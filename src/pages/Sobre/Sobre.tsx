@@ -7,8 +7,7 @@ export function Sobre() {
     <>
       <Hero
         compact
-        title="Sobre nós"
-        subtitle="Paixão por arquitetura, compromisso com a excelência."
+        title="Sobre"
         showCta={false}
         image="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=80"
       />
@@ -17,26 +16,21 @@ export function Sobre() {
         <div className="container-main">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div variants={fadeInUp} initial="hidden" animate="visible">
-              <span className="text-xs tracking-[0.2em] uppercase text-[var(--color-accent)]">
-                Estúdio Forma
-              </span>
-              <h2 className="heading-section mt-2 mb-6">
-                Arquitetura com propósito
-              </h2>
+              <h4 className="heading-section mt-2 mb-6">
+                Bruna Câmara
+              </h4>
               <div className="space-y-4 text-muted leading-relaxed">
                 <p>
-                  Fundado em 2015, o Estúdio Forma nasceu da convicção de que a arquitetura
-                  deve ir além da estética — deve melhorar a qualidade de vida de quem habita
-                  cada espaço que projetamos.
+                  Sou Arquiteta e Urbanista formada pela Universidade Federal do Rio de Janeiro (UFRJ). Atualmente, amplio minha formação por meio da especialização em Design de Interiores, também pela UFRJ, buscando oferecer soluções ainda mais completas, funcionais e personalizadas aos meus clientes. 
                 </p>
                 <p>
-                  Nossa abordagem combina sensibilidade estética com rigor técnico. Acreditamos
-                  em projetos honestos, que respeitam o contexto, a funcionalidade e o
-                  orçamento de nossos clientes.
+                  À frente da Control B Home, atuo de forma integrada nas áreas de arquitetura e financiamento imobiliário, proporcionando um atendimento que acompanha o cliente em diferentes etapas do seu projeto. Além do desenvolvimento de projetos arquitetônicos e do gerenciamento de obras, ofereço serviços de avaliação de imóveis, regularização e legalização de imóveis, além de consultoria e elaboração de planilhas para financiamento imobiliário pela Caixa Econômica Federal. 
                 </p>
                 <p>
-                  Com sede em São Paulo e projetos em todo o Brasil, nossa equipe multidisciplinar
-                  atua em arquitetura residencial, comercial, design de interiores e paisagismo.
+                  Acredito que um bom projeto vai muito além da estética. Cada ambiente deve refletir a personalidade, as necessidades e o estilo de vida de quem irá vivê-lo. Por isso, meu compromisso é desenvolver soluções que equilibrem funcionalidade, qualidade, criatividade e viabilidade financeira, sempre buscando o melhor custo-benefício sem abrir mão da excelência.
+                </p>
+                <p>
+                  Cada trabalho é conduzido com responsabilidade, atenção aos detalhes e transparência em todas as etapas, proporcionando segurança, organização e tranquilidade durante todo o processo. Meu objetivo é transformar ideias em espaços bem planejados, confortáveis e duradouros, entregando resultados que superem as expectativas e agreguem valor ao patrimônio e à experiência de cada cliente.
                 </p>
               </div>
             </motion.div>
@@ -48,7 +42,7 @@ export function Sobre() {
               transition={{ delay: 0.1 }}
             >
               <img
-                src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80"
+                src="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Sobre/sobre.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvU29icmUvc29icmUuanBnIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4NDMyNjY0NSwiZXhwIjoyMDk5Njg2NjQ1fQ.rqpVQARpEax5CDayBAtZtkFC9ejwISPtS1vcZ9MbZl4"
                 alt="Equipe do estúdio em projeto arquitetônico"
                 className="w-full aspect-[4/5] object-cover"
               />
@@ -57,48 +51,7 @@ export function Sobre() {
         </div>
       </section>
 
-      <section className="section-padding bg-[var(--color-surface)]">
-        <div className="container-main">
-          <motion.div
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="heading-section">Nossos valores</h2>
-          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: 'Autenticidade',
-                desc: 'Cada projeto reflete a identidade única de quem o habita, sem fórmulas prontas.',
-              },
-              {
-                title: 'Sustentabilidade',
-                desc: 'Priorizamos materiais naturais, eficiência energética e soluções duráveis.',
-              },
-              {
-                title: 'Colaboração',
-                desc: 'Trabalhamos lado a lado com nossos clientes em todas as etapas do processo.',
-              },
-            ].map((value) => (
-              <motion.div
-                key={value.title}
-                variants={fadeInUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="text-center p-8"
-              >
-                <h3 className="font-serif text-xl mb-3">{value.title}</h3>
-                <p className="text-sm text-muted">{value.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
     </>
   )
 }
