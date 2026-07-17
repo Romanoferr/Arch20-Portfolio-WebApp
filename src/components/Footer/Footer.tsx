@@ -7,7 +7,7 @@ export function Footer() {
 
   return (
     <footer className="bg-[var(--color-text)] text-white/80">
-      <div className="container-main section-padding">
+      <div className="container-main py-8 md:py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
           <div>
             <Link to="/" className="flex items-center gap-3 mb-4">
@@ -49,21 +49,6 @@ export function Footer() {
               Contato
             </h3>
             <ul className="space-y-3 text-sm text-white/60">
-              <li className="flex items-start gap-2">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="mt-0.5 shrink-0"
-                  aria-hidden
-                >
-                  <path d="M21 10c0 6-9 13-9 13s-9-7-9-13a9 9 0 1 1 18 0z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                  <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.2" />
-                </svg>
-                {siteInfo.address}
-              </li>
               <li className="flex items-center gap-2">
                 <svg
                   width="16"
@@ -93,27 +78,27 @@ export function Footer() {
                 </svg>
                 {siteInfo.email}
               </li>
+              <li className="flex items-center gap-2">
+                <a
+                  href={siteInfo.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-white"
+                  aria-label="Instagram"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0" aria-hidden>
+                    <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.2" />
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.2" />
+                    <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
+                  </svg>
+                  <span>@brunacamara.arq</span>
+                </a>
+              </li>
             </ul>
-
-            <div className="flex gap-4 mt-6">
-              <a
-                href={siteInfo.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white/60 hover:text-white transition-colors"
-                aria-label="Instagram"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                  <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.2" />
-                  <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.2" />
-                  <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
-                </svg>
-              </a>
-            </div>
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-white/10 text-center text-xs text-white/40 tracking-wide">
+        <div className="mt-4 pt-4 border-t border-white/10 text-center text-xs text-white/40 tracking-wide">
           © {currentYear} {siteInfo.name}. Todos os direitos reservados.
         </div>
       </div>
