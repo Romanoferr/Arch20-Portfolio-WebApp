@@ -151,10 +151,7 @@ export function ContactForm() {
       {status === 'error' && (
         <div className="flex items-start gap-2 text-sm text-red-700 bg-red-50 px-4 py-3">
           <AlertCircle size={18} className="shrink-0 mt-0.5" />
-          <span>
-            Não foi possível enviar a mensagem. Verifique se as credenciais do EmailJS
-            estão configuradas no arquivo <code className="text-xs">.env</code>.
-          </span>
+          <span>Erro ao enviar mensagem. Verifique a configuração do EmailJS.</span>
         </div>
       )}
     </form>

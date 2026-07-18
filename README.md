@@ -81,7 +81,7 @@ O formulário já está integrado com o EmailJS, então o processo é:
    - `Service ID`
    - `Template ID`
    - `Public Key`
-5. Crie o arquivo `.env` com base no exemplo já existente e preencha os valores:
+5. Crie o arquivo `.env` com base no exemplo abaixo e preencha os valores:
 
 ```env
 VITE_EMAILJS_SERVICE_ID=seu_service_id
@@ -96,6 +96,16 @@ npm run dev
 ```
 
 7. Teste o formulário no navegador e confirme se a mensagem chega ao e-mail configurado.
+
+### Deploy no GitHub Pages
+
+Para que o formulário funcione também em produção, defina estes valores como secrets no repositório GitHub:
+
+- `VITE_EMAILJS_SERVICE_ID`
+- `VITE_EMAILJS_TEMPLATE_ID`
+- `VITE_EMAILJS_PUBLIC_KEY`
+
+No GitHub, vá em Settings → Secrets and variables → Actions e adicione os valores. O workflow já passa esses secrets para o build do Vite.
 
 > O template do EmailJS deve usar exatamente os nomes das variáveis `from_name`, `from_email`, `phone` e `message` para que o envio funcione corretamente.
 
