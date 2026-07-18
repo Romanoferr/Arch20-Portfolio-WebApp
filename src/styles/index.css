@@ -9,7 +9,7 @@
   --color-accent-light: #a89070;
   --color-border: #e8e8e4;
 
-  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-serif: "Inter", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
 }
 
@@ -94,7 +94,7 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium tracking-widest uppercase transition-all duration-300;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium tracking-widest uppercase transition-all duration-300 rounded-full;
     background-color: var(--color-text);
     color: var(--color-surface);
   }
@@ -104,7 +104,7 @@
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium tracking-widest uppercase transition-all duration-300 border;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium tracking-widest uppercase transition-all duration-300 border rounded-full;
     border-color: var(--color-text);
     color: var(--color-text);
   }
