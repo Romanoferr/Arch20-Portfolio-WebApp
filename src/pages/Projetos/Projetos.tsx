@@ -12,7 +12,7 @@ export function Projetos() {
         title="Projetos"
         subtitle="Explore nosso portfólio de arquitetura residencial, comercial e design de interiores."
         showCta={false}
-        image="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1600&q=80"
+        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Aba%20Projeto/sala_01.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvQWJhIFByb2pldG8vc2FsYV8wMS5wbmciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg0NDAyMDUwLCJleHAiOjIwOTk3NjIwNTB9.uIRnBBa50qvCxniu80rqYXLCLCTUhAHMA9iI3N5-gao"
       />
 
       <section className="section-padding">
