@@ -62,11 +62,17 @@ export function Hero({
               transition={{ delay: 0.2 }}
               className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
             >
-              <Link to="/projetos" className="btn-primary">
+              <Link
+                to="/projetos"
+                className="btn-primary bg-[var(--color-accent)] text-white hover:bg-[var(--color-text)] hover:text-white"
+              >
                 Ver projetos
                 <ArrowRight size={16} />
               </Link>
-              <Link to="/contato" className="btn-outline border-white text-white hover:bg-white hover:text-[var(--color-text)]">
+              <Link
+                to="/contato"
+                className="btn-primary bg-[var(--color-accent)] text-white hover:bg-[var(--color-text)] hover:text-white"
+              >
                 Fale conosco
               </Link>
             </motion.div>

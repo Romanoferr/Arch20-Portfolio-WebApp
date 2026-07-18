@@ -64,7 +64,7 @@ export function Navbar(): JSX.Element {
                   <Link
                     to={link.path}
                     className={cn(
-                      'text-sm tracking-[0.2em] uppercase transition-colors duration-200',
+                      'text-[12px] tracking-[0.2em] uppercase transition-colors duration-200',
                       location.pathname === link.path
                         ? 'text-[var(--color-accent)]'
                         : 'text-[var(--color-text)] hover:text-[var(--color-accent)]',
@@ -155,7 +155,7 @@ export function Navbar(): JSX.Element {
                         to={link.path}
                         ref={idx === 0 ? firstLinkRef : undefined}
                         className={cn(
-                          'block py-3 text-sm tracking-[0.15em] uppercase transition-colors px-2',
+                          'block py-3 text-[12px] tracking-[0.15em] uppercase transition-colors px-2',
                           location.pathname === link.path
                             ? 'text-[var(--color-accent)]'
                             : 'text-[var(--color-text)] hover:text-[var(--color-accent)]',
