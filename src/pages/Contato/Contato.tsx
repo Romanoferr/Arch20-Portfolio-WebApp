@@ -13,7 +13,7 @@ export function Contato() {
         title="Contato"
         subtitle="Estamos prontos para ouvir sobre seu projeto. Entre em contato."
         showCta={false}
-        image="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1600&q=80"
+        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Aba%20Contato/Cena_13.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvQWJhIENvbnRhdG8vQ2VuYV8xMy5wbmciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg0NDAyODg5LCJleHAiOjIwOTk3NjI4ODl9.0-o5SbupMIOqLV4wlMf0wR1jpoC046GySXX4TCV2lck"
       />
 
       <section className="section-padding">

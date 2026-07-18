@@ -10,7 +10,7 @@ export function Sobre() {
         title="Sobre"
         subtitle=""
         showCta={false}
-        image="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=80"
+        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Aba%20Sobre/Cena_02.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvQWJhIFNvYnJlL0NlbmFfMDIucG5nIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4NDQwMzAzNSwiZXhwIjoyMDk5NzYzMDM1fQ.w5FTbZIWq9cgCD31VxZRfbp0BH4GaIuEBLUm90RU9n8"
       />
 
       <section className="section-padding">
