@@ -14,7 +14,7 @@ interface HeroProps {
 export function Hero({
   title = 'Projetos de arquitetura e design de interiores',
   subtitle = 'Transforme seus espaços com soluções criativas e funcionais, que refletem seu estilo de vida e personalidade.',
-  image = 'https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/inicio/teste%20fachada.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvaW5pY2lvL3Rlc3RlIGZhY2hhZGEucG5nIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4NDM5MTEwOCwiZXhwIjoyMDk5NzUxMTA4fQ.VU7vNXGYfKEpG3i_uwUlTa-p_A67epHLDZ5WSkU-pB4',
+  image = 'https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/inicio/Cena_01%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvaW5pY2lvL0NlbmFfMDEgKDEpLnBuZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODQzOTM1MjEsImV4cCI6MjA5OTc1MzUyMX0.ltcXWUqVUTxV2wPcAaRF-j6YMZvwviEIFda_bh5qpk8',
   showCta = true,
   compact = false,
 }: HeroProps) {

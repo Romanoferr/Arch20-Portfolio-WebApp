@@ -41,9 +41,10 @@ export function Navbar(): JSX.Element {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/80 bg-white/80 shadow-[0_1px_0_rgba(0,0,0,0.04)]">        <nav className="container-main flex h-16 items-center justify-between md:h-20">
-          <Link to="/" className="flex items-center gap-3 group">
-            <img src={logo} alt={siteInfo.name} className="w-8 h-8" />
+      <header className="fixed inset-x-4 top-6 z-50 mx-auto flex max-w-7xl rounded-[36px] border border-white/70 bg-white/70 px-4 py-1 shadow-[0_24px_80px_rgba(0,0,0,0.12)] backdrop-blur-md md:inset-x-6 md:px-8">
+        <nav className="container-main flex h-10 items-center justify-between gap-6 md:h-12">
+          <Link to="/" className="flex items-center gap-4 group">
+            <img src={logo} alt={siteInfo.name} className="h-8 w-auto" />
             <div className="hidden sm:block">
               <span className="block text-sm tracking-[0.15em] leading-none text-[#94714D]">
                 {siteInfo.name}
@@ -54,13 +55,13 @@ export function Navbar(): JSX.Element {
             </div>
           </Link>
 
-          <ul className="hidden md:ml-auto md:flex items-center gap-8">
+          <ul className="hidden md:ml-auto md:flex items-center gap-10">
             {navLinks.map((link) => (
               <li key={link.path}>
                 <Link
                   to={link.path}
                   className={cn(
-                    'text-xs tracking-[0.15em] uppercase transition-colors duration-200',
+                    'text-sm tracking-[0.2em] uppercase transition-colors duration-200',
                     location.pathname === link.path
                       ? 'text-[var(--color-accent)]'
                       : 'text-[var(--color-text)] hover:text-[var(--color-accent)]',
@@ -72,12 +73,12 @@ export function Navbar(): JSX.Element {
             ))}
           </ul>
 
-          <div className="ml-4 flex items-center gap-3">
+          <div className="ml-6 flex items-center gap-4">
             <a
               href={siteInfo.instagram}
               target="_blank"
               rel="noreferrer"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#94714D]/20 text-[#94714D] transition-colors hover:bg-[#94714D]/10"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#94714D]/20 bg-white/80 text-[#94714D] transition-colors hover:bg-[#94714D]/10"
               aria-label="Instagram"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
