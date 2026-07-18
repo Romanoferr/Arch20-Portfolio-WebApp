@@ -68,9 +68,20 @@ Ajuste as variáveis CSS em `src/styles/index.css`:
 
 ### Formulário de contato (EmailJS)
 
+O formulário já está integrado com o EmailJS, então o processo é:
+
 1. Crie uma conta em [emailjs.com](https://www.emailjs.com/)
-2. Configure um serviço de e-mail e um template
-3. Copie `.env.example` para `.env` e preencha:
+2. No painel, adicione um Serviço de E-mail (por exemplo, Gmail, Outlook ou outro provedor configurado)
+3. Crie um Template de e-mail com os campos abaixo:
+   - `from_name` — nome da pessoa que enviou a mensagem
+   - `from_email` — e-mail do remetente
+   - `phone` — telefone informado
+   - `message` — conteúdo da mensagem
+4. Copie os valores de:
+   - `Service ID`
+   - `Template ID`
+   - `Public Key`
+5. Crie o arquivo `.env` com base no exemplo já existente e preencha os valores:
 
 ```env
 VITE_EMAILJS_SERVICE_ID=seu_service_id
@@ -78,7 +89,15 @@ VITE_EMAILJS_TEMPLATE_ID=seu_template_id
 VITE_EMAILJS_PUBLIC_KEY=sua_public_key
 ```
 
-No template EmailJS, use as variáveis: `from_name`, `from_email`, `phone`, `message`.
+6. Reinicie o servidor de desenvolvimento:
+
+```bash
+npm run dev
+```
+
+7. Teste o formulário no navegador e confirme se a mensagem chega ao e-mail configurado.
+
+> O template do EmailJS deve usar exatamente os nomes das variáveis `from_name`, `from_email`, `phone` e `message` para que o envio funcione corretamente.
 
 ## Páginas
 
