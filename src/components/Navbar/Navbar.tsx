@@ -41,7 +41,7 @@ export function Navbar(): JSX.Element {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/80 bg-white/90 shadow-[0_1px_0_rgba(0,0,0,0.04)]">        <nav className="container-main flex h-16 items-center justify-between md:h-20">
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/80 bg-white/80 shadow-[0_1px_0_rgba(0,0,0,0.04)]">        <nav className="container-main flex h-16 items-center justify-between md:h-20">
           <Link to="/" className="flex items-center gap-3 group">
             <img src={logo} alt={siteInfo.name} className="w-8 h-8" />
             <div className="hidden sm:block">

@@ -12,9 +12,9 @@ interface HeroProps {
 }
 
 export function Hero({
-  title = 'Arquitetura que\ninspira viver',
-  subtitle = 'Projetos residenciais, comerciais e interiores com design minimalista, funcional e atemporal.',
-  image = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80',
+  title = '',
+  subtitle = '',
+  image = 'https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/inicio/teste%20fachada.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvaW5pY2lvL3Rlc3RlIGZhY2hhZGEucG5nIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4NDM5MTEwOCwiZXhwIjoyMDk5NzUxMTA4fQ.VU7vNXGYfKEpG3i_uwUlTa-p_A67epHLDZ5WSkU-pB4',
   showCta = true,
   compact = false,
 }: HeroProps) {
@@ -30,7 +30,7 @@ export function Hero({
           alt=""
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/5 to-transparent" />
       </div>
 
       <div className="container-main relative z-10 pt-20">
