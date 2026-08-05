@@ -43,7 +43,7 @@ export function Sobre() {
               transition={{ delay: 0.1 }}
             >
               <img
-                src="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Sobre/sobre.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvU29icmUvc29icmUuanBnIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4NDMyNjY0NSwiZXhwIjoyMDk5Njg2NjQ1fQ.rqpVQARpEax5CDayBAtZtkFC9ejwISPtS1vcZ9MbZl4"
+                src="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Aba%20Sobre/sobre.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvQWJhIFNvYnJlL3NvYnJlLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU5Njg4OTgsImV4cCI6MjEwMTMyODg5OH0.x-B-FCqI4JJVvEnjeFkgguA8YhHlUNGMZh46JnbqWhQ"
                 alt="Equipe do estúdio em projeto arquitetônico"
                 className="w-full aspect-[4/5] object-cover"
               />

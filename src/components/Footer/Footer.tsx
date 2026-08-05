@@ -8,15 +8,15 @@ export function Footer() {
   return (
     <footer className="bg-[#94714D] text-white/90">
       <div className="container-main py-8 md:py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center">
-          <div className="flex items-center justify-end md:pr-6">
-            <Link to="/" className="flex items-center h-16">
-              <img src={logo} alt={siteInfo.name} className="h-16 w-auto filter brightness-0 invert object-contain" />
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-8 items-center justify-items-center md:justify-items-stretch">
+          <div className="flex items-center justify-center md:justify-end md:pr-6">
+            <Link to="/" className="flex items-center">
+              <img src={logo} alt={siteInfo.name} className="h-10 md:h-16 w-auto filter brightness-0 invert object-contain" />
             </Link>
           </div>
 
-          <div className="flex items-center">
-            <ul className="space-y-3 text-sm text-white/80">
+          <div className="flex items-center justify-center md:justify-start">
+            <ul className="space-y-3 text-sm text-white/80 text-center md:text-left">
               <li className="flex items-center gap-2">
                 <svg
                   width="16"
