@@ -7,7 +7,14 @@ import App from '@/App'
 const redirect = sessionStorage.redirect
 if (redirect) {
   sessionStorage.removeItem('redirect')
-  window.location.replace(redirect)
+
+  try {
+    const targetUrl = new URL(redirect, window.location.origin)
+    const targetPath = `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`
+    history.replaceState(null, '', targetPath)
+  } catch {
+    window.location.replace(redirect)
+  }
 }
 
 createRoot(document.getElementById('root')!).render(
