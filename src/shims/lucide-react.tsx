@@ -34,6 +34,7 @@ export const MapPin: LucideIcon = Placeholder
 export const Phone: LucideIcon = Placeholder
 export const ArrowLeft: LucideIcon = Placeholder
 export const Calendar: LucideIcon = Placeholder
+export const LogOut: LucideIcon = Placeholder
 
 // Make a generic default export for completeness
 const _default = {

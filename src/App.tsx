@@ -1,12 +1,18 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Layout } from '@/components/Layout/Layout'
+import { AdminLayout } from '@/components/Layout/AdminLayout'
+import { ProtectedRoute } from '@/components/Auth/ProtectedRoute'
 import { Home } from '@/pages/Home/Home'
 import { Projetos } from '@/pages/Projetos/Projetos'
 import { ProjetoDetalhe } from '@/pages/ProjetoDetalhe/ProjetoDetalhe'
 import { Servicos } from '@/pages/Servicos/Servicos'
 import { Sobre } from '@/pages/Sobre/Sobre'
 import { Contato } from '@/pages/Contato/Contato'
+import { AdminDashboard } from '@/pages/Admin/AdminDashboard'
+import { AdminProjectList } from '@/pages/Admin/AdminProjectList'
+import { AdminProjectForm } from '@/pages/Admin/AdminProjectForm'
+import { AdminLogin } from '@/pages/Admin/AdminLogin'
 import { pageTransition } from '@/utils/animations'
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 
@@ -30,6 +36,17 @@ function AnimatedRoutes() {
             <Route path="servicos" element={<Servicos />} />
             <Route path="sobre" element={<Sobre />} />
             <Route path="contato" element={<Contato />} />
+          </Route>
+
+          <Route path="admin/login" element={<AdminLogin />} />
+
+          <Route path="admin" element={<ProtectedRoute />}>
+            <Route element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="projetos" element={<AdminProjectList />} />
+              <Route path="projetos/novo" element={<AdminProjectForm />} />
+              <Route path="projetos/:id/editar" element={<AdminProjectForm />} />
+            </Route>
           </Route>
         </Routes>
       </motion.div>

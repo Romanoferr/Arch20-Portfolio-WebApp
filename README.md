@@ -28,6 +28,26 @@ npm run build
 npm run preview
 ```
 
+## Autenticação com Supabase
+
+Para habilitar o acesso administrativo, crie um arquivo .env com as variáveis abaixo:
+
+```env
+VITE_SUPABASE_URL=https://<seu-projeto>.supabase.co
+VITE_SUPABASE_ANON_KEY=<sua-chave-publica>
+```
+
+### Passos no painel do Supabase
+
+1. Crie um projeto no Supabase.
+2. Acesse Settings → API e copie a Project URL e a anon public key.
+3. Acesse Authentication → Settings e habilite o provedor Email.
+4. Defina as Redirect URLs para:
+   - http://localhost:5173/admin/login
+   - https://<seu-dominio>/admin/login
+5. Crie o primeiro usuário administrativo em Authentication → Users.
+6. Acesse /admin/login para entrar.
+
 ## Estrutura do projeto
 
 ```

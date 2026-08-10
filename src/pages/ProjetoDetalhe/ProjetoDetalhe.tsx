@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Calendar, MapPin, Ruler } from 'lucide-react'
-import { getProjectBySlug } from '@/data/projects'
+import { getProjectBySlug } from '@/services/projectsService'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 
 const categoryLabels = {
