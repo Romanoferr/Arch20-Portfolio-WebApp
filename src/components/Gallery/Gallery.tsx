@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import type { Project, ProjectCategory } from '@/data/projects'
-import { projectCategories } from '@/data/projects'
+import type { Project, ProjectCategory } from '@/types/project'
+import { projectCategories } from '@/services/projectsService'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 import { cn } from '@/utils/cn'
 

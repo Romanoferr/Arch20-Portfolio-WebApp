@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion'
 import { Hero } from '@/components/Hero/Hero'
 import { Gallery } from '@/components/Gallery/Gallery'
-import { projects } from '@/data/projects'
+import { getProjects } from '@/services/projectsService'
 import { fadeInUp } from '@/utils/animations'
 
 export function Projetos() {
+  const projects = getProjects()
+
   return (
     <>
       <Hero
