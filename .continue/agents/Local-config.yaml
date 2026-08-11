@@ -1,0 +1,36 @@
+name: Local Coding Setup
+version: 0.0.1
+schema: v1
+
+models:
+  # --------------------------------------------------
+  # CHAT / RACIOCÍNIO GERAL
+  # --------------------------------------------------
+  - name: Qwen3 8B Local
+    provider: ollama
+    model: qwen3:8b
+    apiBase: http://localhost:11434
+    roles:
+      - chat
+      - edit
+
+  # --------------------------------------------------
+  # CODING AGENT
+  # --------------------------------------------------
+  - name: Qwen3 Coder 30B Local
+    provider: ollama
+    model: qwen3-coder:30b
+    apiBase: http://localhost:11434
+    roles:
+      - agent
+      - chat
+
+  # --------------------------------------------------
+  # AUTOCOMPLETE
+  # --------------------------------------------------
+  - name: Qwen3 8B Autocomplete
+    provider: ollama
+    model: qwen3:8b
+    apiBase: http://localhost:11434
+    roles:
+      - autocomplete
