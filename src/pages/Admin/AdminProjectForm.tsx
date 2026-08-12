@@ -1,11 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AlertCircle, CheckCircle, Loader2, ArrowRight } from 'lucide-react'
-import { createProject, getProjectById, updateProject } from '@/services/projectsService'
-import type { ProjectCategory, ProjectInput } from '@/types/project'
-import { projectCategories } from '@/services/projectsService'
+import {
+  createProject,
+  getFriendlyError,
+  getProjectById,
+  updateProject,
+  projectCategories,
+  type CoverSelection,
+} from '@/services/projectsService'
+import type { ProjectCategory, ProjectImage, ProjectInput } from '@/types/project'
 
-interface FormState extends ProjectInput {
+interface FormState {
   title: string
   slug: string
   category: ProjectCategory
@@ -13,8 +19,6 @@ interface FormState extends ProjectInput {
   location: string
   area: string
   description: string
-  images: string[]
-  coverImage: string
   published: boolean
   order: number
 }
@@ -27,19 +31,12 @@ const emptyForm: FormState = {
   location: '',
   area: '',
   description: '',
-  images: [],
-  coverImage: '',
   published: true,
   order: 999,
 }
 
-function readFileAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '')
-    reader.onerror = () => reject(new Error('Unable to read file'))
-    reader.readAsDataURL(file)
-  })
+function fileToObjectUrl(file: File): string {
+  return URL.createObjectURL(file)
 }
 
 export function AdminProjectForm() {
@@ -48,56 +45,110 @@ export function AdminProjectForm() {
   const [form, setForm] = useState<FormState>(emptyForm)
   const [status, setStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle')
   const [error, setError] = useState('')
-  const [newImageDataUrls, setNewImageDataUrls] = useState<string[]>([])
-  const [previewUrls, setPreviewUrls] = useState<string[]>([])
+  const [loading, setLoading] = useState(Boolean(id))
+
+  const [existingImages, setExistingImages] = useState<ProjectImage[]>([])
+  const [newFiles, setNewFiles] = useState<File[]>([])
+  const [removedImageIds, setRemovedImageIds] = useState<string[]>([])
+  const [coverSelection, setCoverSelection] = useState<CoverSelection>({ type: 'none' })
 
   const isEditing = Boolean(id)
+
+  // Object URLs for previewing newly selected files (revoked on cleanup).
+  const newFilePreviews = useMemo(() => newFiles.map(fileToObjectUrl), [newFiles])
+
+  useEffect(() => {
+    return () => {
+      newFilePreviews.forEach((url) => URL.revokeObjectURL(url))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (!id) {
       return
     }
 
-    const project = getProjectById(id)
-    if (project) {
-      setForm({
-        title: project.title,
-        slug: project.slug,
-        category: project.category,
-        year: project.year,
-        location: project.location,
-        area: project.area,
-        description: project.description,
-        images: project.images,
-        coverImage: project.coverImage,
-        published: project.published,
-        order: project.order,
-      })
+    let isMounted = true
+
+    const loadProject = async () => {
+      try {
+        const project = await getProjectById(id)
+
+        if (!isMounted) {
+          return
+        }
+
+        if (!project) {
+          setError('Projeto não encontrado. Ele pode ter sido excluído.')
+          return
+        }
+
+        setForm({
+          title: project.title,
+          slug: project.slug,
+          category: project.category,
+          year: project.year,
+          location: project.location,
+          area: project.area,
+          description: project.description,
+          published: project.published,
+          order: project.order,
+        })
+
+        const images = project.projectImages ?? []
+        setExistingImages(images)
+        const cover = images.find((image) => image.isCover)
+        setCoverSelection(cover ? { type: 'existing', imageId: cover.id } : { type: 'none' })
+      } catch (loadError) {
+        if (isMounted) {
+          setError(getFriendlyError(loadError, 'Não foi possível carregar o projeto.'))
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    void loadProject()
+
+    return () => {
+      isMounted = false
     }
   }, [id])
 
-  const handleFileSelection = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? [])
     if (!files.length) {
       return
     }
 
-    const dataUrls = await Promise.all(files.map((file) => readFileAsDataUrl(file)))
-    setNewImageDataUrls((current) => [...current, ...dataUrls])
-    setPreviewUrls((current) => [...current, ...dataUrls])
+    setNewFiles((current) => [...current, ...files])
+    event.target.value = ''
   }
 
-  const handleImageRemove = (index: number) => {
-    setForm((current) => ({
-      ...current,
-      images: current.images.filter((_, imageIndex) => imageIndex !== index),
-      coverImage: current.coverImage === current.images[index] ? '' : current.coverImage,
-    }))
+  const handleExistingImageRemove = (imageId: string) => {
+    setExistingImages((current) => current.filter((image) => image.id !== imageId))
+    setRemovedImageIds((current) => [...current, imageId])
+
+    setCoverSelection((current) => {
+      if (current.type === 'existing' && current.imageId === imageId) {
+        return { type: 'none' }
+      }
+      return current
+    })
   }
 
   const handleNewImageRemove = (index: number) => {
-    setNewImageDataUrls((current) => current.filter((_, imageIndex) => imageIndex !== index))
-    setPreviewUrls((current) => current.filter((_, imageIndex) => imageIndex !== index))
+    setNewFiles((current) => current.filter((_, fileIndex) => fileIndex !== index))
+
+    setCoverSelection((current) => {
+      if (current.type === 'new' && current.fileIndex === index) {
+        return { type: 'none' }
+      }
+      return current
+    })
   }
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -111,36 +162,47 @@ export function AdminProjectForm() {
     setStatus('saving')
     setError('')
 
+    const payload: ProjectInput = {
+      title: form.title,
+      slug: form.slug || undefined,
+      category: form.category,
+      year: Number(form.year),
+      location: form.location,
+      area: form.area,
+      description: form.description,
+      published: form.published,
+      order: Number(form.order),
+    }
+
     try {
-      const mergedImages = [...form.images, ...newImageDataUrls]
-      const preparedCover = form.coverImage || mergedImages[0] || ''
-
-      const payload: ProjectInput = {
-        title: form.title,
-        slug: form.slug || undefined,
-        category: form.category,
-        year: Number(form.year),
-        location: form.location,
-        area: form.area,
-        description: form.description,
-        images: mergedImages,
-        coverImage: preparedCover,
-        published: form.published,
-        order: Number(form.order),
-      }
-
       if (isEditing && id) {
-        updateProject(id, payload)
+        await updateProject(id, payload, {
+          newFiles,
+          existingImages,
+          removedImageIds,
+          coverSelection,
+        })
       } else {
-        createProject(payload)
+        const coverFileIndex =
+          coverSelection.type === 'new' ? coverSelection.fileIndex : 0
+        await createProject(payload, newFiles, coverFileIndex)
       }
 
       setStatus('success')
-      navigate('/admin/projetos')
-    } catch {
+      navigate('/admin/projetos', { state: { saved: true } })
+    } catch (saveError) {
       setStatus('error')
-      setError('Não foi possível salvar o projeto. Tente novamente.')
+      setError(getFriendlyError(saveError, 'Não foi possível salvar o projeto. Tente novamente.'))
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center gap-2 rounded-[32px] border border-[var(--color-border)] bg-white p-16 text-sm text-[var(--color-muted)]">
+        <Loader2 size={18} className="animate-spin" />
+        Carregando projeto...
+      </div>
+    )
   }
 
   return (
@@ -288,17 +350,29 @@ export function AdminProjectForm() {
                 if (!file) {
                   return
                 }
-                readFileAsDataUrl(file).then((dataUrl) => {
-                  setForm((current) => ({ ...current, coverImage: dataUrl }))
-                  setNewImageDataUrls((current) => [...current, dataUrl])
-                  setPreviewUrls((current) => [...current, dataUrl])
-                })
+                setNewFiles((current) => [...current, file])
+                setCoverSelection({ type: 'new', fileIndex: newFiles.length })
+                event.target.value = ''
               }} />
             </label>
 
-            {form.coverImage && (
+            {coverSelection.type === 'existing' && (
               <div className="mt-4 overflow-hidden rounded-[20px] border border-[var(--color-border)]">
-                <img src={form.coverImage} alt="Preview da capa" className="h-48 w-full object-cover" />
+                <img
+                  src={existingImages.find((image) => image.id === coverSelection.imageId)?.publicUrl}
+                  alt="Preview da capa"
+                  className="h-48 w-full object-cover"
+                />
+              </div>
+            )}
+
+            {coverSelection.type === 'new' && (
+              <div className="mt-4 overflow-hidden rounded-[20px] border border-[var(--color-border)]">
+                <img
+                  src={newFilePreviews[coverSelection.fileIndex]}
+                  alt="Preview da capa"
+                  className="h-48 w-full object-cover"
+                />
               </div>
             )}
           </div>
@@ -318,26 +392,34 @@ export function AdminProjectForm() {
             </label>
 
             <div className="mt-4 grid gap-3 md:grid-cols-2">
-              {form.images.map((image, index) => (
-                <div key={`${image}-${index}`} className="rounded-[20px] border border-[var(--color-border)] bg-white p-2">
-                  <img src={image} alt={`Imagem ${index + 1}`} className="h-28 w-full rounded-[16px] object-cover" />
+              {existingImages.map((image) => (
+                <div key={image.id} className="rounded-[20px] border border-[var(--color-border)] bg-white p-2">
+                  <img src={image.publicUrl} alt={image.storagePath} className="h-28 w-full rounded-[16px] object-cover" />
                   <div className="mt-2 flex items-center justify-between gap-2">
-                    <button type="button" className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)]" onClick={() => setForm((current) => ({ ...current, coverImage: image }))}>
-                      Definir capa
+                    <button
+                      type="button"
+                      className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)]"
+                      onClick={() => setCoverSelection({ type: 'existing', imageId: image.id })}
+                    >
+                      {coverSelection.type === 'existing' && coverSelection.imageId === image.id ? 'Capa atual' : 'Definir capa'}
                     </button>
-                    <button type="button" className="text-red-600" onClick={() => handleImageRemove(index)}>
+                    <button type="button" className="text-red-600" onClick={() => handleExistingImageRemove(image.id)}>
                       <AlertCircle size={16} />
                     </button>
                   </div>
                 </div>
               ))}
 
-              {previewUrls.map((preview, index) => (
-                <div key={preview} className="rounded-[20px] border border-[var(--color-border)] bg-white p-2">
-                  <img src={preview} alt={`Nova imagem ${index + 1}`} className="h-28 w-full rounded-[16px] object-cover" />
+              {newFiles.map((file, index) => (
+                <div key={`${file.name}-${index}`} className="rounded-[20px] border border-[var(--color-border)] bg-white p-2">
+                  <img src={newFilePreviews[index]} alt={`Nova imagem ${index + 1}`} className="h-28 w-full rounded-[16px] object-cover" />
                   <div className="mt-2 flex items-center justify-between gap-2">
-                    <button type="button" className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)]" onClick={() => setForm((current) => ({ ...current, coverImage: preview }))}>
-                      Definir capa
+                    <button
+                      type="button"
+                      className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)]"
+                      onClick={() => setCoverSelection({ type: 'new', fileIndex: index })}
+                    >
+                      {coverSelection.type === 'new' && coverSelection.fileIndex === index ? 'Capa atual' : 'Definir capa'}
                     </button>
                     <button type="button" className="text-red-600" onClick={() => handleNewImageRemove(index)}>
                       <AlertCircle size={16} />

@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Calendar, MapPin, Ruler } from 'lucide-react'
-import { getProjectBySlug } from '@/services/projectsService'
+import { ArrowLeft, Calendar, MapPin, Ruler, Loader2 } from 'lucide-react'
+import { useProjects } from '@/hooks/useProjects'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 
 const categoryLabels = {
@@ -12,7 +12,17 @@ const categoryLabels = {
 
 export function ProjetoDetalhe() {
   const { slug } = useParams<{ slug: string }>()
-  const project = slug ? getProjectBySlug(slug) : undefined
+  const { projects, loading } = useProjects({ mode: 'published' })
+  const project = slug ? projects.find((item) => item.slug === slug) : undefined
+
+  if (loading) {
+    return (
+      <div className="container-main section-padding flex items-center justify-center gap-2 pt-32 text-sm text-[var(--color-muted)]">
+        <Loader2 size={18} className="animate-spin" />
+        Carregando projeto...
+      </div>
+    )
+  }
 
   if (!project) {
     return (

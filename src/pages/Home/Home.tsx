@@ -5,13 +5,13 @@ import { Hero } from '@/components/Hero/Hero'
 import { Gallery } from '@/components/Gallery/Gallery'
 import { ServiceCard } from '@/components/ServiceCard/ServiceCard'
 import { TestimonialCarousel } from '@/components/Testimonial/TestimonialCarousel'
-import { getFeaturedProjects } from '@/services/projectsService'
+import { useProjects } from '@/hooks/useProjects'
 import { services } from '@/data/services'
 import { testimonials } from '@/data/testimonials'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 
 export function Home() {
-  const featuredProjects = getFeaturedProjects(3)
+  const { projects: featuredProjects, loading } = useProjects({ mode: 'featured', limit: 3 })
   const featuredServices = services.slice(0, 3)
 
   return (
@@ -37,7 +37,14 @@ export function Home() {
             </p>
           </motion.div>
 
-          <Gallery projects={featuredProjects} />
+          {loading ? (
+            <div className="flex items-center justify-center gap-2 py-16 text-sm text-[var(--color-muted)]">
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--color-accent)] border-t-transparent" />
+              Carregando projetos...
+            </div>
+          ) : (
+            <Gallery projects={featuredProjects} />
+          )}
 
           <div className="text-center mt-10">
             <Link

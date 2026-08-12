@@ -1,5 +1,14 @@
 export type ProjectCategory = 'residencial' | 'comercial' | 'interiores'
 
+export interface ProjectImage {
+  id: string
+  storagePath: string
+  publicUrl: string
+  isCover: boolean
+  displayOrder: number
+  createdAt: string
+}
+
 export interface Project {
   id: string
   slug: string
@@ -15,6 +24,7 @@ export interface Project {
   order: number
   createdAt: string
   updatedAt: string
+  projectImages?: ProjectImage[]
 }
 
 export interface ProjectInput {
