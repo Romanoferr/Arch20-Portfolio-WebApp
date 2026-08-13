@@ -1,8 +1,14 @@
 import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Calendar, MapPin, Ruler } from 'lucide-react'
-import { getProjectBySlug } from '@/services/projectsService'
+import { ArrowLeft, Calendar, MapPin, Ruler, Loader2 } from 'lucide-react'
+import { useProjects } from '@/hooks/useProjects'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
+import {
+  buildSrcSet,
+  FULL_WIDTH_SIZES,
+  FULL_WIDTH_SRCSET,
+  optimizedSrc,
+} from '@/utils/imageUrl'
 
 const categoryLabels = {
   residencial: 'Residencial',
@@ -12,7 +18,17 @@ const categoryLabels = {
 
 export function ProjetoDetalhe() {
   const { slug } = useParams<{ slug: string }>()
-  const project = slug ? getProjectBySlug(slug) : undefined
+  const { projects, loading } = useProjects({ mode: 'published' })
+  const project = slug ? projects.find((item) => item.slug === slug) : undefined
+
+  if (loading) {
+    return (
+      <div className="container-main section-padding flex items-center justify-center gap-2 pt-32 text-sm text-[var(--color-muted)]">
+        <Loader2 size={18} className="animate-spin" />
+        Carregando projeto...
+      </div>
+    )
+  }
 
   if (!project) {
     return (
@@ -32,8 +48,12 @@ export function ProjetoDetalhe() {
       <section className="relative min-h-[50vh] md:min-h-[60vh] flex items-end">
         <div className="absolute inset-0">
           <img
-            src={project.coverImage}
+            src={optimizedSrc(project.coverImage, 1600)}
+            srcSet={buildSrcSet(project.coverImage, FULL_WIDTH_SRCSET)}
+            sizes={FULL_WIDTH_SIZES}
             alt={project.title}
+            fetchPriority="high"
+            decoding="async"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -95,9 +115,12 @@ export function ProjetoDetalhe() {
               {project.images.map((image, index) => (
                 <motion.div key={`${image}-${index}`} variants={fadeInUp}>
                   <img
-                    src={image}
+                    src={optimizedSrc(image, 1200)}
+                    srcSet={buildSrcSet(image, [600, 1200, 1600])}
+                    sizes={FULL_WIDTH_SIZES}
                     alt={`${project.title} — foto ${index + 1}`}
                     loading="lazy"
+                    decoding="async"
                     className="w-full aspect-[16/10] object-cover"
                   />
                 </motion.div>

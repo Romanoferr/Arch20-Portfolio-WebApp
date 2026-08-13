@@ -11,4 +11,3 @@ import {
 export type { Project, ProjectCategory, ProjectInput } from '@/types/project'
 export { createProject, deleteProject, getFeaturedProjects, getProjectById, getProjectBySlug, getProjects, projectCategories }
 
-export const projects = getProjects()

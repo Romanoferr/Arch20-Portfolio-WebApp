@@ -1,11 +1,20 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Calendar, Building2, Home } from 'lucide-react'
-import { getProjects } from '@/services/projectsService'
+import { ArrowRight, Calendar, Building2, Home, Loader2 } from 'lucide-react'
+import { useProjects } from '@/hooks/useProjects'
 
 export function AdminDashboard() {
-  const projects = getProjects()
+  const { projects, loading } = useProjects()
   const publishedCount = projects.filter((project) => project.published).length
   const draftCount = projects.length - publishedCount
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center rounded-[28px] border border-[var(--color-border)] bg-white p-16 text-sm text-[var(--color-muted)]">
+        <Loader2 size={18} className="mr-2 animate-spin" />
+        Carregando projetos...
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">

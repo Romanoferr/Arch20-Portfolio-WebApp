@@ -2,6 +2,12 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { fadeInUp } from '@/utils/animations'
+import {
+  buildSrcSet,
+  FULL_WIDTH_SIZES,
+  FULL_WIDTH_SRCSET,
+  optimizedSrc,
+} from '@/utils/imageUrl'
 
 interface HeroProps {
   title?: string
@@ -14,7 +20,7 @@ interface HeroProps {
 export function Hero({
   title = 'Projetos de arquitetura\n e design de interiores',
   subtitle = 'Transforme seus espaços com soluções criativas e funcionais, que refletem seu estilo de vida e personalidade.',
-  image = 'https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Aba%20Inicio/Cena_01_v.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvQWJhIEluaWNpby9DZW5hXzAxX3YucG5nIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4NTk2ODY0OSwiZXhwIjoyMTAxMzI4NjQ5fQ.yFlB8tglyPZVGie0ugNov5CkzqKRgYYtFRdk5AFb0us',
+  image = 'https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/Cena_01_v.png',
   showCta = true,
   compact = false,
 }: HeroProps) {
@@ -26,8 +32,12 @@ export function Hero({
     >
       <div className="absolute inset-0">
         <img
-          src={image}
+          src={optimizedSrc(image, 1600)}
+          srcSet={buildSrcSet(image, FULL_WIDTH_SRCSET)}
+          sizes={FULL_WIDTH_SIZES}
           alt=""
+          fetchPriority="high"
+          decoding="async"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/5 to-transparent" />

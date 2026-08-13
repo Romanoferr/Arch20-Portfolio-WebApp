@@ -48,6 +48,44 @@ VITE_SUPABASE_ANON_KEY=<sua-chave-publica>
 5. Crie o primeiro usuário administrativo em Authentication → Users.
 6. Acesse /admin/login para entrar.
 
+## Persistência de projetos (Database + Storage)
+
+Os projetos são armazenados no Supabase em duas tabelas (`projects` e `project_images`)
+e as imagens ficam no bucket público `project-images` do Storage.
+
+### Configuração inicial (uma vez)
+
+Antes de usar o CRUD de projetos, execute a migration que cria as tabelas, índices,
+RLS, policies e o bucket:
+
+- **Opção A — SQL Editor:** abra o arquivo
+  `supabase/migrations/0001_projects.sql`, copie todo o conteúdo e cole no
+  **SQL Editor** do dashboard do Supabase, depois clique em **Run**.
+- **Opção B — CLI:** com o Supabase CLI instalado e o projeto vinculado
+  (`supabase link`), rode `supabase db push`.
+
+A migration cria:
+
+- Tabela `projects` (id uuid, slug, title, category, year, location, area,
+  description, published, order, created_at, updated_at).
+- Tabela `project_images` (id uuid, project_id FK com `on delete cascade`,
+  storage_path, is_cover, display_order, created_at).
+- Índices (slug único, published, order, project_id, uma capa por projeto).
+- Trigger de `updated_at`.
+- **RLS**: leitura pública; escrita (insert/update/delete) apenas para usuários
+  autenticados — em ambas as tabelas.
+- Bucket público `project-images` + policies de Storage (leitura pública;
+  upload/update/delete apenas autenticado).
+
+> **Importante:** nenhuma chave secreta (`service_role`) é usada no frontend.
+> Apenas a `anon key` pública é necessária.
+
+### Estrutura de armazenamento das imagens
+
+As imagens são enviadas para `project-images/projects/{project_id}/{arquivo}`.
+O registro correspondente fica em `project_images` com `storage_path`, `is_cover`
+e `display_order`.
+
 ## Estrutura do projeto
 
 ```
@@ -56,7 +94,7 @@ src/
 ├── components/      # Navbar, Hero, Footer, Gallery, etc.
 ├── pages/           # Home, Projetos, Serviços, Sobre, Contato
 ├── data/            # Conteúdo (projetos, serviços, depoimentos)
-├── hooks/           # useMediaQuery, useScrollToTop
+├── hooks/           # useMediaQuery, useScrollToTop, useProjects
 ├── utils/           # Helpers e animações
 └── styles/          # CSS global e tema
 ```

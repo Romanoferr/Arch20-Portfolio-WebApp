@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion'
+import { Loader2 } from 'lucide-react'
 import { Hero } from '@/components/Hero/Hero'
 import { Gallery } from '@/components/Gallery/Gallery'
-import { getProjects } from '@/services/projectsService'
+import { useProjects } from '@/hooks/useProjects'
 import { fadeInUp } from '@/utils/animations'
 
 export function Projetos() {
-  const projects = getProjects()
+  const { projects, loading, error } = useProjects({ mode: 'published' })
 
   return (
     <>
@@ -14,7 +15,7 @@ export function Projetos() {
         title="Projetos"
         subtitle="Explore nosso portfólio de arquitetura residencial, comercial e design de interiores."
         showCta={false}
-        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Aba%20Projeto/sala_01.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvQWJhIFByb2pldG8vc2FsYV8wMS5wbmciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg0NDAzMTYxLCJleHAiOjIwOTk3NjMxNjF9.n4_9xpK7ywHJn0CxjQkdGhp2wtEjpGWJtW8zbdlkNv4"
+        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/sala_01.png"
       />
 
       <section className="section-padding">
@@ -29,11 +30,22 @@ export function Projetos() {
               Portfólio
             </span>
             <h2 className="heading-section mt-2">
-              {projects.length} projetos realizados
+              {loading ? 'Carregando projetos...' : `${projects.length} projetos realizados`}
             </h2>
           </motion.div>
 
-          <Gallery projects={projects} showFilters />
+          {loading ? (
+            <div className="flex items-center justify-center gap-2 py-16 text-sm text-[var(--color-muted)]">
+              <Loader2 size={18} className="animate-spin" />
+              Carregando projetos...
+            </div>
+          ) : error ? (
+            <div className="rounded-[24px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          ) : (
+            <Gallery projects={projects} showFilters />
+          )}
         </div>
       </section>
     </>
