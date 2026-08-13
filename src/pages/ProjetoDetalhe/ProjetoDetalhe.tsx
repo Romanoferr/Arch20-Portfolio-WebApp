@@ -3,6 +3,12 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, Calendar, MapPin, Ruler, Loader2 } from 'lucide-react'
 import { useProjects } from '@/hooks/useProjects'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
+import {
+  buildSrcSet,
+  FULL_WIDTH_SIZES,
+  FULL_WIDTH_SRCSET,
+  optimizedSrc,
+} from '@/utils/imageUrl'
 
 const categoryLabels = {
   residencial: 'Residencial',
@@ -42,8 +48,12 @@ export function ProjetoDetalhe() {
       <section className="relative min-h-[50vh] md:min-h-[60vh] flex items-end">
         <div className="absolute inset-0">
           <img
-            src={project.coverImage}
+            src={optimizedSrc(project.coverImage, 1600)}
+            srcSet={buildSrcSet(project.coverImage, FULL_WIDTH_SRCSET)}
+            sizes={FULL_WIDTH_SIZES}
             alt={project.title}
+            fetchPriority="high"
+            decoding="async"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -105,9 +115,12 @@ export function ProjetoDetalhe() {
               {project.images.map((image, index) => (
                 <motion.div key={`${image}-${index}`} variants={fadeInUp}>
                   <img
-                    src={image}
+                    src={optimizedSrc(image, 1200)}
+                    srcSet={buildSrcSet(image, [600, 1200, 1600])}
+                    sizes={FULL_WIDTH_SIZES}
                     alt={`${project.title} — foto ${index + 1}`}
                     loading="lazy"
+                    decoding="async"
                     className="w-full aspect-[16/10] object-cover"
                   />
                 </motion.div>

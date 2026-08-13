@@ -5,6 +5,7 @@ import type { Project, ProjectCategory } from '@/types/project'
 import { projectCategories } from '@/services/projectsService'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 import { cn } from '@/utils/cn'
+import { buildSrcSet, GALLERY_SIZES, GALLERY_SRCSET, optimizedSrc } from '@/utils/imageUrl'
 
 interface GalleryProps {
   projects: Project[]
@@ -63,9 +64,12 @@ export function Gallery({ projects, showFilters = false, limit }: GalleryProps) 
                 className="group relative block aspect-[4/5] overflow-hidden bg-[var(--color-border)]"
               >
                 <img
-                  src={project.coverImage}
+                  src={optimizedSrc(project.coverImage, 800)}
+                  srcSet={buildSrcSet(project.coverImage, GALLERY_SRCSET)}
+                  sizes={GALLERY_SIZES}
                   alt={project.title}
                   loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-end p-6">

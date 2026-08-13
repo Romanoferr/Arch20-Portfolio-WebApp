@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Hero } from '@/components/Hero/Hero'
 import { fadeInUp } from '@/utils/animations'
+import { buildSrcSet, optimizedSrc } from '@/utils/imageUrl'
 
 export function Sobre() {
   return (
@@ -10,7 +11,7 @@ export function Sobre() {
         title="Sobre"
         subtitle=""
         showCta={false}
-        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Aba%20Sobre/Cena_02.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvQWJhIFNvYnJlL0NlbmFfMDIucG5nIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4NDQwMzAzNSwiZXhwIjoyMDk5NzYzMDM1fQ.w5FTbZIWq9cgCD31VxZRfbp0BH4GaIuEBLUm90RU9n8"
+        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/Cena_02.png"
       />
 
       <section className="section-padding">
@@ -43,8 +44,12 @@ export function Sobre() {
               transition={{ delay: 0.1 }}
             >
               <img
-                src="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/sign/Arch20-Portfolio-Storage/Aba%20Sobre/sobre.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9iZWFiNDk3OC02MjZjLTQ3MWYtOGEzMC1kYjNlYWJlYTA2YWUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJBcmNoMjAtUG9ydGZvbGlvLVN0b3JhZ2UvQWJhIFNvYnJlL3NvYnJlLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU5Njg4OTgsImV4cCI6MjEwMTMyODg5OH0.x-B-FCqI4JJVvEnjeFkgguA8YhHlUNGMZh46JnbqWhQ"
+                src={optimizedSrc('https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/sobre.jpg', 800)}
+                srcSet={buildSrcSet('https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/sobre.jpg', [400, 800, 1200])}
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 alt="Equipe do estúdio em projeto arquitetônico"
+                loading="lazy"
+                decoding="async"
                 className="w-full aspect-[4/5] object-cover"
               />
             </motion.div>
