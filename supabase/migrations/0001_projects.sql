@@ -77,57 +77,85 @@ create trigger projects_set_updated_at
 alter table public.projects       enable row level security;
 alter table public.project_images enable row level security;
 
--- projects: leitura pública (site público consulta projetos publicados)
-create policy "projects_select_public"
-  on public.projects
-  for select
-  using (true);
+do $$ begin
+  create policy "projects_select_public"
+    on public.projects
+    for select
+    using (true);
+exception
+  when duplicate_object then null;
+end $$;
 
--- projects: escrita apenas para usuários autenticados
-create policy "projects_insert_authenticated"
-  on public.projects
-  for insert
-  to authenticated
-  with check (true);
+do $$ begin
+  create policy "projects_insert_authenticated"
+    on public.projects
+    for insert
+    to authenticated
+    with check (true);
+exception
+  when duplicate_object then null;
+end $$;
 
-create policy "projects_update_authenticated"
-  on public.projects
-  for update
-  to authenticated
-  using (true)
-  with check (true);
+do $$ begin
+  create policy "projects_update_authenticated"
+    on public.projects
+    for update
+    to authenticated
+    using (true)
+    with check (true);
+exception
+  when duplicate_object then null;
+end $$;
 
-create policy "projects_delete_authenticated"
-  on public.projects
-  for delete
-  to authenticated
-  using (true);
+do $$ begin
+  create policy "projects_delete_authenticated"
+    on public.projects
+    for delete
+    to authenticated
+    using (true);
+exception
+  when duplicate_object then null;
+end $$;
 
--- project_images: leitura pública
-create policy "project_images_select_public"
-  on public.project_images
-  for select
-  using (true);
+do $$ begin
+  create policy "project_images_select_public"
+    on public.project_images
+    for select
+    using (true);
+exception
+  when duplicate_object then null;
+end $$;
 
--- project_images: escrita apenas para usuários autenticados
-create policy "project_images_insert_authenticated"
-  on public.project_images
-  for insert
-  to authenticated
-  with check (true);
+do $$ begin
+  create policy "project_images_insert_authenticated"
+    on public.project_images
+    for insert
+    to authenticated
+    with check (true);
+exception
+  when duplicate_object then null;
+end $$;
 
-create policy "project_images_update_authenticated"
-  on public.project_images
-  for update
-  to authenticated
-  using (true)
-  with check (true);
+do $$ begin
+  create policy "project_images_update_authenticated"
+    on public.project_images
+    for update
+    to authenticated
+    using (true)
+    with check (true);
+exception
+  when duplicate_object then null;
+end $$;
 
-create policy "project_images_delete_authenticated"
-  on public.project_images
-  for delete
-  to authenticated
-  using (true);
+do $$ begin
+  create policy "project_images_delete_authenticated"
+    on public.project_images
+    for delete
+    to authenticated
+    using (true);
+exception
+  when duplicate_object then null;
+end $$;
 
 -- ----------------------------------------------------------------------------
 -- 6. Bucket de Storage + policies
@@ -136,28 +164,42 @@ insert into storage.buckets (id, name, public)
 values ('project-images', 'project-images', true)
 on conflict (id) do nothing;
 
--- Leitura pública (necessário para exibir as imagens no site público)
-create policy "project_images_storage_select_public"
-  on storage.objects
-  for select
-  using (bucket_id = 'project-images');
+do $$ begin
+  create policy "project_images_storage_select_public"
+    on storage.objects
+    for select
+    using (bucket_id = 'project-images');
+exception
+  when duplicate_object then null;
+end $$;
 
--- Upload apenas para usuários autenticados
-create policy "project_images_storage_insert_authenticated"
-  on storage.objects
-  for insert
-  to authenticated
-  with check (bucket_id = 'project-images');
+do $$ begin
+  create policy "project_images_storage_insert_authenticated"
+    on storage.objects
+    for insert
+    to authenticated
+    with check (bucket_id = 'project-images');
+exception
+  when duplicate_object then null;
+end $$;
 
-create policy "project_images_storage_update_authenticated"
-  on storage.objects
-  for update
-  to authenticated
-  using (bucket_id = 'project-images')
-  with check (bucket_id = 'project-images');
+do $$ begin
+  create policy "project_images_storage_update_authenticated"
+    on storage.objects
+    for update
+    to authenticated
+    using (bucket_id = 'project-images')
+    with check (bucket_id = 'project-images');
+exception
+  when duplicate_object then null;
+end $$;
 
-create policy "project_images_storage_delete_authenticated"
-  on storage.objects
-  for delete
-  to authenticated
-  using (bucket_id = 'project-images');
+do $$ begin
+  create policy "project_images_storage_delete_authenticated"
+    on storage.objects
+    for delete
+    to authenticated
+    using (bucket_id = 'project-images');
+exception
+  when duplicate_object then null;
+end $$;
