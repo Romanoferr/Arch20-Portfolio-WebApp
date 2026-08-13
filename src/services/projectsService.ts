@@ -194,7 +194,7 @@ export async function getProjects(publishedOnly = false, limit?: number): Promis
   let query = supabase
     .from(PROJECTS_TABLE)
     .select(
-      `${PROJECT_IMAGES_TABLE}(id,storage_path,is_cover,display_order,created_at)`,
+      `*, ${PROJECT_IMAGES_TABLE}(id,storage_path,is_cover,display_order,created_at)`,
     )
     .order('order', { ascending: true })
 
@@ -261,7 +261,7 @@ export async function getProjectBySlug(
   let query = supabase
     .from(PROJECTS_TABLE)
     .select(
-      `${PROJECT_IMAGES_TABLE}(id,storage_path,is_cover,display_order,created_at)`,
+      `*, ${PROJECT_IMAGES_TABLE}(id,storage_path,is_cover,display_order,created_at)`,
     )
     .eq('slug', slug)
 
