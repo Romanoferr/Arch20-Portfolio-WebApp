@@ -18,11 +18,11 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Conversar no WhatsApp"
-      className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2 sm:bottom-8 sm:right-8"
+      className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-[#94714D]/20 bg-white/80 text-[#94714D] shadow-lg backdrop-blur-sm transition-all duration-200 hover:bg-[#94714D]/10 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94714D]/40 focus-visible:ring-offset-2 sm:bottom-8 sm:right-8"
     >
       <svg
-        width="28"
-        height="28"
+        width="20"
+        height="20"
         viewBox="0 0 24 24"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
