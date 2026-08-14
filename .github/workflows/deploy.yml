@@ -41,6 +41,9 @@ jobs:
           VITE_WHATSAPP_NUMBER: ${{ secrets.VITE_WHATSAPP_NUMBER }}
         run: npm run build
 
+      - name: Prerender static routes for Google indexing
+        run: node scripts/prerender-static.mjs
+
       - name: Copy index.html as 404.html for SPA routing
         run: cp ./dist/index.html ./dist/404.html
 
