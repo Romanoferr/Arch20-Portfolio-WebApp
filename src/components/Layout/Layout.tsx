@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { Navbar } from '@/components/Navbar/Navbar'
 import { Footer } from '@/components/Footer/Footer'
+import { WhatsAppButton } from '@/components/WhatsAppButton/WhatsAppButton'
 import { useScrollToTop } from '@/hooks/useScrollToTop'
 
 export function Layout() {
@@ -13,6 +14,7 @@ export function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <WhatsAppButton />
     </div>
   )
 }
