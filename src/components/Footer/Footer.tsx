@@ -8,10 +8,10 @@ export function Footer() {
   return (
     <footer className="bg-[#94714D] text-white/90">
       <div className="container-main py-8 md:py-8">
-        <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-8 items-center justify-items-center md:justify-items-stretch">
+        <div className="grid grid-cols-[1fr_1.6fr] md:grid-cols-2 gap-2 md:gap-8 items-center justify-items-center md:justify-items-stretch">
           <div className="flex items-center justify-center md:justify-end md:pr-6">
             <Link to="/" className="flex items-center">
-              <img src={logo} alt={siteInfo.name} className="h-10 md:h-16 w-auto filter brightness-0 invert object-contain" />
+              <img src={logo} alt={siteInfo.name} className="h-12 md:h-16 w-auto filter brightness-0 invert object-contain" />
             </Link>
           </div>
 
@@ -31,7 +31,7 @@ export function Footer() {
                 </svg>
                 {siteInfo.phone}
               </li>
-              <li className="flex items-center gap-2">
+              <li className="flex items-center gap-2 whitespace-nowrap">
                 <svg
                   width="16"
                   height="16"
