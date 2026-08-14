@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { supabase } from '@/lib/supabase/client'
 import { getCurrentSession, signInWithEmail, signOut as signOutService } from '@/services/authService'
 import type { Session, User } from '@supabase/supabase-js'
@@ -9,7 +9,7 @@ interface AuthContextValue {
   loading: boolean
   error: string | null
   isAuthenticated: boolean
-  signIn: (email: string, password: string) => Promise<void>
+  signIn: (email: string, password: string) => Promise<Session | null>
   signOut: () => Promise<void>
   setError: (value: string | null) => void
 }
@@ -21,6 +21,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // Tracks an in-flight explicit auth operation (signIn/signOut) so the
+  // onAuthStateChange listener does not race and overwrite its result.
+  const authOpRef = useRef<{ type: 'signIn' | 'signOut' } | null>(null)
 
   useEffect(() => {
     let isMounted = true
@@ -51,6 +55,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void initializeSession()
 
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      // During an explicit signIn/signOut the returned session is the source
+      // of truth. Ignore listener events so they cannot clobber that result.
+      if (authOpRef.current) {
+        return
+      }
+
       setSession(nextSession)
       setUser(nextSession?.user ?? null)
       setError(null)
@@ -66,17 +76,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = async (email: string, password: string) => {
     setLoading(true)
     setError(null)
+    authOpRef.current = { type: 'signIn' }
 
     try {
       const { session: nextSession } = await signInWithEmail(email, password)
       setSession(nextSession)
       setUser(nextSession?.user ?? null)
+      return nextSession
     } catch (authError) {
       setSession(null)
       setUser(null)
       setError(authError instanceof Error ? authError.message : 'Credenciais inválidas. Tente novamente.')
       throw authError
     } finally {
+      authOpRef.current = null
       setLoading(false)
     }
   }
@@ -84,6 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => {
     setLoading(true)
     setError(null)
+    authOpRef.current = { type: 'signOut' }
 
     try {
       await signOutService()
@@ -93,6 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(authError instanceof Error ? authError.message : 'Não foi possível encerrar a sessão.')
       throw authError
     } finally {
+      authOpRef.current = null
       setLoading(false)
     }
   }
