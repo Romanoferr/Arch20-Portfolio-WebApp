@@ -4,10 +4,14 @@ import { Hero } from '@/components/Hero/Hero'
 import { ContactForm } from '@/components/ContactForm/ContactForm'
 import { siteInfo } from '@/data/navigation'
 import { fadeInUp } from '@/utils/animations'
+import { SEO } from '@/components/SEO/SEO'
+import { pageSeo } from '@/utils/seo'
 
 export function Contato() {
   return (
     <>
+      <SEO {...pageSeo.contato} />
+
       <Hero
         compact
         title="Contato"

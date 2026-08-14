@@ -2,10 +2,27 @@ import { motion } from 'framer-motion'
 import { Hero } from '@/components/Hero/Hero'
 import { fadeInUp } from '@/utils/animations'
 import { buildSrcSet, optimizedSrc } from '@/utils/imageUrl'
+import { SEO } from '@/components/SEO/SEO'
+import { JSONLDPerson } from '@/components/SEO/JSONLD'
+import { pageSeo } from '@/utils/seo'
 
 export function Sobre() {
+  const personData = {
+    name: 'Bruna Câmara',
+    jobTitle: 'Arquiteta e Urbanista',
+    description:
+      'Arquiteta e Urbanista formada pela UFRJ, especialista em Design de Interiores. À frente da Control B Home, atua com projetos de arquitetura residencial, comercial, design de interiores, financiamento imobiliário e regularização de imóveis no Rio de Janeiro e Niterói.',
+    email: 'camarabruna.arq@gmail.com',
+    telephone: '+5521985330175',
+    alumniOf: 'Universidade Federal do Rio de Janeiro (UFRJ)',
+    sameAs: ['https://instagram.com/brunacamara.arq'],
+    areaServed: ['Rio de Janeiro', 'Niterói'],
+  }
+
   return (
     <>
+      <SEO {...pageSeo.sobre} />
+      <JSONLDPerson {...personData} />
       <Hero
         compact
         title="Sobre"
@@ -47,7 +64,7 @@ export function Sobre() {
                 src={optimizedSrc('https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/sobre.jpg', 800)}
                 srcSet={buildSrcSet('https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/sobre.jpg', [400, 800, 1200])}
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                alt="Equipe do estúdio em projeto arquitetônico"
+                alt="Bruna Câmara — Arquiteta e Urbanista — foto de perfil profissional"
                 loading="lazy"
                 decoding="async"
                 className="w-full aspect-[4/5] object-cover"

@@ -3,10 +3,14 @@ import { Hero } from '@/components/Hero/Hero'
 import { ServiceCard } from '@/components/ServiceCard/ServiceCard'
 import { services } from '@/data/services'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
+import { SEO } from '@/components/SEO/SEO'
+import { pageSeo } from '@/utils/seo'
 
 export function Servicos() {
   return (
     <>
+      <SEO {...pageSeo.servicos} />
+
       <Hero
         compact
         title="Serviços"

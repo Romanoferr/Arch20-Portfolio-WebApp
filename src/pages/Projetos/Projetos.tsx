@@ -4,12 +4,16 @@ import { Hero } from '@/components/Hero/Hero'
 import { Gallery } from '@/components/Gallery/Gallery'
 import { useProjects } from '@/hooks/useProjects'
 import { fadeInUp } from '@/utils/animations'
+import { SEO } from '@/components/SEO/SEO'
+import { pageSeo } from '@/utils/seo'
 
 export function Projetos() {
   const { projects, loading, error } = useProjects({ mode: 'published' })
 
   return (
     <>
+      <SEO {...pageSeo.projetos} />
+
       <Hero
         compact
         title="Projetos"

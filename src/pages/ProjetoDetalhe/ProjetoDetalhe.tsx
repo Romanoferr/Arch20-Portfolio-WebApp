@@ -9,8 +9,11 @@ import {
   FULL_WIDTH_SRCSET,
   optimizedSrc,
 } from '@/utils/imageUrl'
+import { SEO } from '@/components/SEO/SEO'
+import { JSONLDBreadcrumbList, JSONLDProject } from '@/components/SEO/JSONLD'
+import { getProjectSeo } from '@/utils/seo'
 
-const categoryLabels = {
+const categoryLabels: Record<string, string> = {
   residencial: 'Residencial',
   comercial: 'Comercial',
   interiores: 'Interiores',
@@ -45,6 +48,16 @@ export function ProjetoDetalhe() {
 
   return (
     <>
+      <SEO {...getProjectSeo(project)} />
+      <JSONLDBreadcrumbList
+        items={[
+          { name: 'Início', path: '/' },
+          { name: 'Projetos', path: '/projetos' },
+          { name: project.title, path: `/projetos/${project.slug}` },
+        ]}
+      />
+      <JSONLDProject project={project} />
+
       <section className="relative min-h-[50vh] md:min-h-[60vh] flex items-end">
         <div className="absolute inset-0">
           <img
@@ -118,7 +131,7 @@ export function ProjetoDetalhe() {
                     src={optimizedSrc(image, 1200)}
                     srcSet={buildSrcSet(image, [600, 1200, 1600])}
                     sizes={FULL_WIDTH_SIZES}
-                    alt={`${project.title} — foto ${index + 1}`}
+                    alt={`${project.title} — vista do ambiente — ${categoryLabels[project.category]} — ${project.location}`}
                     loading="lazy"
                     decoding="async"
                     className="w-full aspect-[16/10] object-cover"

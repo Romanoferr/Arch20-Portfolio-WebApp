@@ -9,6 +9,9 @@ import { useProjects } from '@/hooks/useProjects'
 import { services } from '@/data/services'
 import { testimonials } from '@/data/testimonials'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
+import { SEO } from '@/components/SEO/SEO'
+import { JSONLDWebsite, JSONLDProfessionalService } from '@/components/SEO/JSONLD'
+import { pageSeo } from '@/utils/seo'
 
 export function Home() {
   const { projects: featuredProjects, loading } = useProjects({ mode: 'featured', limit: 3 })
@@ -16,6 +19,10 @@ export function Home() {
 
   return (
     <>
+      <SEO {...pageSeo.home} />
+      <JSONLDWebsite />
+      <JSONLDProfessionalService />
+
       <Hero />
 
       <section className="section-padding">
