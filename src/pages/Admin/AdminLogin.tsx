@@ -26,10 +26,17 @@ export function AdminLogin() {
     setError(null)
 
     try {
-      await signIn(email.trim(), password)
-      navigate(from, { replace: true })
-    } catch {
-      // error handled by context
+      const nextSession = await signIn(email.trim(), password)
+      // Navigate based on the signIn result (single source of truth) instead
+      // of relying on the isAuthenticated effect, which can race with the
+      // onAuthStateChange listener.
+      if (nextSession?.user) {
+        navigate(from, { replace: true })
+      }
+    } catch (authError) {
+      // error handled by context; log for diagnostics
+      // eslint-disable-next-line no-console
+      console.error('AdminLogin signIn failed:', authError)
     } finally {
       setSubmitting(false)
     }
