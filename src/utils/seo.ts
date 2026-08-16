@@ -2,11 +2,31 @@ import type { Project, ProjectCategory } from '@/types/project'
 
 export const SITE_URL = 'https://brunacamara-arq.com.br'
 export const SITE_NAME = 'Bruna Câmara | Arquitetura e Design de Interiores'
+export const SITE_NAME_SHORT = 'Bruna Câmara'
 export const SITE_DESCRIPTION =
   'Bruna Câmara, arquiteta no Rio de Janeiro e Niterói. Projetos de arquitetura residencial, comercial e design de interiores personalizados.'
 export const LOCALE = 'pt_BR'
 export const OG_IMAGE = `${SITE_URL}/images/og-image.jpg`
+export const OG_IMAGE_WIDTH = 1200
+export const OG_IMAGE_HEIGHT = 630
+export const OG_IMAGE_ALT =
+  'Bruna Câmara — Arquitetura e Design de Interiores no Rio de Janeiro e Niterói'
 export const TWITTER_HANDLE = '@brunacamara.arq'
+
+/** Informações de contato e localização (usadas em SEO local e JSON-LD). */
+export const CONTACT = {
+  email: 'camarabruna.arq@gmail.com',
+  telephone: '+5521985330175',
+  instagram: 'https://instagram.com/brunacamara.arq',
+  city: 'Rio de Janeiro',
+  state: 'RJ',
+  country: 'BR',
+  areaServed: ['Rio de Janeiro', 'Niterói'],
+  geo: {
+    latitude: -22.9068,
+    longitude: -43.1729,
+  },
+}
 
 export interface SeoProps {
   title: string
@@ -56,11 +76,19 @@ const categoryLabels: Record<ProjectCategory, string> = {
   interiores: 'interiores',
 }
 
+/** Trunca um texto em um limite de caracteres sem cortar palavras no meio. */
+function truncateAtWord(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text
+  const cut = text.slice(0, maxLength)
+  const lastSpace = cut.lastIndexOf(' ')
+  return `${cut.slice(0, lastSpace > 0 ? lastSpace : maxLength).trimEnd()}…`
+}
+
 export function getProjectSeo(project: Project): SeoProps {
   const category = categoryLabels[project.category]
   return {
     title: `${project.title} | Bruna Câmara — Projeto de Arquitetura ${category}`,
-    description: project.description.slice(0, 155),
+    description: truncateAtWord(project.description, 155),
     canonical: `${SITE_URL}/projetos/${project.slug}`,
     ogType: 'article',
     ogImage: project.coverImage,

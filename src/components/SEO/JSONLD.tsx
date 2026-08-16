@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async'
-import { SITE_URL, SITE_NAME } from '@/utils/seo'
+import { CONTACT, SITE_URL, SITE_NAME } from '@/utils/seo'
 import type { Project } from '@/types/project'
 
 interface PersonSchema {
@@ -22,50 +22,21 @@ function jsonLdString(data: Record<string, unknown>): string {
   return JSON.stringify({ '@context': 'https://schema.org', ...data })
 }
 
-export function JSONLDPerson(data: PersonSchema) {
+export function JSONLDOrganization() {
   const schema = jsonLdString({
-    '@type': 'Person',
-    name: data.name,
-    givenName: data.name.split(' ')[0],
-    familyName: data.name.split(' ').slice(1).join(' '),
-    jobTitle: data.jobTitle,
-    description: data.description,
-    email: data.email,
-    telephone: data.telephone,
+    '@type': 'Organization',
+    name: 'Bruna Câmara',
     url: SITE_URL,
-    sameAs: data.sameAs,
-    alumniOf: {
-      '@type': 'CollegeOrUniversity',
-      name: data.alumniOf,
-    },
-    areaServed: data.areaServed.map((city) => ({
-      '@type': 'City',
-      name: city,
-    })),
-  })
-
-  return (
-    <Helmet>
-      <script type="application/ld+json">{schema}</script>
-    </Helmet>
-  )
-}
-
-export function JSONLDWebsite() {
-  const schema = jsonLdString({
-    '@type': 'WebSite',
-    name: SITE_NAME,
-    url: SITE_URL,
-    description:
-      'Portfólio de arquitetura com projetos residenciais, comerciais e design de interiores no Rio de Janeiro e Niterói.',
-    inLanguage: 'pt-BR',
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/projetos?q={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
+    logo: `${SITE_URL}/favicon.png`,
+    email: CONTACT.email,
+    telephone: CONTACT.telephone,
+    sameAs: [CONTACT.instagram],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: CONTACT.telephone,
+      contactType: 'customer service',
+      areaServed: CONTACT.areaServed,
+      availableLanguage: 'pt-BR',
     },
   })
 
@@ -76,19 +47,33 @@ export function JSONLDWebsite() {
   )
 }
 
-export function JSONLDProfessionalService() {
+export function JSONLDLocalBusiness() {
   const schema = jsonLdString({
     '@type': 'ProfessionalService',
     name: 'Bruna Câmara - Arquitetura e Design de Interiores',
     description:
       'Serviços de arquitetura residencial, comercial, design de interiores, reformas, paisagismo e consultoria.',
     url: SITE_URL,
-    telephone: '+5521985330175',
-    email: 'camarabruna.arq@gmail.com',
-    areaServed: [
-      { '@type': 'City', name: 'Rio de Janeiro' },
-      { '@type': 'City', name: 'Niterói' },
-    ],
+    telephone: CONTACT.telephone,
+    email: CONTACT.email,
+    image: `${SITE_URL}/images/og-image.jpg`,
+    priceRange: '$$',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: CONTACT.city,
+      addressRegion: CONTACT.state,
+      addressCountry: CONTACT.country,
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: CONTACT.geo.latitude,
+      longitude: CONTACT.geo.longitude,
+    },
+    areaServed: CONTACT.areaServed.map((city) => ({
+      '@type': 'City',
+      name: city,
+    })),
+    sameAs: [CONTACT.instagram],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: 'Serviços de Arquitetura',
@@ -158,6 +143,63 @@ export function JSONLDProfessionalService() {
   )
 }
 
+export function JSONLDPerson(data: PersonSchema) {
+  const schema = jsonLdString({
+    '@type': 'Person',
+    name: data.name,
+    givenName: data.name.split(' ')[0],
+    familyName: data.name.split(' ').slice(1).join(' '),
+    jobTitle: data.jobTitle,
+    description: data.description,
+    email: data.email,
+    telephone: data.telephone,
+    url: SITE_URL,
+    sameAs: data.sameAs,
+    alumniOf: {
+      '@type': 'CollegeOrUniversity',
+      name: data.alumniOf,
+    },
+    areaServed: data.areaServed.map((city) => ({
+      '@type': 'City',
+      name: city,
+    })),
+  })
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{schema}</script>
+    </Helmet>
+  )
+}
+
+export function JSONLDWebsite() {
+  const schema = jsonLdString({
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: SITE_URL,
+    description:
+      'Portfólio de arquitetura com projetos residenciais, comerciais e design de interiores no Rio de Janeiro e Niterói.',
+    inLanguage: 'pt-BR',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${SITE_URL}/projetos?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  })
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{schema}</script>
+    </Helmet>
+  )
+}
+
+/** Alias de compatibilidade — ver JSONLDLocalBusiness. */
+export const JSONLDProfessionalService = JSONLDLocalBusiness
+
 export function JSONLDBreadcrumbList({ items }: { items: BreadcrumbItem[] }) {
   const schema = jsonLdString({
     '@type': 'BreadcrumbList',
@@ -190,8 +232,10 @@ export function JSONLDProject({ project }: { project: Project }) {
     genre: categoryLabels[project.category] || project.category,
     contentLocation: project.location,
     dateCreated: project.year ? `${project.year}` : undefined,
+    dateModified: project.updatedAt,
     image: project.coverImage,
     url: `${SITE_URL}/projetos/${project.slug}`,
+    mainEntityOfPage: `${SITE_URL}/projetos/${project.slug}`,
     author: {
       '@type': 'Person',
       name: 'Bruna Câmara',

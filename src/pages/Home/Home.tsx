@@ -10,7 +10,11 @@ import { services } from '@/data/services'
 import { testimonials } from '@/data/testimonials'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 import { SEO } from '@/components/SEO/SEO'
-import { JSONLDWebsite, JSONLDProfessionalService } from '@/components/SEO/JSONLD'
+import {
+  JSONLDOrganization,
+  JSONLDLocalBusiness,
+  JSONLDWebsite,
+} from '@/components/SEO/JSONLD'
 import { pageSeo } from '@/utils/seo'
 
 export function Home() {
@@ -20,8 +24,9 @@ export function Home() {
   return (
     <>
       <SEO {...pageSeo.home} />
+      <JSONLDOrganization />
       <JSONLDWebsite />
-      <JSONLDProfessionalService />
+      <JSONLDLocalBusiness />
 
       <Hero />
 
