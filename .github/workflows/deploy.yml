@@ -41,7 +41,16 @@ jobs:
           VITE_WHATSAPP_NUMBER: ${{ secrets.VITE_WHATSAPP_NUMBER }}
         run: npm run build
 
+      - name: Generate dynamic sitemap (includes project pages)
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: node scripts/generate-sitemap.mjs
+
       - name: Prerender static routes for Google indexing
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: node scripts/prerender-static.mjs
 
       - name: Copy index.html as 404.html for SPA routing

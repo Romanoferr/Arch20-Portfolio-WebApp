@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/login
 
 Sitemap: https://brunacamara-arq.com.br/sitemap.xml
