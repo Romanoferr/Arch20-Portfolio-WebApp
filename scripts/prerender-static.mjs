@@ -9,11 +9,13 @@
  * Além das rotas fixas, também pré-renderiza as páginas de detalhe de cada
  * projeto publicado (buscados no Supabase), para que o Google indexe
  * /projetos/{slug} sem depender de JavaScript.
+ *
+ * Nota: usa a REST API do Supabase via fetch (sem o cliente @supabase/supabase-js),
+ * para não depender de WebSocket nativo (Node 22+) durante o build.
  */
 
 import { copyFileSync, mkdirSync, existsSync } from 'fs'
 import { resolve } from 'path'
-import { createClient } from '@supabase/supabase-js'
 
 const distDir = resolve(import.meta.dirname, '../dist')
 
@@ -35,21 +37,27 @@ async function fetchPublishedProjectSlugs() {
     return []
   }
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth: { persistSession: false },
+  // Consulta a REST API do Supabase (PostgREST) diretamente via fetch.
+  const url = new URL('/rest/v1/projects', SUPABASE_URL)
+  url.searchParams.set('select', 'slug')
+  url.searchParams.set('published', 'eq.true')
+
+  const response = await fetch(url, {
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    },
   })
 
-  const { data, error } = await supabase
-    .from('projects')
-    .select('slug')
-    .eq('published', true)
-
-  if (error) {
-    console.error('❌ Falha ao buscar projetos para pré-render:', error.message)
+  if (!response.ok) {
+    console.error(
+      `❌ Falha ao buscar projetos para pré-render: HTTP ${response.status} ${response.statusText}`,
+    )
     return []
   }
 
-  return (data ?? []).map((row) => row.slug).filter(Boolean)
+  const data = await response.json()
+  return (Array.isArray(data) ? data : []).map((row) => row.slug).filter(Boolean)
 }
 
 function prerenderRoute(route) {

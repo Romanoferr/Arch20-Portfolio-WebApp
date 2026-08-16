@@ -12,9 +12,11 @@
  *
  * Se as variáveis do Supabase não estiverem definidas, o script mantém o
  * sitemap estático existente (apenas rotas fixas) e não falha.
+ *
+ * Nota: usa a REST API do Supabase via fetch (sem o cliente @supabase/supabase-js),
+ * para não depender de WebSocket nativo (Node 22+) durante o build.
  */
 
-import { createClient } from '@supabase/supabase-js'
 import { writeFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -77,22 +79,29 @@ async function fetchPublishedProjectSlugs() {
     return []
   }
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth: { persistSession: false },
+  // Consulta a REST API do Supabase (PostgREST) diretamente via fetch.
+  // Filtra published=true e ordena por "order". Retorna apenas o campo slug.
+  const url = new URL('/rest/v1/projects', SUPABASE_URL)
+  url.searchParams.set('select', 'slug')
+  url.searchParams.set('published', 'eq.true')
+  url.searchParams.set('order', 'order.asc')
+
+  const response = await fetch(url, {
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    },
   })
 
-  const { data, error } = await supabase
-    .from('projects')
-    .select('slug')
-    .eq('published', true)
-    .order('order', { ascending: true })
-
-  if (error) {
-    console.error('❌ Falha ao buscar projetos para o sitemap:', error.message)
+  if (!response.ok) {
+    console.error(
+      `❌ Falha ao buscar projetos para o sitemap: HTTP ${response.status} ${response.statusText}`,
+    )
     return []
   }
 
-  return (data ?? []).map((row) => row.slug).filter(Boolean)
+  const data = await response.json()
+  return (Array.isArray(data) ? data : []).map((row) => row.slug).filter(Boolean)
 }
 
 async function main() {
