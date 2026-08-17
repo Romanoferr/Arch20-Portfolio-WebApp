@@ -60,7 +60,7 @@ export function Gallery({ projects, showFilters = false, limit }: GalleryProps) 
           displayedProjects.map((project) => (
             <motion.div key={project.id} variants={fadeInUp}>
               <Link
-                to={`/projetos/${project.slug}`}
+                to={`/projetos/${project.slug}/`}
                 className="group relative block aspect-[4/5] overflow-hidden bg-[var(--color-border)]"
               >
                 <img

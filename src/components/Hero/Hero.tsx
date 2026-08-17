@@ -73,14 +73,14 @@ export function Hero({
               className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
             >
               <Link
-                to="/projetos"
+                to="/projetos/"
                 className="btn-primary bg-[var(--color-accent)] text-white hover:bg-[var(--color-text)] hover:text-white"
               >
                 Ver projetos
                 <ArrowRight size={16} />
               </Link>
               <Link
-                to="/contato"
+                to="/contato/"
                 className="btn-primary bg-[var(--color-accent)] text-white hover:bg-[var(--color-text)] hover:text-white"
               >
                 Fale conosco

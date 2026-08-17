@@ -184,7 +184,7 @@ export function JSONLDWebsite() {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/projetos?q={search_term_string}`,
+        urlTemplate: `${SITE_URL}/projetos/?q={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
@@ -234,8 +234,8 @@ export function JSONLDProject({ project }: { project: Project }) {
     dateCreated: project.year ? `${project.year}` : undefined,
     dateModified: project.updatedAt,
     image: project.coverImage,
-    url: `${SITE_URL}/projetos/${project.slug}`,
-    mainEntityOfPage: `${SITE_URL}/projetos/${project.slug}`,
+    url: `${SITE_URL}/projetos/${project.slug}/`,
+    mainEntityOfPage: `${SITE_URL}/projetos/${project.slug}/`,
     author: {
       '@type': 'Person',
       name: 'Bruna Câmara',

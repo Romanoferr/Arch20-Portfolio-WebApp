@@ -4,10 +4,25 @@
     <meta charset="utf-8" />
     <title>Bruna Câmara | Arquiteta Rio de Janeiro — Arquitetura e Design de Interiores</title>
     <meta name="description" content="Bruna Câmara, arquiteta no Rio de Janeiro e Niterói. Projetos de arquitetura residencial, comercial e design de interiores personalizados." />
+    <meta name="robots" content="noindex, nofollow" />
+    <!--
+      Fallback SPA. O workflow de deploy sobrescreve este arquivo com o
+      index.html compilado (cp ./dist/index.html ./dist/404.html), então o
+      404 servido é o app completo (retorna 200, sem redirect).
+
+      IMPORTANTE: não usar <meta http-equiv="refresh"> aqui. Isso causaria
+      "Erro de redirecionamento" no Google Search Console.
+    -->
     <script>
+      // Guarda a URL atual para que o main.tsx restaure a rota correta
+      // após o carregamento do app (fallback client-side da SPA).
       sessionStorage.redirect = location.href
     </script>
-    <meta http-equiv="refresh" content="0;URL='/'" />
   </head>
-  <body></body>
+  <body>
+    <p style="font-family: sans-serif; padding: 2rem; color: #555">
+      Página não encontrada. Redirecionando…
+    </p>
+  </body>
 </html>
+

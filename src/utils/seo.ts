@@ -48,25 +48,25 @@ export const pageSeo: Record<string, SeoProps> = {
     title: 'Portfólio de Arquitetura | Bruna Câmara — Projetos no Rio de Janeiro',
     description:
       'Conheça o portfólio de arquitetura de Bruna Câmara: projetos residenciais, comerciais e de interiores realizados no Rio de Janeiro e Niterói.',
-    canonical: `${SITE_URL}/projetos`,
+    canonical: `${SITE_URL}/projetos/`,
   },
   servicos: {
     title: 'Serviços de Arquitetura | Bruna Câmara — Arquiteta Rio de Janeiro',
     description:
       'Serviços de arquitetura residencial, comercial, design de interiores, reformas, paisagismo e consultoria no Rio de Janeiro e Niterói.',
-    canonical: `${SITE_URL}/servicos`,
+    canonical: `${SITE_URL}/servicos/`,
   },
   sobre: {
     title: 'Sobre | Bruna Câmara — Arquiteta e Urbanista no Rio de Janeiro',
     description:
       'Arquiteta e Urbanista formada pela UFRJ, especialista em Design de Interiores. Conheça minha trajetória e filosofia de trabalho.',
-    canonical: `${SITE_URL}/sobre`,
+    canonical: `${SITE_URL}/sobre/`,
   },
   contato: {
     title: 'Contato | Bruna Câmara — Arquiteta no Rio de Janeiro e Niterói',
     description:
       'Entre em contato com a arquiteta Bruna Câmara para solicitar um orçamento ou tirar dúvidas sobre projetos de arquitetura no Rio de Janeiro e Niterói.',
-    canonical: `${SITE_URL}/contato`,
+    canonical: `${SITE_URL}/contato/`,
   },
 }
 
@@ -89,7 +89,7 @@ export function getProjectSeo(project: Project): SeoProps {
   return {
     title: `${project.title} | Bruna Câmara — Projeto de Arquitetura ${category}`,
     description: truncateAtWord(project.description, 155),
-    canonical: `${SITE_URL}/projetos/${project.slug}`,
+    canonical: `${SITE_URL}/projetos/${project.slug}/`,
     ogType: 'article',
     ogImage: project.coverImage,
   }

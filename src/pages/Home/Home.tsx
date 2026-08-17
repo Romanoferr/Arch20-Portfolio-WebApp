@@ -60,7 +60,7 @@ export function Home() {
 
           <div className="text-center mt-10">
             <Link
-              to="/projetos"
+              to="/projetos/"
               className="btn-primary bg-[var(--color-accent)] text-white hover:bg-[var(--color-text)] hover:text-white"
             >
               Ver todos os projetos
@@ -102,7 +102,7 @@ export function Home() {
 
           <div className="text-center mt-10">
             <Link
-              to="/servicos"
+              to="/servicos/"
               className="btn-primary bg-[var(--color-accent)] text-white hover:bg-[var(--color-text)] hover:text-white"
             >
               Conheça todos os serviços
@@ -133,7 +133,7 @@ export function Home() {
               Conte-nos sobre seu projeto e descubra como podemos transformar suas ideias em espaços únicos.
             </p>
             <Link
-              to="/contato"
+              to="/contato/"
               className="btn-primary bg-[var(--color-accent)] text-white hover:bg-[var(--color-text)] hover:text-white"
             >
               Iniciar conversa

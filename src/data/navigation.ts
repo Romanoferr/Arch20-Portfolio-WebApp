@@ -5,10 +5,10 @@ export interface NavLink {
 
 export const navLinks: NavLink[] = [
   { label: 'Início', path: '/' },
-  { label: 'Projetos', path: '/projetos' },
-  { label: 'Serviços', path: '/servicos' },
-  { label: 'Sobre', path: '/sobre' },
-  { label: 'Contato', path: '/contato' },
+  { label: 'Projetos', path: '/projetos/' },
+  { label: 'Serviços', path: '/servicos/' },
+  { label: 'Sobre', path: '/sobre/' },
+  { label: 'Contato', path: '/contato/' },
 ]
 
 export const siteInfo = {

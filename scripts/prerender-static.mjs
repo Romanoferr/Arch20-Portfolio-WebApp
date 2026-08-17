@@ -14,18 +14,87 @@
  * para não depender de WebSocket nativo (Node 22+) durante o build.
  */
 
-import { copyFileSync, mkdirSync, existsSync } from 'fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs'
 import { resolve } from 'path'
 
 const distDir = resolve(import.meta.dirname, '../dist')
+const SITE_URL = 'https://brunacamara-arq.com.br'
 
-const routes = ['/projetos', '/servicos', '/sobre', '/contato']
+/**
+ * SEO por rota. As URLs usam trailing slash porque o GitHub Pages serve
+ * diretórios físicos (dist/sobre/index.html) e redireciona /sobre -> /sobre/.
+ * O canonical deve apontar para a versão com slash para evitar o 301.
+ */
+const routes = [
+  {
+    path: '/projetos',
+    title: 'Portfólio de Arquitetura | Bruna Câmara — Projetos no Rio de Janeiro',
+    description:
+      'Conheça o portfólio de arquitetura de Bruna Câmara: projetos residenciais, comerciais e de interiores realizados no Rio de Janeiro e Niterói.',
+    canonical: `${SITE_URL}/projetos/`,
+  },
+  {
+    path: '/servicos',
+    title: 'Serviços de Arquitetura | Bruna Câmara — Arquiteta Rio de Janeiro',
+    description:
+      'Serviços de arquitetura residencial, comercial, design de interiores, reformas, paisagismo e consultoria no Rio de Janeiro e Niterói.',
+    canonical: `${SITE_URL}/servicos/`,
+  },
+  {
+    path: '/sobre',
+    title: 'Sobre | Bruna Câmara — Arquiteta e Urbanista no Rio de Janeiro',
+    description:
+      'Arquiteta e Urbanista formada pela UFRJ, especialista em Design de Interiores. Conheça minha trajetória e filosofia de trabalho.',
+    canonical: `${SITE_URL}/sobre/`,
+  },
+  {
+    path: '/contato',
+    title: 'Contato | Bruna Câmara — Arquiteta no Rio de Janeiro e Niterói',
+    description:
+      'Entre em contato com a arquiteta Bruna Câmara para solicitar um orçamento ou tirar dúvidas sobre projetos de arquitetura no Rio de Janeiro e Niterói.',
+    canonical: `${SITE_URL}/contato/`,
+  },
+]
 
 const sourceHtml = resolve(distDir, 'index.html')
 
 if (!existsSync(sourceHtml)) {
   console.error('❌ dist/index.html not found. Run "npm run build" first.')
   process.exit(1)
+}
+
+/** Substitui as tags de SEO no HTML pré-renderizado para refletir a rota. */
+function injectSeo(html, { title, description, canonical }) {
+  return html
+    .replace(/<title>.*?<\/title>/, `<title>${title}</title>`)
+    .replace(
+      /<meta name="description" content="[^"]*"/,
+      `<meta name="description" content="${description}"`,
+    )
+    .replace(
+      /<link rel="canonical" href="[^"]*"/,
+      `<link rel="canonical" href="${canonical}"`,
+    )
+    .replace(
+      /<meta property="og:url" content="[^"]*"/,
+      `<meta property="og:url" content="${canonical}"`,
+    )
+    .replace(
+      /<meta property="og:title" content="[^"]*"/,
+      `<meta property="og:title" content="${title}"`,
+    )
+    .replace(
+      /<meta name="twitter:title" content="[^"]*"/,
+      `<meta name="twitter:title" content="${title}"`,
+    )
+    .replace(
+      /<meta property="og:description" content="[^"]*"/,
+      `<meta property="og:description" content="${description}"`,
+    )
+    .replace(
+      /<meta name="twitter:description" content="[^"]*"/,
+      `<meta name="twitter:description" content="${description}"`,
+    )
 }
 
 async function fetchPublishedProjectSlugs() {
@@ -60,19 +129,22 @@ async function fetchPublishedProjectSlugs() {
   return (Array.isArray(data) ? data : []).map((row) => row.slug).filter(Boolean)
 }
 
-function prerenderRoute(route) {
+function prerenderRoute(route, seo) {
   const folderPath = resolve(distDir, route.slice(1))
   const targetPath = resolve(folderPath, 'index.html')
 
   mkdirSync(folderPath, { recursive: true })
-  copyFileSync(sourceHtml, targetPath)
+
+  const html = readFileSync(sourceHtml, 'utf-8')
+  const finalHtml = seo ? injectSeo(html, seo) : html
+  writeFileSync(targetPath, finalHtml, 'utf-8')
 
   console.log(`✅ Created ${targetPath}`)
 }
 
 async function main() {
   for (const route of routes) {
-    prerenderRoute(route)
+    prerenderRoute(route.path, route)
   }
 
   const projectSlugs = await fetchPublishedProjectSlugs()

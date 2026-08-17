@@ -38,7 +38,7 @@ export function ProjetoDetalhe() {
       <div className="container-main section-padding text-center pt-32">
         <h1 className="heading-section mb-4">Projeto não encontrado</h1>
         <p className="text-muted mb-8">O projeto que você procura não existe ou foi removido.</p>
-        <Link to="/projetos" className="btn-outline">
+        <Link to="/projetos/" className="btn-outline">
           <ArrowLeft size={16} />
           Voltar aos projetos
         </Link>
@@ -52,8 +52,8 @@ export function ProjetoDetalhe() {
       <JSONLDBreadcrumbList
         items={[
           { name: 'Início', path: '/' },
-          { name: 'Projetos', path: '/projetos' },
-          { name: project.title, path: `/projetos/${project.slug}` },
+          { name: 'Projetos', path: '/projetos/' },
+          { name: project.title, path: `/projetos/${project.slug}/` },
         ]}
       />
       <JSONLDProject project={project} />

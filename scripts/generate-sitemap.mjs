@@ -30,12 +30,14 @@ const SUPABASE_URL = process.env.VITE_SUPABASE_URL
 const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY
 
 /** Rotas fixas do site (mesmas do sitemap estático). */
+// URLs usam trailing slash porque o GitHub Pages serve diretórios físicos
+// (dist/sobre/index.html) e redireciona /sobre -> /sobre/ (301).
 const STATIC_ROUTES = [
   { path: '/', changefreq: 'weekly', priority: '1.0' },
-  { path: '/projetos', changefreq: 'weekly', priority: '0.9' },
-  { path: '/servicos', changefreq: 'monthly', priority: '0.8' },
-  { path: '/sobre', changefreq: 'monthly', priority: '0.7' },
-  { path: '/contato', changefreq: 'monthly', priority: '0.7' },
+  { path: '/projetos/', changefreq: 'weekly', priority: '0.9' },
+  { path: '/servicos/', changefreq: 'monthly', priority: '0.8' },
+  { path: '/sobre/', changefreq: 'monthly', priority: '0.7' },
+  { path: '/contato/', changefreq: 'monthly', priority: '0.7' },
 ]
 
 function escapeXml(value) {
@@ -58,7 +60,7 @@ function buildSitemap(projectSlugs) {
 
   for (const slug of projectSlugs) {
     urls.push(`  <url>
-    <loc>${SITE_URL}/projetos/${escapeXml(slug)}</loc>
+    <loc>${SITE_URL}/projetos/${escapeXml(slug)}/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>`)
