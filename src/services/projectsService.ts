@@ -366,7 +366,12 @@ export async function updateProject(
     throw updateError
   }
 
-  const deletedImages = existingImages.filter((image) => removedImageIds.includes(image.id))
+  // `existingImages` já foi filtrado no formulário (imagens removidas não estão
+  // mais presentes). Para localizar as imagens a excluir, usamos as imagens
+  // originais carregadas do banco.
+  const deletedImages = (existingProject.projectImages ?? []).filter((image) =>
+    removedImageIds.includes(image.id),
+  )
   const remainingImages = existingImages.filter((image) => !removedImageIds.includes(image.id))
 
   if (deletedImages.length) {
