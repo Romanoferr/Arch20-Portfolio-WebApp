@@ -47,15 +47,15 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
         </AnimatePresence>
       </div>
 
-      <div className="mt-8 flex items-center justify-center gap-3">
+      <div className="mt-3 flex items-center justify-center gap-3">
         <div className="flex items-center gap-2">
           {testimonials.map((testimonial, index) => (
             <button
               key={testimonial.id}
               type="button"
               onClick={() => goTo(index)}
-              className={`h-2.5 rounded-full transition-all ${
-                index === activeIndex ? 'w-8 bg-[var(--color-accent)]' : 'w-2.5 bg-[var(--color-border)] hover:bg-[var(--color-accent)]/70'
+              className={`h-1.5 rounded-full transition-all ${
+                index === activeIndex ? 'w-6 bg-[var(--color-accent)]' : 'w-1.5 bg-[var(--color-border)] hover:bg-[var(--color-accent)]/70'
               }`}
               aria-label={`Ir para o depoimento ${index + 1}`}
               aria-current={index === activeIndex ? 'true' : undefined}

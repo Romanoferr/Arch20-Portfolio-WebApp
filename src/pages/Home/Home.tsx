@@ -112,7 +112,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="section-padding">
+      <section className="py-8 md:py-12">
         <div className="container-main">
           <TestimonialCarousel testimonials={testimonials} />
         </div>

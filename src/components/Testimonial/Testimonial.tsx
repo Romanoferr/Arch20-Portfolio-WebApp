@@ -14,22 +14,22 @@ export function Testimonial({ testimonial }: TestimonialProps) {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
-      className="relative max-w-3xl mx-auto text-center px-4"
+      className="relative max-w-3xl mx-auto text-center px-4 py-4"
     >
       <Quote
-        size={32}
-        className="mx-auto mb-6 text-[var(--color-accent)] opacity-60"
+        size={18}
+        className="mx-auto mb-2.5 text-[var(--color-accent)] opacity-60"
         strokeWidth={1}
       />
-      <p className="font-serif text-2xl md:text-3xl leading-relaxed mb-8 italic">
+      <p className="font-serif text-base md:text-lg leading-snug mb-3.5 italic">
         "{testimonial.quote}"
       </p>
       <footer>
         <cite className="not-italic">
-          <span className="block text-sm font-medium tracking-wide">
+          <span className="block text-xs font-medium tracking-wide">
             {testimonial.author}
           </span>
-          <span className="block text-xs text-muted mt-1 tracking-wider uppercase">
+          <span className="block text-[11px] text-muted mt-0.5 tracking-wider uppercase">
             {testimonial.project}
           </span>
         </cite>
