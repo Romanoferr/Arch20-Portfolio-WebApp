@@ -43,6 +43,10 @@ export function getFriendlyError(error: unknown, fallback: string): string {
       return 'Permissão negada. Verifique se você está autenticado como administrador.'
     }
 
+    if (message.includes('project_images_one_cover_idx')) {
+      return 'Não foi possível salvar as imagens. Verifique se há mais de uma imagem de capa definida.'
+    }
+
     if (
       message.includes('duplicate key') ||
       message.includes('already exists') ||
@@ -140,7 +144,7 @@ async function uploadProjectFile(projectId: string, file: File) {
 async function insertProjectImages(
   projectId: string,
   files: File[],
-  coverIndex: number,
+  coverIndex: number | null,
   initialOrder = 0,
 ): Promise<ProjectImage[]> {
   if (files.length === 0) {
@@ -151,7 +155,7 @@ async function insertProjectImages(
   const records = uploadedImages.map((image, index) => ({
     project_id: projectId,
     storage_path: image.storagePath,
-    is_cover: index === coverIndex,
+    is_cover: coverIndex !== null && index === coverIndex,
     display_order: initialOrder + index,
   }))
 
@@ -380,7 +384,7 @@ export async function updateProject(
   const insertedImages = await insertProjectImages(
     id,
     newFiles,
-    coverSelection.type === 'new' ? coverSelection.fileIndex : 0,
+    coverSelection.type === 'new' ? coverSelection.fileIndex : null,
     remainingImages.length,
   )
 
