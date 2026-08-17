@@ -1,7 +1,8 @@
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Calendar, MapPin, Ruler, Loader2 } from 'lucide-react'
-import { useProjects } from '@/hooks/useProjects'
+import { getProjectBySlug } from '@/services/projectsService'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 import {
   buildSrcSet,
@@ -12,6 +13,7 @@ import {
 import { SEO } from '@/components/SEO/SEO'
 import { JSONLDBreadcrumbList, JSONLDProject } from '@/components/SEO/JSONLD'
 import { getProjectSeo } from '@/utils/seo'
+import type { Project } from '@/types/project'
 
 const categoryLabels: Record<string, string> = {
   residencial: 'Residencial',
@@ -21,8 +23,36 @@ const categoryLabels: Record<string, string> = {
 
 export function ProjetoDetalhe() {
   const { slug } = useParams<{ slug: string }>()
-  const { projects, loading } = useProjects({ mode: 'published' })
-  const project = slug ? projects.find((item) => item.slug === slug) : undefined
+  const [project, setProject] = useState<Project | undefined>(undefined)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadProject = async () => {
+      setLoading(true)
+      try {
+        const data = slug ? await getProjectBySlug(slug, true) : undefined
+        if (isMounted) {
+          setProject(data)
+        }
+      } catch {
+        if (isMounted) {
+          setProject(undefined)
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    void loadProject()
+
+    return () => {
+      isMounted = false
+    }
+  }, [slug])
 
   if (loading) {
     return (
