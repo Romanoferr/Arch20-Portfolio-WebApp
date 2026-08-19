@@ -6,19 +6,19 @@ export interface Testimonial {
 }
 
 export const testimonials: Testimonial[] = [
-  {
+    {
     id: '1',
     quote:
-      'Transformar minha área de lazer em um espaço tão bonito e acolhedor foi uma experiência incrível. Desde o primeiro contato com a Bruna, percebi o carinho, a dedicação e a atenção a cada detalhe do projeto. O resultado superou minhas expectativas e traduziu exatamente o que eu sonhava para esse espaço. Sou muito grata pelo excelente trabalho e recomendo com toda a confiança!',
-    author: 'Paula',
-    project: 'Área Externa PF',
+      'Minha experiência no desenvolvimento do projeto foi maravilhosa! Eu nunca havia feito nenhum trabalho com arquiteto, foi a minha primeira experiência e valeu todo o investimento. A Bruna é uma profissional super sensível, detalhista, organizada, busca soluções para adequar nossos sonhos a realidade do projeto, ela conseguiu traduzir a rotina da família e a personalidade de cada um no projeto da casa, ficou lindo demais. Queria destacar também a entrega um momento a parte, ela explica cada detalhe do projeto e a gente ainda recebe mimos!! A experiência foi tão boa que eu não queria que acabasse, ela é muito segura e transmite essa segurança em cada detalhe do projeto! Obrigada Bruna por fazer meu sonho se tornar realidade!! 🥰',
+    author: 'Luciana e Josemar',
+    project: 'Casa Ilha',
   },
   {
     id: '2',
     quote:
-      'Quanto cuidado num projeto só, um olhar todo especial para pessoas, onde a criança teve voz. Identifico claramente a personalidade delas em cada detalhe.',
-    author: 'Luciana',
-    project: 'Casa Ilha',
+      'Transformar minha área de lazer em um espaço tão bonito e acolhedor foi uma experiência incrível. Desde o primeiro contato com a Bruna, percebi o carinho, a dedicação e a atenção a cada detalhe do projeto. O resultado superou minhas expectativas e traduziu exatamente o que eu sonhava para esse espaço. Sou muito grata pelo excelente trabalho e recomendo com toda a confiança!',
+    author: 'Paula e Flávio',
+    project: 'Área Externa PF',
   },
   {
     id: '3',
