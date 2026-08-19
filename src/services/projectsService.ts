@@ -182,16 +182,25 @@ async function updateProjectImageMetadata(images: ProjectImage[], coverImageId?:
   )
 }
 
-async function deleteStorageObjects(storagePaths: string[]) {
+/**
+ * Remove arquivos do Storage. Retorna a lista de caminhos que NÃO puderam
+ * ser removidos (para diagnóstico), em vez de lançar erro — assim a exclusão
+ * do banco não fica bloqueada por uma falha de storage.
+ */
+async function deleteStorageObjects(storagePaths: string[]): Promise<string[]> {
   if (storagePaths.length === 0) {
-    return
+    return []
   }
 
   const { error } = await supabase.storage.from(PROJECT_IMAGES_BUCKET).remove(storagePaths)
 
   if (error) {
-    throw error
+    // eslint-disable-next-line no-console
+    console.error('Falha ao remover arquivos do Storage:', error.message)
+    return storagePaths
   }
+
+  return []
 }
 
 export async function getProjects(publishedOnly = false, limit?: number): Promise<Project[]> {
@@ -375,7 +384,8 @@ export async function updateProject(
   const remainingImages = existingImages.filter((image) => !removedImageIds.includes(image.id))
 
   if (deletedImages.length) {
-    await deleteStorageObjects(deletedImages.map((image) => image.storagePath))
+    // 1. Remove os registros do banco (fonte de verdade). Se falhar, aborta —
+    //    nada é removido do storage para não deixar referência órfã.
     const { error: deleteError } = await supabase
       .from(PROJECT_IMAGES_TABLE)
       .delete()
@@ -384,6 +394,10 @@ export async function updateProject(
     if (deleteError) {
       throw deleteError
     }
+
+    // 2. Remove os arquivos do Storage (libera espaço). Best-effort: se falhar,
+    //    o registro do banco já foi removido e o erro é apenas logado.
+    await deleteStorageObjects(deletedImages.map((image) => image.storagePath))
   }
 
   const insertedImages = await insertProjectImages(
@@ -431,13 +445,10 @@ export async function deleteProject(id: string): Promise<boolean> {
     throw deleteError
   }
 
-  // 3. Limpa os arquivos do Storage (best-effort — não deve impedir a exclusão).
+  // 3. Limpa os arquivos do Storage (libera espaço). Best-effort — não deve
+  //    impedir a exclusão do projeto, mas o erro é logado para diagnóstico.
   if (storagePaths.length) {
-    try {
-      await deleteStorageObjects(storagePaths)
-    } catch {
-      // Arquivos órfãos no Storage não bloqueiam a exclusão do projeto.
-    }
+    await deleteStorageObjects(storagePaths)
   }
 
   return true
