@@ -2,12 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { fadeInUp } from '@/utils/animations'
-import {
-  buildSrcSet,
-  FULL_WIDTH_SIZES,
-  FULL_WIDTH_SRCSET,
-  optimizedSrc,
-} from '@/utils/imageUrl'
+import { FULL_WIDTH_SIZES, FULL_WIDTH_SRCSET, optimizedHeroSrc } from '@/utils/imageUrl'
 
 interface HeroProps {
   title?: string
@@ -32,8 +27,8 @@ export function Hero({
     >
       <div className="absolute inset-0">
         <img
-          src={optimizedSrc(image, 1600)}
-          srcSet={buildSrcSet(image, FULL_WIDTH_SRCSET)}
+          src={optimizedHeroSrc(image, 1600)}
+          srcSet={FULL_WIDTH_SRCSET.map((w) => `${optimizedHeroSrc(image, w)} ${w}w`).join(', ')}
           sizes={FULL_WIDTH_SIZES}
           alt=""
           fetchPriority="high"

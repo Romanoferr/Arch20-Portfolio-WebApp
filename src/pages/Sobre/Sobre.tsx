@@ -28,7 +28,7 @@ export function Sobre() {
         title="Sobre"
         subtitle=""
         showCta={false}
-        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/Cena_02.png"
+        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/4932a4d8-9ca4-47e9-bee4-52dffdb2b78b.png"
       />
 
       <section className="section-padding">

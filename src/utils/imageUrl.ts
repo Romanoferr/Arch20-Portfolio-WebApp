@@ -52,6 +52,44 @@ export function optimizedSrc(url: string, width: number, quality = 80): string {
 }
 
 /**
+ * Mapeia uma URL de imagem do Supabase para a versão WebP otimizada
+ * (gerada por `scripts/optimize-hero-images.mjs`) quando disponível.
+ *
+ * O plano free do Supabase não tem Image Transformations, então os query
+ * params (?width, ?quality) são ignorados. Para os heroes, usamos arquivos
+ * WebP pré-otimizados no bucket (ex.: `heroes/Cena_01_v-1600.webp`).
+ *
+ * Se a URL não corresponder a um hero conhecido, retorna a URL original.
+ */
+const HERO_WEBP_MAP: Record<string, string> = {
+  'heroes/Cena_01_v.png': 'heroes/Cena_01_v',
+  'heroes/Cena_02.png': 'heroes/Cena_02',
+  'heroes/sala_01.png': 'heroes/sala_01',
+  'heroes/Cena_13.png': 'heroes/Cena_13',
+  'heroes/sobre.jpg': 'heroes/sobre',
+  'heroes/IMG_2441.JPG': 'heroes/IMG_2441',
+  'heroes/4932a4d8-9ca4-47e9-bee4-52dffdb2b78b.png': 'heroes/4932a4d8-9ca4-47e9-bee4-52dffdb2b78b',
+}
+
+function heroWebpBase(url: string): string | null {
+  if (!url || !url.includes('supabase.co/storage')) return null
+  for (const [original, base] of Object.entries(HERO_WEBP_MAP)) {
+    if (url.includes(original)) return base
+  }
+  return null
+}
+
+/**
+ * Retorna a URL WebP otimizada para uma largura específica, ou a URL original
+ * se não houver versão otimizada disponível.
+ */
+export function optimizedHeroSrc(url: string, width: number): string {
+  const base = heroWebpBase(url)
+  if (!base) return url
+  return `https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/${base}-${width}.webp`
+}
+
+/**
  * `sizes` para a grade de projetos (Gallery).
  * 1 coluna em mobile, 2 em sm, 3 em lg.
  */

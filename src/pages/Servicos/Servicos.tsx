@@ -16,7 +16,7 @@ export function Servicos() {
         title="Serviços"
         subtitle=""
         showCta={false}
-        image="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1600&q=80"
+        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/projects/86deef54-8cb6-4d19-8f93-33cc74cc5a06/c46ac8b3-df8b-4b2a-bc59-a5ef21e36d3d.png"
       />
 
       <section className="section-padding">

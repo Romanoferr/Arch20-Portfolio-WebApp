@@ -19,7 +19,7 @@ export function Projetos() {
         title="Projetos"
         subtitle=""
         showCta={false}
-        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/sala_01.png"
+        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/projects/86deef54-8cb6-4d19-8f93-33cc74cc5a06/d2315cb1-68a0-4760-bf97-4249af291c99.png"
       />
 
       <section className="section-padding">

@@ -1,5 +1,6 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
+import { lazy, Suspense, Component, type ErrorInfo, type ReactNode } from 'react'
 import { Layout } from '@/components/Layout/Layout'
 import { AdminLayout } from '@/components/Layout/AdminLayout'
 import { ProtectedRoute } from '@/components/Auth/ProtectedRoute'
@@ -9,12 +10,22 @@ import { ProjetoDetalhe } from '@/pages/ProjetoDetalhe/ProjetoDetalhe'
 import { Servicos } from '@/pages/Servicos/Servicos'
 import { Sobre } from '@/pages/Sobre/Sobre'
 import { Contato } from '@/pages/Contato/Contato'
-import { AdminDashboard } from '@/pages/Admin/AdminDashboard'
-import { AdminProjectList } from '@/pages/Admin/AdminProjectList'
-import { AdminProjectForm } from '@/pages/Admin/AdminProjectForm'
-import { AdminLogin } from '@/pages/Admin/AdminLogin'
 import { pageTransition } from '@/utils/animations'
-import { Component, type ErrorInfo, type ReactNode } from 'react'
+
+// Admin pages are lazy-loaded so their heavy dependencies
+// (react-hook-form, admin components) are not in the initial bundle.
+const AdminDashboard = lazy(() =>
+  import('@/pages/Admin/AdminDashboard').then((m) => ({ default: m.AdminDashboard })),
+)
+const AdminProjectList = lazy(() =>
+  import('@/pages/Admin/AdminProjectList').then((m) => ({ default: m.AdminProjectList })),
+)
+const AdminProjectForm = lazy(() =>
+  import('@/pages/Admin/AdminProjectForm').then((m) => ({ default: m.AdminProjectForm })),
+)
+const AdminLogin = lazy(() =>
+  import('@/pages/Admin/AdminLogin').then((m) => ({ default: m.AdminLogin })),
+)
 
 function AnimatedRoutes() {
   const location = useLocation()
@@ -38,19 +49,65 @@ function AnimatedRoutes() {
             <Route path="contato" element={<Contato />} />
           </Route>
 
-          <Route path="admin/login" element={<AdminLogin />} />
+          <Route
+            path="admin/login"
+            element={
+              <Suspense fallback={<AdminFallback />}>
+                <AdminLogin />
+              </Suspense>
+            }
+          />
 
           <Route path="admin" element={<ProtectedRoute />}>
             <Route element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="projetos" element={<AdminProjectList />} />
-              <Route path="projetos/novo" element={<AdminProjectForm />} />
-              <Route path="projetos/:id/editar" element={<AdminProjectForm />} />
+              <Route
+                index
+                element={
+                  <Suspense fallback={<AdminFallback />}>
+                    <AdminDashboard />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="projetos"
+                element={
+                  <Suspense fallback={<AdminFallback />}>
+                    <AdminProjectList />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="projetos/novo"
+                element={
+                  <Suspense fallback={<AdminFallback />}>
+                    <AdminProjectForm />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="projetos/:id/editar"
+                element={
+                  <Suspense fallback={<AdminFallback />}>
+                    <AdminProjectForm />
+                  </Suspense>
+                }
+              />
             </Route>
           </Route>
         </Routes>
       </motion.div>
     </AnimatePresence>
+  )
+}
+
+function AdminFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] text-[var(--color-text)]">
+      <div className="flex items-center gap-3 rounded-full border border-[var(--color-border)] bg-white px-5 py-3 text-sm shadow-sm">
+        <span className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--color-accent)] border-t-transparent" />
+        Carregando...
+      </div>
+    </div>
   )
 }
 
