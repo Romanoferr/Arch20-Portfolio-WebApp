@@ -21,7 +21,7 @@ export function Testimonial({ testimonial }: TestimonialProps) {
         className="mx-auto mb-2.5 text-[var(--color-accent)] opacity-60"
         strokeWidth={1}
       />
-      <p className="font-serif text-base md:text-lg leading-snug mb-3.5 italic">
+      <p className="font-serif text-base md:text-lg leading-snug mb-3.5">
         "{testimonial.quote}"
       </p>
       <footer>
@@ -29,7 +29,7 @@ export function Testimonial({ testimonial }: TestimonialProps) {
           <span className="block text-xs font-medium tracking-wide">
             {testimonial.author}
           </span>
-          <span className="block text-[11px] text-muted mt-0.5 tracking-wider uppercase">
+          <span className="block text-[12px] text-muted mt-0.9 tracking-wider">
             {testimonial.project}
           </span>
         </cite>

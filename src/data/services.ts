@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { Building2, Home, LayoutGrid, PenTool, Ruler, Trees } from 'lucide-react'
+import {Home, Scale, ChartLine, NotebookPen, PaintRoller, Hammer} from 'lucide-react'
 
 export interface Service {
   id: string
@@ -11,44 +11,44 @@ export interface Service {
 export const services: Service[] = [
   {
     id: '1',
-    title: 'Arquitetura Residencial',
+    title: 'Projetos',
     description:
-      'Projetos de casas e apartamentos que traduzem o estilo de vida dos moradores em espaços funcionais e acolhedores.',
+      'Projetos de arquitetura, interiores, residenciais e comerciais, com soluções criativas e funcionais que refletem a identidade do cliente.',
     icon: Home,
   },
   {
     id: '2',
-    title: 'Arquitetura Comercial',
+    title: 'Consultoria em Arquitetura e Interiores',
     description:
-      'Escritórios, lojas e espaços corporativos projetados para fortalecer a identidade da marca e a experiência do usuário.',
-    icon: Building2,
+      'Assessoria especializada em projetos de arquitetura e interiores.',
+    icon: PaintRoller, 
   },
   {
     id: '3',
-    title: 'Design de Interiores',
+    title: 'Gerenciamento de Obra',
     description:
-      'Ambientação completa com seleção de materiais, mobiliário sob medida e iluminação para cada detalhe do espaço.',
-    icon: LayoutGrid,
+      'Acompanhamento da execução do projeto, garantindo qualidade, prazo e orçamento, com atenção a cada detalhe da obra.',
+    icon: Hammer, 
   },
   {
     id: '4',
-    title: 'Reformas e Retrofit',
+    title: 'Legalização e Regularização',
     description:
-      'Revitalização de imóveis existentes com soluções criativas que respeitam a estrutura original e ampliam o conforto.',
-    icon: Ruler,
+      'Te auxilio com processos burocráticos junto a prefeituras e cartórios da sua cidade, garantindo que seu projeto esteja em conformidade com as normas e regulamentações vigentes.',
+    icon: Scale,
   },
   {
     id: '5',
-    title: 'Paisagismo',
+    title: 'Consultoria em Financiamento Imobiliário',
     description:
-      'Integração entre arquitetura e natureza, com jardins, terraços e áreas externas que complementam o projeto.',
-    icon: Trees,
+      'Orientação e suporte em processos de financiamento, auxiliando na análise de viabilidade, documentação e negociação com instituições financeiras.',
+    icon: ChartLine,
   },
   {
     id: '6',
-    title: 'Consultoria e Acompanhamento',
+    title: 'Avaliação de Imóveis',
     description:
-      'Orientação em todas as etapas — do conceito à obra — garantindo que cada decisão esteja alinhada ao projeto.',
-    icon: PenTool,
+      'Análise técnica baseada na NBR 14.653-2, que te auxilia na compra, venda e trâmites judiciais, garantindo uma avaliação justa e precisa do imóvel.',
+    icon: NotebookPen,
   },
 ]

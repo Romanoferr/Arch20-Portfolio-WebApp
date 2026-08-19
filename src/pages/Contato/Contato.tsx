@@ -15,7 +15,7 @@ export function Contato() {
       <Hero
         compact
         title="Contato"
-        subtitle="Estamos prontos para ouvir sobre seu projeto. Entre em contato."
+        subtitle=""
         showCta={false}
         image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/Cena_13.png"
       />

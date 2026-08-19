@@ -17,7 +17,7 @@ export function Projetos() {
       <Hero
         compact
         title="Projetos"
-        subtitle="Explore nosso portfólio de arquitetura residencial, comercial e design de interiores."
+        subtitle=""
         showCta={false}
         image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/sala_01.png"
       />
@@ -34,7 +34,7 @@ export function Projetos() {
               Portfólio
             </span>
             <h2 className="heading-section mt-2">
-              {loading ? 'Carregando projetos...' : `${projects.length} projetos realizados`}
+              {loading ? 'Carregando projetos...' : `${projects.length} Projetos Selecionados`}
             </h2>
           </motion.div>
 

@@ -61,8 +61,8 @@ export function Sobre() {
               transition={{ delay: 0.1 }}
             >
               <img
-                src={optimizedSrc('https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/sobre.jpg', 800)}
-                srcSet={buildSrcSet('https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/sobre.jpg', [400, 800, 1200])}
+                src={optimizedSrc('https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/IMG_2441.JPG', 800)}
+                srcSet={buildSrcSet('https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/IMG_2441.JPG', [400, 800, 1200])}
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 alt="Bruna Câmara — Arquiteta e Urbanista — foto de perfil profissional"
                 loading="lazy"

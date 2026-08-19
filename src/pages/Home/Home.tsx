@@ -18,7 +18,7 @@ import {
 import { pageSeo } from '@/utils/seo'
 
 export function Home() {
-  const { projects: featuredProjects, loading } = useProjects({ mode: 'featured', limit: 3 })
+  const { projects: featuredProjects, loading } = useProjects({ mode: 'featured', limit: 6 })
   const featuredServices = services.slice(0, 3)
 
   return (
@@ -84,7 +84,7 @@ export function Home() {
             </span>
             <h2 className="heading-section mt-2 mb-4">O que fazemos</h2>
             <p className="text-muted max-w-xl mx-auto md:mx-0">
-              Do conceito à execução, oferecemos soluções completas em arquitetura e interiores.
+              Do projeto à execução, oferecemos soluções diversas e personalizadas para cada caso.
             </p>
           </motion.div>
 
@@ -130,7 +130,7 @@ export function Home() {
               Vamos criar juntos?
             </h2>
             <p className="text-[var(--color-text)]/80 max-w-lg mx-auto mb-8">
-              Conte-nos sobre seu projeto e descubra como podemos transformar suas ideias em espaços únicos.
+              Conte-nos sobre suas ideias e descubra como podemos transformá-las em espaços únicos.
             </p>
             <Link
               to="/contato/"

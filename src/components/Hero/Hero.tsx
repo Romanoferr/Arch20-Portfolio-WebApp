@@ -18,8 +18,8 @@ interface HeroProps {
 }
 
 export function Hero({
-  title = 'Projetos de arquitetura\n e design de interiores',
-  subtitle = 'Transforme seus espaços com soluções criativas e funcionais, que refletem seu estilo de vida e personalidade.',
+  title = 'Arquitetura &\n Design de Interiores',
+  subtitle = '',
   image = 'https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/Cena_01_v.png',
   showCta = true,
   compact = false,
@@ -49,7 +49,7 @@ export function Hero({
             variants={fadeInUp}
             initial="hidden"
             animate="visible"
-            className="heading-display text-white whitespace-pre-line mb-6"
+            className="heading-display text-white whitespace-pre-line mb-6 [text-shadow:0_2px_12px_rgba(0,0,0,0.45)]"
           >
             {title}
           </motion.h1>
