@@ -1,10 +1,12 @@
 /**
- * Helpers para otimização de imagens servidas pelo Supabase Storage.
+ * Helpers para otimização de imagens.
  *
- * O Supabase Storage suporta transformações de imagem via query params
- * (?width, ?height, ?quality, ?resize). Usamos isso para gerar múltiplas
- * resoluções (srcset) sem custo de build e sem duplicar arquivos.
+ * As imagens são servidas pelo Cloudflare R2 (via getImageUrl). As
+ * transformações são delegadas ao CDN/R2 ou aplicadas como query params
+ * quando o provedor suporta (ex.: Cloudflare Image Resizing).
  */
+
+import { getImageUrl } from '@/lib/r2'
 
 export interface ImageTransform {
   width?: number
@@ -14,29 +16,31 @@ export interface ImageTransform {
 }
 
 /**
- * Anexa parâmetros de transformação a uma URL pública do Supabase Storage.
- * Se a URL não for do Supabase (ex.: Unsplash), retorna a URL original.
+ * Anexa parâmetros de transformação a uma URL de imagem.
+ * Se a URL não apontar para o R2 (ex.: Unsplash), retorna a URL original.
  */
 export function withTransform(url: string, transform: ImageTransform): string {
-  if (!url || !url.includes('supabase.co/storage')) {
+  if (!url) {
     return url
   }
+
+  // Se for objectKey relativa, converte para URL pública primeiro.
+  const base = url.startsWith('http') ? url : getImageUrl(url)
 
   const params = new URLSearchParams()
   if (transform.width) params.set('width', String(transform.width))
   if (transform.height) params.set('height', String(transform.height))
   if (transform.quality) params.set('quality', String(transform.quality))
-  if (transform.resize) params.set('resize', transform.resize)
 
   const query = params.toString()
-  if (!query) return url
+  if (!query) return base
 
-  const separator = url.includes('?') ? '&' : '?'
-  return `${url}${separator}${query}`
+  const separator = base.includes('?') ? '&' : '?'
+  return `${base}${separator}${query}`
 }
 
 /**
- * Gera uma string `srcset` a partir de uma URL pública, com as larguras dadas.
+ * Gera uma string `srcset` a partir de uma URL, com as larguras dadas.
  * Ex.: "url?width=400 400w, url?width=800 800w, url?width=1200 1200w"
  */
 export function buildSrcSet(url: string, widths: number[]): string {
@@ -51,15 +55,9 @@ export function optimizedSrc(url: string, width: number, quality = 80): string {
   return withTransform(url, { width, quality })
 }
 
-/**
- * Mapeia uma URL de imagem do Supabase para a versão WebP otimizada
- * (gerada por `scripts/optimize-hero-images.mjs`) quando disponível.
- *
- * O plano free do Supabase não tem Image Transformations, então os query
- * params (?width, ?quality) são ignorados. Para os heroes, usamos arquivos
- * WebP pré-otimizados no bucket (ex.: `heroes/Cena_01_v-1600.webp`).
- *
- * Se a URL não corresponder a um hero conhecido, retorna a URL original.
+/**@ignore
+ * Mapeia uma objectKey de hero para a versão WebP otimizada quando disponível.
+ * Mantém compatibilidade com a antiga convenção de heroes do Supabase.
  */
 const HERO_WEBP_MAP: Record<string, string> = {
   'heroes/Cena_01_v.png': 'heroes/Cena_01_v',
@@ -69,43 +67,42 @@ const HERO_WEBP_MAP: Record<string, string> = {
   'heroes/sobre.jpg': 'heroes/sobre',
   'heroes/IMG_2441.JPG': 'heroes/IMG_2441',
   'heroes/4932a4d8-9ca4-47e9-bee4-52dffdb2b78b.png': 'heroes/4932a4d8-9ca4-47e9-bee4-52dffdb2b78b',
+  'heroes/d2315cb1-68a0-4760-bf97-4249af291c99.png': 'heroes/d2315cb1-68a0-4760-bf97-4249af291c99',
+  'heroes/1ac7d3b7-0637-4e34-8d0e-e8f9ec032aad.png': 'heroes/1ac7d3b7-0637-4e34-8d0e-e8f9ec032aad',
 }
 
 function heroWebpBase(url: string): string | null {
-  if (!url || !url.includes('supabase.co/storage')) return null
+  // Converte para objectKey equivalenete se for uma URL completa do R2.
+  const candidate = url
   for (const [original, base] of Object.entries(HERO_WEBP_MAP)) {
-    if (url.includes(original)) return base
+    if (candidate.includes(original) || candidate.includes(original.replace(/^heroes\//, ''))) return base
   }
   return null
 }
 
 /**
- * Retorna a URL WebP otimizada para uma largura específica, ou a URL original
- * se não houver versão otimizada disponível.
+ * Retorna a URL WebP otimizada para uma largura específica, ou a URL original.
+ * Busca o objeto `heroes/{base}-{width}.webp` no R2.
  */
 export function optimizedHeroSrc(url: string, width: number): string {
   const base = heroWebpBase(url)
   if (!base) return url
-  return `https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/${base}-${width}.webp`
+  const original = HERO_WEBP_MAP[url]
+  const keyBase = original ? original.replace(/\.(png|jpg|jpeg)$/i, '') : base
+  // `keyBase` já contém o prefixo `heroes/` (ex.: 'heroes/Cena_01_v').
+  // Remove qualquer prefixo `heroes/` duplicado para gerar a key final.
+  const clean = keyBase.replace(/^heroes\//, '')
+  return getImageUrl(`heroes/${clean}-${width}.webp`)
 }
 
-/**
- * `sizes` para a grade de projetos (Gallery).
- * 1 coluna em mobile, 2 em sm, 3 em lg.
- */
+/** sizes para a grade de projetos (Gallery). */
 export const GALLERY_SIZES = '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
 
-/**
- * `sizes` para imagens full-width (hero, cover de detalhe).
- */
+/** sizes para imagens full-width (hero, cover de detalhe). */
 export const FULL_WIDTH_SIZES = '100vw'
 
-/**
- * Larguras usadas para imagens full-width (hero/cover).
- */
+/** Larguras usadas para imagens full-width (hero/cover). */
 export const FULL_WIDTH_SRCSET = [800, 1200, 1600, 2000]
 
-/**
- * Larguras usadas para os cards da galeria.
- */
+/** Larguras usadas para os cards da galeria. */
 export const GALLERY_SRCSET = [400, 800, 1200]

@@ -5,6 +5,7 @@ import { buildSrcSet, optimizedSrc } from '@/utils/imageUrl'
 import { SEO } from '@/components/SEO/SEO'
 import { JSONLDPerson } from '@/components/SEO/JSONLD'
 import { pageSeo } from '@/utils/seo'
+import { getImageUrl, HERO_OBJECT_KEYS } from '@/lib/r2'
 
 export function Sobre() {
   const personData = {
@@ -28,7 +29,7 @@ export function Sobre() {
         title="Sobre"
         subtitle=""
         showCta={false}
-        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/4932a4d8-9ca4-47e9-bee4-52dffdb2b78b.png"
+        image={getImageUrl(HERO_OBJECT_KEYS.sobre)}
       />
 
       <section className="section-padding">
@@ -61,8 +62,8 @@ export function Sobre() {
               transition={{ delay: 0.1 }}
             >
               <img
-                src={optimizedSrc('https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/IMG_2441.JPG', 800)}
-                srcSet={buildSrcSet('https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/IMG_2441.JPG', [400, 800, 1200])}
+                src={optimizedSrc(getImageUrl('heroes/IMG_2441.JPG'), 800)}
+                srcSet={buildSrcSet(getImageUrl('heroes/IMG_2441.JPG'), [400, 800, 1200])}
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 alt="Bruna Câmara — Arquiteta e Urbanista — foto de perfil profissional"
                 loading="lazy"

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { fadeInUp } from '@/utils/animations'
 import { FULL_WIDTH_SIZES, FULL_WIDTH_SRCSET, optimizedHeroSrc } from '@/utils/imageUrl'
+import { getImageUrl, HERO_OBJECT_KEYS } from '@/lib/r2'
 
 interface HeroProps {
   title?: string
@@ -15,7 +16,7 @@ interface HeroProps {
 export function Hero({
   title = 'Arquitetura &\n Design de Interiores',
   subtitle = '',
-  image = 'https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/heroes/Cena_01_v.png',
+  image = getImageUrl(HERO_OBJECT_KEYS.home),
   showCta = true,
   compact = false,
 }: HeroProps) {

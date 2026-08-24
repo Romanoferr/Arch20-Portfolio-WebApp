@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "portfolio-arquitetura-r2",
+  "main": "index.js",
+  "compatibility_date": "2026-08-24",
+  "vars": {
+    "ALLOWED_ORIGINS": "https://brunacamara-arq.com.br,http://localhost:5173"
+  }
+}

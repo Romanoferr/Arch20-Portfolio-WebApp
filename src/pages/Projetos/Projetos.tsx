@@ -6,6 +6,7 @@ import { useProjects } from '@/hooks/useProjects'
 import { fadeInUp } from '@/utils/animations'
 import { SEO } from '@/components/SEO/SEO'
 import { pageSeo } from '@/utils/seo'
+import { getImageUrl, HERO_OBJECT_KEYS } from '@/lib/r2'
 
 export function Projetos() {
   const { projects, loading, error } = useProjects({ mode: 'published' })
@@ -19,7 +20,7 @@ export function Projetos() {
         title="Projetos"
         subtitle=""
         showCta={false}
-        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/projects/86deef54-8cb6-4d19-8f93-33cc74cc5a06/d2315cb1-68a0-4760-bf97-4249af291c99.png"
+        image={getImageUrl(HERO_OBJECT_KEYS.projetos)}
       />
 
       <section className="section-padding">

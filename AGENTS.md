@@ -203,3 +203,14 @@ Use statements such as:
 "I need to inspect X before determining this."
 
 Never fabricate missing information.
+
+# Language
+
+Always respond to the user in Brazilian Portuguese (pt-BR).
+
+Use English only when:
+- writing code, variable names, function names, commit messages, or technical identifiers;
+- the user explicitly asks for English;
+- English is required by a tool, API, library, or external service.
+
+All explanations, reasoning summaries, questions, warnings, and status updates must be written in Brazilian Portuguese.
