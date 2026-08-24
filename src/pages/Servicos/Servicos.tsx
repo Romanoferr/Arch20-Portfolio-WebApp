@@ -5,6 +5,7 @@ import { services } from '@/data/services'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 import { SEO } from '@/components/SEO/SEO'
 import { pageSeo } from '@/utils/seo'
+import { getImageUrl, HERO_OBJECT_KEYS } from '@/lib/r2'
 
 export function Servicos() {
   return (
@@ -16,7 +17,7 @@ export function Servicos() {
         title="Serviços"
         subtitle=""
         showCta={false}
-        image="https://skgetxxliperptipaitk.supabase.co/storage/v1/object/public/project-images/projects/91a19049-bb49-4d14-85c9-c697be946350/1ac7d3b7-0637-4e34-8d0e-e8f9ec032aad.png"
+        image={getImageUrl(HERO_OBJECT_KEYS.servicos)}
       />
 
       <section className="section-padding">

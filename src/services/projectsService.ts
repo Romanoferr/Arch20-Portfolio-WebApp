@@ -1,4 +1,10 @@
 import { supabase } from '@/lib/supabase/client'
+import {
+  getImageUrl,
+  requestR2Upload,
+  uploadToR2,
+  deleteR2Object,
+} from '@/lib/r2'
 import type { Project, ProjectCategory, ProjectImage, ProjectInput } from '@/types/project'
 
 export const projectCategories: { value: ProjectCategory | 'todos'; label: string }[] = [
@@ -10,7 +16,6 @@ export const projectCategories: { value: ProjectCategory | 'todos'; label: strin
 
 const PROJECTS_TABLE = 'projects'
 const PROJECT_IMAGES_TABLE = 'project_images'
-const PROJECT_IMAGES_BUCKET = 'project-images'
 
 export type CoverSelection =
   | { type: 'existing'; imageId: string }
@@ -70,7 +75,7 @@ export function getFriendlyError(error: unknown, fallback: string): string {
 }
 
 function getPublicUrl(storagePath: string) {
-  return supabase.storage.from(PROJECT_IMAGES_BUCKET).getPublicUrl(storagePath).data?.publicUrl || ''
+  return getImageUrl(storagePath)
 }
 
 function normalizeProjectImageRow(row: {
@@ -126,19 +131,18 @@ function normalizeProjectRow(row: any): Project {
 }
 
 async function uploadProjectFile(projectId: string, file: File) {
-  const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg'
-  const fileName = `${crypto.randomUUID()}.${extension}`
-  const storagePath = `projects/${projectId}/${fileName}`
+  // 1. Solicita ao Worker uma presigned URL (valida sessão server-side).
+  const { objectKey, uploadUrl } = await requestR2Upload(
+    projectId,
+    file.name,
+    file.type || 'application/octet-stream',
+  )
 
-  const { error } = await supabase.storage
-    .from(PROJECT_IMAGES_BUCKET)
-    .upload(storagePath, file, { cacheControl: '3600', upsert: false })
+  // 2. Faz o upload DIRETO ao R2 com a presigned URL (não passa pelo Worker).
+  await uploadToR2(uploadUrl, file)
 
-  if (error) {
-    throw error
-  }
-
-  return { storagePath, publicUrl: getPublicUrl(storagePath) }
+  // 3. Registra o object_key no banco quando o upload já foi confirmado.
+  return { storagePath: objectKey, publicUrl: getPublicUrl(objectKey) }
 }
 
 async function insertProjectImages(
@@ -183,24 +187,24 @@ async function updateProjectImageMetadata(images: ProjectImage[], coverImageId?:
 }
 
 /**
- * Remove arquivos do Storage. Retorna a lista de caminhos que NÃO puderam
+ * Remove objetos do R2. Retorna a lista de caminhos que NÃO puderam
  * ser removidos (para diagnóstico), em vez de lançar erro — assim a exclusão
  * do banco não fica bloqueada por uma falha de storage.
  */
 async function deleteStorageObjects(storagePaths: string[]): Promise<string[]> {
-  if (storagePaths.length === 0) {
-    return []
+  const failed: string[] = []
+
+  for (const path of storagePaths) {
+    try {
+      await deleteR2Object(path)
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Falha ao remover arquivo do R2:', err instanceof Error ? err.message : err)
+      failed.push(path)
+    }
   }
 
-  const { error } = await supabase.storage.from(PROJECT_IMAGES_BUCKET).remove(storagePaths)
-
-  if (error) {
-    // eslint-disable-next-line no-console
-    console.error('Falha ao remover arquivos do Storage:', error.message)
-    return storagePaths
-  }
-
-  return []
+  return failed
 }
 
 export async function getProjects(publishedOnly = false, limit?: number): Promise<Project[]> {
