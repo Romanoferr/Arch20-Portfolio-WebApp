@@ -87,7 +87,10 @@ export function optimizedHeroSrc(url: string, width: number): string {
   if (!base) return url
   const original = HERO_WEBP_MAP[url]
   const keyBase = original ? original.replace(/\.(png|jpg|jpeg)$/i, '') : base
-  return getImageUrl(`heroes/${keyBase}-${width}.webp`)
+  // `keyBase` já contém o prefixo `heroes/` (ex.: 'heroes/Cena_01_v').
+  // Remove qualquer prefixo `heroes/` duplicado para gerar a key final.
+  const clean = keyBase.replace(/^heroes\//, '')
+  return getImageUrl(`heroes/${clean}-${width}.webp`)
 }
 
 /** sizes para a grade de projetos (Gallery). */
