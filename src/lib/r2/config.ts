@@ -52,7 +52,7 @@ export const HERO_OBJECT_KEYS = {
   home: 'heroes/Cena_01_v.png',
   sobre: 'heroes/4932a4d8-9ca4-47e9-bee4-52dffdb2b78b.png',
   sobrePerfil: 'heroes/IMG_2441.JPG',
-  projetos: 'projects/86deef54-8cb6-4d19-8f93-33cc74cc5a06/d2315cb1-68a0-4760-bf97-4249af291c99.png',
-  servicos: 'projects/91a19049-bb49-4d14-85c9-c697be946350/1ac7d3b7-0637-4e34-8d0e-e8f9ec032aad.png',
+  projetos: 'heroes/d2315cb1-68a0-4760-bf97-4249af291c99.png',
+  servicos: 'heroes/1ac7d3b7-0637-4e34-8d0e-e8f9ec032aad.png',
   contatoHero: 'heroes/Cena_13.png',
 } as const
