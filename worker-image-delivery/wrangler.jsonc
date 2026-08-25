@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "portfolio-image-delivery",
+  "main": "index.js",
+  "compatibility_date": "2026-08-24",
+  "routes": [
+    {
+      "pattern": "img.brunacamara-arq.com.br",
+      "custom_domain": true
+    }
+  ],
+  "vars": {
+    "ORIGIN_BASE_URL": "https://images.brunacamara-arq.com.br"
+  }
+}

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { PenTool, ArrowRight, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
 import { deleteProject } from '@/services/projectsService'
 import { useProjects } from '@/hooks/useProjects'
+import { imageUrl } from '@/utils/imageUrl'
 
 export function AdminProjectList() {
   const location = useLocation()
@@ -96,7 +97,7 @@ export function AdminProjectList() {
             <article key={project.id} className="overflow-hidden rounded-[28px] border border-[var(--color-border)] bg-white shadow-sm">
               <div className="flex flex-col gap-6 p-5 md:flex-row md:items-center">
                 <img
-                  src={project.coverImage || project.images[0]}
+                  src={imageUrl(project.coverImageStorage, 'thumbnail')}
                   alt={project.title}
                   className="h-32 w-full rounded-[20px] object-cover md:w-44"
                 />

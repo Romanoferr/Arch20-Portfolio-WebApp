@@ -1,11 +1,15 @@
 import { motion } from 'framer-motion'
 import { Hero } from '@/components/Hero/Hero'
 import { fadeInUp } from '@/utils/animations'
-import { buildSrcSet, optimizedSrc } from '@/utils/imageUrl'
+import { buildSrcSet, imageUrl } from '@/utils/imageUrl'
+import type { ImagePreset } from '@/utils/imageUrl'
 import { SEO } from '@/components/SEO/SEO'
 import { JSONLDPerson } from '@/components/SEO/JSONLD'
 import { pageSeo } from '@/utils/seo'
-import { getImageUrl, HERO_OBJECT_KEYS } from '@/lib/r2'
+import { HERO_OBJECT_KEYS } from '@/lib/r2'
+
+const SOBRE_PROFILE_KEY = 'heroes/IMG_2441.JPG'
+const PROFILE_PRESETS: ImagePreset[] = ['mobile', 'tablet', 'gallery']
 
 export function Sobre() {
   const personData = {
@@ -29,7 +33,7 @@ export function Sobre() {
         title="Sobre"
         subtitle=""
         showCta={false}
-        image={getImageUrl(HERO_OBJECT_KEYS.sobre)}
+        image={HERO_OBJECT_KEYS.sobre}
       />
 
       <section className="section-padding">
@@ -62,8 +66,8 @@ export function Sobre() {
               transition={{ delay: 0.1 }}
             >
               <img
-                src={optimizedSrc(getImageUrl('heroes/IMG_2441.JPG'), 800)}
-                srcSet={buildSrcSet(getImageUrl('heroes/IMG_2441.JPG'), [400, 800, 1200])}
+                src={imageUrl(SOBRE_PROFILE_KEY, 'tablet')}
+                srcSet={buildSrcSet(SOBRE_PROFILE_KEY, PROFILE_PRESETS)}
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 alt="Bruna Câmara — Arquiteta e Urbanista — foto de perfil profissional"
                 loading="lazy"

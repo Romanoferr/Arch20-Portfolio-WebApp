@@ -111,4 +111,10 @@ export async function deleteR2Object(objectKey: string): Promise<void> {
 }
 
 export { getImageUrl } from './config'
-export { r2PublicBaseUrl, r2UploadEndpoint, r2DeleteEndpoint, HERO_OBJECT_KEYS } from './config'
+export { r2PublicBaseUrl, imgBaseUrl, r2UploadEndpoint, r2DeleteEndpoint, HERO_OBJECT_KEYS } from './config'
+export {
+  IMAGE_PRESETS,
+  IMAGE_PRESET_NAMES,
+  isImagePreset,
+} from './presets'
+export type { ImagePreset, ImagePresetConfig } from './presets'
