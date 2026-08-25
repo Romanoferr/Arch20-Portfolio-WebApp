@@ -5,6 +5,7 @@ import {
   uploadToR2,
   deleteR2Object,
 } from '@/lib/r2'
+import type { ImagePreset } from '@/lib/r2'
 import type { Project, ProjectCategory, ProjectImage, ProjectInput } from '@/types/project'
 
 export const projectCategories: { value: ProjectCategory | 'todos'; label: string }[] = [
@@ -74,8 +75,8 @@ export function getFriendlyError(error: unknown, fallback: string): string {
   return fallback
 }
 
-function getPublicUrl(storagePath: string) {
-  return getImageUrl(storagePath)
+function getPublicUrl(storagePath: string, preset: ImagePreset = 'gallery') {
+  return getImageUrl(storagePath, preset)
 }
 
 function normalizeProjectImageRow(row: {
@@ -109,7 +110,9 @@ function normalizeProjectRow(row: any): Project {
     .sort((a, b) => a.displayOrder - b.displayOrder)
 
   const images = projectImages.map((image) => image.publicUrl)
-  const coverImage = projectImages.find((image) => image.isCover)?.publicUrl || images[0] || ''
+  const cover = projectImages.find((image) => image.isCover) ?? projectImages[0]
+  const coverImage = cover ? cover.publicUrl : ''
+  const coverImageStorage = cover ? cover.storagePath : ''
 
   return {
     id: row.id,
@@ -126,6 +129,7 @@ function normalizeProjectRow(row: any): Project {
     updatedAt: row.updated_at,
     images,
     coverImage,
+    coverImageStorage,
     projectImages,
   }
 }

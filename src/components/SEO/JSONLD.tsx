@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 import { CONTACT, SITE_URL, SITE_NAME } from '@/utils/seo'
+import { getImageUrl } from '@/lib/r2'
 import type { Project } from '@/types/project'
 
 interface PersonSchema {
@@ -233,7 +234,9 @@ export function JSONLDProject({ project }: { project: Project }) {
     contentLocation: project.location,
     dateCreated: project.year ? `${project.year}` : undefined,
     dateModified: project.updatedAt,
-    image: project.coverImage,
+    image: project.coverImageStorage
+      ? getImageUrl(project.coverImageStorage, 'social')
+      : project.coverImage,
     url: `${SITE_URL}/projetos/${project.slug}/`,
     mainEntityOfPage: `${SITE_URL}/projetos/${project.slug}/`,
     author: {

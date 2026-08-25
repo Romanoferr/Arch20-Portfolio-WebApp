@@ -6,7 +6,7 @@ import { siteInfo } from '@/data/navigation'
 import { fadeInUp } from '@/utils/animations'
 import { SEO } from '@/components/SEO/SEO'
 import { pageSeo } from '@/utils/seo'
-import { getImageUrl, HERO_OBJECT_KEYS } from '@/lib/r2'
+import { HERO_OBJECT_KEYS } from '@/lib/r2'
 
 export function Contato() {
   return (
@@ -18,7 +18,7 @@ export function Contato() {
         title="Contato"
         subtitle=""
         showCta={false}
-        image={getImageUrl(HERO_OBJECT_KEYS.contatoHero)}
+        image={HERO_OBJECT_KEYS.contatoHero}
       />
 
       <section className="section-padding">

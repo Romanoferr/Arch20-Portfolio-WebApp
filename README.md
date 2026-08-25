@@ -86,6 +86,112 @@ As imagens são enviadas para `project-images/projects/{project_id}/{arquivo}`.
 O registro correspondente fica em `project_images` com `storage_path`, `is_cover`
 e `display_order`.
 
+## Otimização e entrega de imagens (Cloudflare Images + R2)
+
+### Arquitetura
+
+```
+React
+  → getImageUrl(objectKey, preset)
+    → img.brunacamara-arq.com.br/<objectKey>?preset=<preset>
+      → Image Delivery Worker (portfolio-image-delivery)
+        → Cloudflare Image Transformations (cf.image)
+          → images.brunacamara-arq.com.br (custom domain R2)
+            → R2 bucket (originais, nunca modificados)
+```
+
+- Os **originais** ficam no R2 (`projects/{projectId}/original/{uuid}.{ext}` e
+  `heroes/*`) e **nunca** são modificados.
+- O navegador **não** acessa os originais diretamente: toda imagem passa pelo
+  Worker de image delivery, que aplica resize/compressão/transcodificação sob
+  demanda e cacheia a variante na edge.
+
+### Presets (whitelist fechada)
+
+| Preset | Width | Quality | Uso |
+|---|---|---|---|
+| `thumbnail` | 500 | 78 | Cards da galeria, previews admin |
+| `mobile` | 800 | 80 | Telas até 800px |
+| `tablet` | 1200 | 82 | Telas médias |
+| `gallery` | 1600 | 82 | Imagem principal de projeto |
+| `hero` | 1920 | 84 | Hero / capa full-width |
+| `full` | 2560 | 88 | Alta resolução (tela cheia) — **não usar por padrão** |
+| `social` | 1200 | 85 | og:image / JSON-LD / compartilhamento |
+
+Todos usam `format: auto` (AVIF/WebP com fallback) e `fit: scale-down` (não
+ampliam imagens menores). A lista é **fechada** — nunca gerar combinações
+arbitrárias de `width`/`height`/`quality`, para preservar cache e custo.
+
+### Formato de URL
+
+```
+https://img.brunacamara-arq.com.br/<objectKey>?preset=<preset>
+```
+
+Ex.: `https://img.brunacamara-arq.com.br/projects/123/original/abc.jpg?preset=gallery`
+
+### Abstração central
+
+Todo acesso a imagem passa por `getImageUrl(objectKey, preset)` em
+`src/lib/r2/config.ts` (reexportado por `src/lib/r2`). Helpers de `srcset`/
+`sizes` responsivos estão em `src/utils/imageUrl.ts` (`buildSrcSet`, `imageUrl`,
+`GALLERY_PRESETS`, `FULL_WIDTH_PRESETS`).
+
+### Cache
+
+- As variantes transformadas são cacheadas automaticamente pela Cloudflare por
+  combinação (objectKey + preset).
+- O Worker define `Cache-Control: public, max-age=31536000, immutable` (originais
+  são UUIDs/nomes estáticos).
+- URLs são determinísticas: mesma imagem + mesmo preset = mesma URL.
+
+### Configuração Cloudflare (dashboard)
+
+1. Habilitar **Image Transformations** na zona `brunacamara-arq.com.br`
+   (*Images → Transformations*).
+2. Adicionar `images.brunacamara-arq.com.br` como **allowed origin** em
+   *Images → Transformations → Sources* (a origem é um subdomínio diferente do
+   domínio de entrega).
+3. Deploy do Worker `portfolio-image-delivery` e conectar o **Custom Domain**
+   `img.brunacamara-arq.com.br` (DNS/certificado automáticos).
+
+### Variáveis de ambiente
+
+- `VITE_IMG_BASE_URL=https://img.brunacamara-arq.com.br` — base do Worker de
+  entrega (usada pelo frontend para todas as imagens).
+- `VITE_R2_PUBLIC_URL=https://images.brunacamara-arq.com.br` — origem dos
+  originais (fallback legado / origem do Worker).
+
+### Deploy do Worker de entrega
+
+```bash
+cd worker-image-delivery
+npm install
+wrangler login
+wrangler deploy
+```
+
+### Como adicionar um novo preset
+
+1. Adicione a entrada em `worker-image-delivery/index.js` (`PRESETS`).
+2. Adicione a entrada em `src/lib/r2/presets.ts` (`IMAGE_PRESETS`).
+3. Use `getImageUrl(objectKey, 'novoPreset')` no componente.
+
+### Como testar
+
+```bash
+npm test          # testes unitários (URLs, presets, segurança do Worker)
+npm run build     # typecheck + build
+```
+
+### Como diagnosticar uma imagem lenta
+
+1. Abra a URL da imagem no navegador e verifique o `Cache-Control`/status.
+2. Verifique se a combinação (objectKey + preset) já foi transformada
+   (primeira requisição = cache miss; seguintes = cache hit).
+3. Confirme que `images.brunacamara-arq.com.br` está como allowed origin.
+4. Verifique o custo/limite de transformações em *Images → Transformations*.
+
 ## Estrutura do projeto
 
 ```

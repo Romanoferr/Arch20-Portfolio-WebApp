@@ -39,13 +39,34 @@ React/Vite
 
 Todo acesso a URLs de imagem passa por um único módulo:
 
-- `src/lib/r2/config.ts` → define `VITE_R2_PUBLIC_URL` e a função `getImageUrl(objectKey)`
-- `src/lib/r2/index.ts` → serviço de upload/delete via Worker + re-export de `getImageUrl`
+- `src/lib/r2/config.ts` → define `VITE_IMG_BASE_URL` (entrega otimizada) e a
+  função `getImageUrl(objectKey, preset)`.
+- `src/lib/r2/presets.ts` → whitelist de presets (thumbnail/mobile/tablet/
+  gallery/hero/full/social).
+- `src/lib/r2/index.ts` → serviço de upload/delete via Worker + re-export de
+  `getImageUrl` e presets.
+- `src/utils/imageUrl.ts` → helpers de `srcset`/`sizes` responsivos
+  (`buildSrcSet`, `imageUrl`, `GALLERY_PRESETS`, `FULL_WIDTH_PRESETS`).
 
 Os componentes do frontend **nunca** montam URLs do R2 manualmente. Eles usam
-`getImageUrl()` (ou as helpers de `src/utils/imageUrl.ts`: `optimizedSrc`,
-`buildSrcSet`, etc.). Isso permite trocar de provedor (R2 → outro CDN) sem
-alterar dezenas de componentes.
+`getImageUrl(objectKey, preset)` (ou `imageUrl`/`buildSrcSet`). Isso permite
+trocar de provedor (R2 → outro CDN) sem alterar dezenas de componentes.
+
+## Entrega otimizada de imagens (Image Delivery Worker)
+
+```
+React → getImageUrl(objectKey, preset)
+  → https://img.brunacamara-arq.com.br/<objectKey>?preset=<preset>
+    → portfolio-image-delivery (Worker)
+      → Cloudflare Image Transformations (cf.image)
+        → https://images.brunacamara-arq.com.br/<objectKey> (custom domain R2)
+          → R2 bucket (originais)
+```
+
+- Os **originais** no R2 nunca são modificados.
+- O Worker valida o `objectKey` (regex) e o `preset` (whitelist fechada).
+- `format: auto` (AVIF/WebP) e `fit: scale-down` (não amplia).
+- Variantes transformadas são cacheadas na edge por combinação.
 
 ## Fluxo de upload (Admin)
 
@@ -80,7 +101,9 @@ Admin → DELETE /api/delete { objectKey } (JWT)
 ## Fluxo de leitura (público)
 
 ```
-React → getImageUrl(objectKey) → https://images.brunacamara-arq.com.br/<objectKey>
+React → getImageUrl(objectKey, preset)
+  → https://img.brunacamara-arq.com.br/<objectKey>?preset=<preset>
+  → Image Delivery Worker → Cloudflare Image Transformations → R2
 ```
 
 ## Bucket e convenção de objetos

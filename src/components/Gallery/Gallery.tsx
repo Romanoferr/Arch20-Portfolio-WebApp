@@ -5,7 +5,7 @@ import type { Project, ProjectCategory } from '@/types/project'
 import { projectCategories } from '@/services/projectsService'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 import { cn } from '@/utils/cn'
-import { buildSrcSet, GALLERY_SIZES, GALLERY_SRCSET, optimizedSrc } from '@/utils/imageUrl'
+import { buildSrcSet, GALLERY_PRESETS, GALLERY_SIZES, imageUrl } from '@/utils/imageUrl'
 
 interface GalleryProps {
   projects: Project[]
@@ -64,8 +64,8 @@ export function Gallery({ projects, showFilters = false, limit }: GalleryProps) 
                 className="group relative block aspect-[4/5] overflow-hidden bg-[var(--color-border)]"
               >
                 <img
-                  src={optimizedSrc(project.coverImage, 800)}
-                  srcSet={buildSrcSet(project.coverImage, GALLERY_SRCSET)}
+                  src={imageUrl(project.coverImageStorage, 'gallery')}
+                  srcSet={buildSrcSet(project.coverImageStorage, GALLERY_PRESETS)}
                   sizes={GALLERY_SIZES}
                   alt={`${project.title} — projeto de arquitetura ${project.category} — ${project.location}`}
                   loading="lazy"

@@ -10,6 +10,7 @@ import {
   type CoverSelection,
 } from '@/services/projectsService'
 import type { ProjectCategory, ProjectImage, ProjectInput } from '@/types/project'
+import { getImageUrl } from '@/lib/r2'
 
 interface FormState {
   title: string
@@ -359,7 +360,10 @@ export function AdminProjectForm() {
             {coverSelection.type === 'existing' && (
               <div className="mt-4 overflow-hidden rounded-[20px] border border-[var(--color-border)]">
                 <img
-                  src={existingImages.find((image) => image.id === coverSelection.imageId)?.publicUrl}
+                  src={getImageUrl(
+                    existingImages.find((image) => image.id === coverSelection.imageId)?.storagePath ?? '',
+                    'thumbnail',
+                  )}
                   alt="Preview da capa"
                   className="h-48 w-full object-cover"
                 />
@@ -394,7 +398,7 @@ export function AdminProjectForm() {
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               {existingImages.map((image) => (
                 <div key={image.id} className="rounded-[20px] border border-[var(--color-border)] bg-white p-2">
-                  <img src={image.publicUrl} alt={image.storagePath} className="h-28 w-full rounded-[16px] object-cover" />
+                  <img src={getImageUrl(image.storagePath, 'thumbnail')} alt={image.storagePath} className="h-28 w-full rounded-[16px] object-cover" />
                   <div className="mt-2 flex items-center justify-between gap-2">
                     <button
                       type="button"

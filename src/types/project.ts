@@ -20,6 +20,8 @@ export interface Project {
   description: string
   images: string[]
   coverImage: string
+  /** objectKey (storage_path) da imagem de capa, para geração de srcset/presets. */
+  coverImageStorage: string
   published: boolean
   order: number
   createdAt: string

@@ -6,7 +6,7 @@ import { useProjects } from '@/hooks/useProjects'
 import { fadeInUp } from '@/utils/animations'
 import { SEO } from '@/components/SEO/SEO'
 import { pageSeo } from '@/utils/seo'
-import { getImageUrl, HERO_OBJECT_KEYS } from '@/lib/r2'
+import { HERO_OBJECT_KEYS } from '@/lib/r2'
 
 export function Projetos() {
   const { projects, loading, error } = useProjects({ mode: 'published' })
@@ -20,7 +20,7 @@ export function Projetos() {
         title="Projetos"
         subtitle=""
         showCta={false}
-        image={getImageUrl(HERO_OBJECT_KEYS.projetos)}
+        image={HERO_OBJECT_KEYS.projetos}
       />
 
       <section className="section-padding">

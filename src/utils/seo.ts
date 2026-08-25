@@ -1,4 +1,5 @@
 import type { Project, ProjectCategory } from '@/types/project'
+import { getImageUrl } from '@/lib/r2'
 
 export const SITE_URL = 'https://brunacamara-arq.com.br'
 export const SITE_NAME = 'Bruna Câmara | Arquitetura e Design de Interiores'
@@ -91,6 +92,8 @@ export function getProjectSeo(project: Project): SeoProps {
     description: truncateAtWord(project.description, 155),
     canonical: `${SITE_URL}/projetos/${project.slug}/`,
     ogType: 'article',
-    ogImage: project.coverImage,
+    ogImage: project.coverImageStorage
+      ? getImageUrl(project.coverImageStorage, 'social')
+      : project.coverImage,
   }
 }

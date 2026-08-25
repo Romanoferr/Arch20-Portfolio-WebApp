@@ -2,8 +2,13 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { fadeInUp } from '@/utils/animations'
-import { FULL_WIDTH_SIZES, FULL_WIDTH_SRCSET, optimizedHeroSrc } from '@/utils/imageUrl'
-import { getImageUrl, HERO_OBJECT_KEYS } from '@/lib/r2'
+import {
+  buildSrcSet,
+  FULL_WIDTH_PRESETS,
+  FULL_WIDTH_SIZES,
+  imageUrl,
+} from '@/utils/imageUrl'
+import { HERO_OBJECT_KEYS } from '@/lib/r2'
 
 interface HeroProps {
   title?: string
@@ -16,7 +21,7 @@ interface HeroProps {
 export function Hero({
   title = 'Arquitetura &\n Design de Interiores',
   subtitle = '',
-  image = getImageUrl(HERO_OBJECT_KEYS.home),
+  image = HERO_OBJECT_KEYS.home,
   showCta = true,
   compact = false,
 }: HeroProps) {
@@ -28,8 +33,8 @@ export function Hero({
     >
       <div className="absolute inset-0">
         <img
-          src={optimizedHeroSrc(image, 1600)}
-          srcSet={FULL_WIDTH_SRCSET.map((w) => `${optimizedHeroSrc(image, w)} ${w}w`).join(', ')}
+          src={imageUrl(image, 'hero')}
+          srcSet={buildSrcSet(image, FULL_WIDTH_PRESETS)}
           sizes={FULL_WIDTH_SIZES}
           alt=""
           fetchPriority="high"

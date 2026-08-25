@@ -5,7 +5,7 @@ import { services } from '@/data/services'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 import { SEO } from '@/components/SEO/SEO'
 import { pageSeo } from '@/utils/seo'
-import { getImageUrl, HERO_OBJECT_KEYS } from '@/lib/r2'
+import { HERO_OBJECT_KEYS } from '@/lib/r2'
 
 export function Servicos() {
   return (
@@ -17,7 +17,7 @@ export function Servicos() {
         title="Serviços"
         subtitle=""
         showCta={false}
-        image={getImageUrl(HERO_OBJECT_KEYS.servicos)}
+        image={HERO_OBJECT_KEYS.servicos}
       />
 
       <section className="section-padding">

@@ -31,6 +31,10 @@ logs/
 ## Coverage
 coverage/
 
+## Wrangler (Cloudflare Workers)
+.wrangler/
+.wrangler-check/
+
 ## Misc
 .cache/
 .sass-cache/

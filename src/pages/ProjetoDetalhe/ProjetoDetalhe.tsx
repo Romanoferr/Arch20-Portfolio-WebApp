@@ -6,9 +6,9 @@ import { getProjectBySlug } from '@/services/projectsService'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 import {
   buildSrcSet,
+  FULL_WIDTH_PRESETS,
   FULL_WIDTH_SIZES,
-  FULL_WIDTH_SRCSET,
-  optimizedSrc,
+  imageUrl,
 } from '@/utils/imageUrl'
 import { SEO } from '@/components/SEO/SEO'
 import { JSONLDBreadcrumbList, JSONLDProject } from '@/components/SEO/JSONLD'
@@ -91,8 +91,8 @@ export function ProjetoDetalhe() {
       <section className="relative min-h-[50vh] md:min-h-[60vh] flex items-end">
         <div className="absolute inset-0">
           <img
-            src={optimizedSrc(project.coverImage, 1600)}
-            srcSet={buildSrcSet(project.coverImage, FULL_WIDTH_SRCSET)}
+            src={imageUrl(project.coverImageStorage, 'hero')}
+            srcSet={buildSrcSet(project.coverImageStorage, FULL_WIDTH_PRESETS)}
             sizes={FULL_WIDTH_SIZES}
             alt={project.title}
             fetchPriority="high"
@@ -155,11 +155,11 @@ export function ProjetoDetalhe() {
               animate="visible"
               className="lg:col-span-2 grid grid-cols-1 gap-4"
             >
-              {project.images.map((image, index) => (
-                <motion.div key={`${image}-${index}`} variants={fadeInUp}>
+              {(project.projectImages ?? []).map((image, index) => (
+                <motion.div key={`${image.storagePath}-${index}`} variants={fadeInUp}>
                   <img
-                    src={optimizedSrc(image, 1200)}
-                    srcSet={buildSrcSet(image, [600, 1200, 1600])}
+                    src={imageUrl(image.storagePath, 'gallery')}
+                    srcSet={buildSrcSet(image.storagePath, FULL_WIDTH_PRESETS)}
                     sizes={FULL_WIDTH_SIZES}
                     alt={`${project.title} — vista do ambiente — ${categoryLabels[project.category]} — ${project.location}`}
                     loading="lazy"
