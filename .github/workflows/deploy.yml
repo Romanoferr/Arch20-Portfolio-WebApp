@@ -65,6 +65,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
+          name: github-pages-${{ github.run_id }}
 
   deploy-worker:
     runs-on: ubuntu-latest
@@ -175,3 +176,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_id }}
