@@ -9,6 +9,6 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    include: ['src/**/*.test.ts', 'worker-image-delivery/**/*.test.js'],
+    include: ['src/**/*.test.ts', 'worker-image-delivery/**/*.test.js', 'worker-analytics/**/*.test.js'],
   },
 })

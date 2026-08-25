@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { ArrowLeft, LayoutGrid, PenTool, Home, LogOut } from 'lucide-react'
+import { ArrowLeft, LayoutGrid, PenTool, Home, LogOut, BarChart3 } from 'lucide-react'
 import { cn } from '@/utils/cn'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -7,6 +7,7 @@ const links = [
   { to: '/admin', label: 'Dashboard', icon: LayoutGrid },
   { to: '/admin/projetos', label: 'Projetos', icon: PenTool },
   { to: '/admin/projetos/novo', label: 'Novo projeto', icon: Home },
+  { to: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
 ]
 
 export function AdminLayout() {

@@ -1,5 +1,7 @@
 // Mensagem pré-preenchida enviada ao abrir a conversa no WhatsApp.
 // Edite aqui para alterar o texto padrão.
+import { trackEvent } from '@/lib/analytics/tracker'
+
 const WHATSAPP_MESSAGE = 'Olá! Vim pelo site e gostaria de mais informações.'
 
 export function WhatsAppButton() {
@@ -18,6 +20,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Conversar no WhatsApp"
+      onClick={() => trackEvent('whatsapp')}
       className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-[#94714D]/20 bg-white/80 text-[#94714D] shadow-lg backdrop-blur-sm transition-all duration-200 hover:bg-[#94714D]/10 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94714D]/40 focus-visible:ring-offset-2 sm:bottom-8 sm:right-8"
     >
       <svg
