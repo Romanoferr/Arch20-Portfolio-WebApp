@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "portfolio-analytics",
+  "main": "index.js",
+  "compatibility_date": "2026-08-24",
+  "triggers": {
+    "crons": [
+      {
+        "cron": "0 3 * * *",
+        "description": "Rollup e limpeza diária das sessões antigas"
+      }
+    ]
+  },
+  "vars": {
+    "ALLOWED_ORIGINS": "https://brunacamara-arq.com.br,http://localhost:5173",
+    "RETENTION_DAYS": "180"
+  }
+}

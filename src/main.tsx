@@ -5,6 +5,12 @@ import { HelmetProvider } from 'react-helmet-async'
 import '@/styles/index.css'
 import App from '@/App'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { initAnalytics } from '@/lib/analytics/tracker'
+
+// Inicializa o tracker de analytics (privacy-first, sessionStorage efêmero).
+// O initAnalytics registra a primeira view; as rotas do SPA são rastreadas
+// pelo hook useAnalyticsPageView montado em <App/>.
+initAnalytics()
 
 const redirect = sessionStorage.redirect
 if (redirect) {

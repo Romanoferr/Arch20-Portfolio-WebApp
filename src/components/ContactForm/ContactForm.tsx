@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import emailjs from '@emailjs/browser'
 import { Loader2, CheckCircle, AlertCircle } from 'lucide-react'
+import { trackEvent } from '@/lib/analytics/tracker'
 
 interface ContactFormData {
   name: string
@@ -47,6 +48,8 @@ export function ContactForm() {
       )
       setStatus('success')
       reset()
+      // Conversão: envio de mensagem de contato concluído.
+      trackEvent('contact')
     } catch {
       setStatus('error')
     }

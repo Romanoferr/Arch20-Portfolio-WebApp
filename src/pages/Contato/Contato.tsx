@@ -7,6 +7,7 @@ import { fadeInUp } from '@/utils/animations'
 import { SEO } from '@/components/SEO/SEO'
 import { pageSeo } from '@/utils/seo'
 import { HERO_OBJECT_KEYS } from '@/lib/r2'
+import { trackEvent } from '@/lib/analytics/tracker'
 
 export function Contato() {
   return (
@@ -52,7 +53,13 @@ export function Contato() {
                   </div>
                   <div>
                     <p className="text-xs tracking-[0.15em] uppercase text-muted mb-1">E-mail</p>
-                    <p className="text-sm">{siteInfo.email}</p>
+                    <a
+                      href={`mailto:${siteInfo.email}`}
+                      onClick={() => trackEvent('email')}
+                      className="text-sm text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)]"
+                    >
+                      {siteInfo.email}
+                    </a>
                   </div>
                 </li>
               </ul>

@@ -11,6 +11,7 @@ import { Servicos } from '@/pages/Servicos/Servicos'
 import { Sobre } from '@/pages/Sobre/Sobre'
 import { Contato } from '@/pages/Contato/Contato'
 import { pageTransition } from '@/utils/animations'
+import { useAnalyticsPageView } from '@/hooks/useAnalyticsPageView'
 
 // Admin pages are lazy-loaded so their heavy dependencies
 // (react-hook-form, admin components) are not in the initial bundle.
@@ -23,12 +24,18 @@ const AdminProjectList = lazy(() =>
 const AdminProjectForm = lazy(() =>
   import('@/pages/Admin/AdminProjectForm').then((m) => ({ default: m.AdminProjectForm })),
 )
+const AdminAnalytics = lazy(() =>
+  import('@/pages/Admin/AdminAnalytics').then((m) => ({ default: m.AdminAnalytics })),
+)
 const AdminLogin = lazy(() =>
   import('@/pages/Admin/AdminLogin').then((m) => ({ default: m.AdminLogin })),
 )
 
 function AnimatedRoutes() {
   const location = useLocation()
+
+  // Rastreia mudanças de rota do SPA para o analytics.
+  useAnalyticsPageView()
 
   return (
     <AnimatePresence mode="wait">
@@ -89,6 +96,14 @@ function AnimatedRoutes() {
                 element={
                   <Suspense fallback={<AdminFallback />}>
                     <AdminProjectForm />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="analytics"
+                element={
+                  <Suspense fallback={<AdminFallback />}>
+                    <AdminAnalytics />
                   </Suspense>
                 }
               />
