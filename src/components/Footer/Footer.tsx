@@ -67,7 +67,7 @@ export function Footer() {
         </div>
 
         <div className="mt-4 pt-4 border-t border-white/10 text-center text-xs text-white/60 tracking-wide">
-          © {currentYear} {siteInfo.name}. Todos os direitos reservados.
+          © {currentYear} {siteInfo.name}. Todos os direitos reservados - Site criado por romanodev.
         </div>
       </div>
     </footer>
