@@ -28,7 +28,7 @@ export function Hero({
   return (
     <section
       className={`relative flex items-center overflow-hidden ${
-        compact ? 'min-h-[50vh] md:min-h-[55vh]' : 'min-h-[85vh] md:min-h-[90vh]'
+        compact ? 'min-h-[50vh] md:min-h-[55vh]' : 'min-h-[68vh] md:min-h-[78vh]'
       }`}
     >
       <div className="absolute inset-0">
