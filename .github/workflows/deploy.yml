@@ -150,7 +150,7 @@ jobs:
       # ATENÇÃO: este passo reaplica os secrets do Supabase ao Worker a cada
       # push. Se o secret SUPABASE_SERVICE_ROLE_KEY no GitHub estiver com um
       # valor antigo/diferente do .env, a coleta volta a falhar (502). Mantenha
-      # os secrets do GitHub sincronizados com o .env local.#
+      # os secrets do GitHub sincronizados com o .env local.##
       - name: Set Worker secrets (Supabase service_role)
         working-directory: worker-analytics
         env:
