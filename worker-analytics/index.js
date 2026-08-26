@@ -209,7 +209,13 @@ async function upsertSession(env, session) {
     events: sanitizeEvents(session.events),
   }
 
-  const { error } = await sb.from('analytics_sessions').upsert(row, { onConflict: 'session_id' })
+  // Upsert condicional via RPC: só aceita a escrita se ainda não havia sessão
+  // finalizada ou se ela é mais recente que a já gravada (evita que um flush
+  // antigo, chegando em ordem trocada, regrida os dados de uma sessão).
+  // Mantém o modelo de 1 linha por sessão (UNIQUE em session_id).
+  const { error } = await sb.rpc('analytics_upsert_session', {
+    p_row: row,
+  })
   if (error) throw error
 }
 

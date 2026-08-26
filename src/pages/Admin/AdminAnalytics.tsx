@@ -43,10 +43,15 @@ const PERIOD_LABEL: Record<PeriodKey, string> = {
 }
 
 function periodRange(key: PeriodKey): AnalyticsRange {
-  const now = new Date()
+  // O fuso de referência do produto é America/Sao_Paulo (UTC-3). Calculamos o
+  // "agora" e a borda do dia nesse fuso para o intervalo terminar no fim do
+  // dia local do visitante (e não às 21h da véspera em UTC).
+  const nowLocal = new Date(
+    new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }),
+  )
   const days = key === '7d' ? 7 : key === '30d' ? 30 : 90
-  const from = new Date(now.getTime() - days * 86400 * 1000)
-  const to = new Date(now.getTime() + 86400 * 1000) // até amanhã (inclusivo do dia atual)
+  const from = new Date(nowLocal.getTime() - days * 86400 * 1000)
+  const to = new Date(nowLocal.getTime() + 86400 * 1000) // até amanhã (inclusivo do dia atual)
   return { from: from.toISOString(), to: to.toISOString() }
 }
 
