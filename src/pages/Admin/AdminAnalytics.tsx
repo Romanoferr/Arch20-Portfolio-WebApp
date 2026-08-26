@@ -1,18 +1,22 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
-  Calendar,
-  Loader2,
-  AlertCircle,
+  Activity,
+  AlertTriangle,
+  ArrowDownRight,
+  ArrowUpRight,
   BarChart3,
-  MousePointerClick,
-  Eye,
-  Clock,
-  Tags,
-  Smartphone,
-  Monitor,
-  Globe,
-  MapPin,
   CheckCircle2,
+  Clock,
+  Eye,
+  Globe,
+  Loader2,
+  MapPin,
+  Monitor,
+  MousePointerClick,
+  RefreshCw,
+  Smartphone,
+  TrendingUp,
+  Users,
 } from 'lucide-react'
 import {
   getAnalyticsSummary,
@@ -32,14 +36,22 @@ import {
   type ConversionStat,
   type DimensionStat,
 } from '@/services/analyticsService'
-import { LineChart, BarChart } from '@/lib/analytics/charts'
+import {
+  PALETTE,
+  TrendAreaChart,
+  RankingBars,
+  DonutChart,
+  CompareBars,
+  type RankingDatum,
+  type SeriesDatum,
+} from '@/lib/analytics/BigCharts'
 
 type PeriodKey = '7d' | '30d' | '90d'
 
 const PERIOD_LABEL: Record<PeriodKey, string> = {
-  '7d': 'Últimos 7 dias',
-  '30d': 'Últimos 30 dias',
-  '90d': 'Últimos 90 dias',
+  '7d': '7 dias',
+  '30d': '30 dias',
+  '90d': '90 dias',
 }
 
 function periodRange(key: PeriodKey): AnalyticsRange {
@@ -66,11 +78,37 @@ function formatNumber(n: number): string {
   return n.toLocaleString('pt-BR')
 }
 
-function toBar(data: DimensionStat[] | PathStat[]): { label: string; value: number }[] {
-  return (data as Array<{ name?: string; path?: string; views?: number; value?: number }>).map((d) => ({
-    label: d.name ?? d.path ?? '—',
-    value: d.views ?? d.value ?? 0,
+function percentChange(current: number, previous: number): number | null {
+  if (previous <= 0) return current > 0 ? 100 : null
+  return ((current - previous) / previous) * 100
+}
+
+function pathLabel(path: string): string {
+  if (!path || path === '/') return 'Home'
+  const clean = path.replace(/\/+$/, '')
+  return clean.length > 26 ? `${clean.slice(0, 26)}…` : clean
+}
+
+function toRanking(data: DimensionStat[] | PathStat[]): RankingDatum[] {
+  return (data as Array<{ name?: string; path?: string; views?: number; value?: number }>)
+    .map((d) => {
+      const raw = d.name ?? d.path ?? '—'
+      const label = d.path !== undefined ? pathLabel(raw) : raw
+      return { label, value: d.views ?? d.value ?? 0 }
+    })
+    .filter((d) => d.value >= 0)
+}
+
+function toSeries(data: SeriesPoint[]): SeriesDatum[] {
+  return data.map((s) => ({
+    day: s.day,
+    sessions: s.sessions,
+    pageviews: s.pageviews,
   }))
+}
+
+function toDonut(data: RankingDatum[]): { name: string; value: number }[] {
+  return data.map((d) => ({ name: d.label, value: d.value }))
 }
 
 export function AdminAnalytics() {
@@ -131,6 +169,15 @@ export function AdminAnalytics() {
     void load()
   }, [load])
 
+  // Tendência derivada da própria série (metade recente vs. metade anterior)
+  const trend = useMemo(() => {
+    if (series.length < 2) return null
+    const half = Math.max(1, Math.floor(series.length / 2))
+    const recent = series.slice(half).reduce((a, s) => a + s.pageviews, 0)
+    const previous = series.slice(0, half).reduce((a, s) => a + s.pageviews, 0)
+    return percentChange(recent, previous)
+  }, [series])
+
   const totalConversions = useMemo(
     () => conversions.reduce((acc, c) => acc + c.count, 0),
     [conversions],
@@ -142,34 +189,45 @@ export function AdminAnalytics() {
     return m
   }, [conversions])
 
+  const deviceData = useMemo(() => toDonut(toRanking(device)), [device])
+  const browserRanking = useMemo(() => toRanking(browser), [browser])
+  const osRanking = useMemo(() => toRanking(os), [os])
+  const referrerDonut = useMemo(() => toDonut(toRanking(referrer)), [referrer])
+  const countryRanking = useMemo(() => toRanking(country), [country])
+  const pathRanking = useMemo(() => toRanking(topPaths), [topPaths])
+  const projectRanking = useMemo(() => toRanking(topProjects), [topProjects])
+  const seriesChart = useMemo(() => toSeries(series), [series])
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div className="rounded-[28px] border border-[var(--color-border)] bg-white p-6 shadow-sm md:flex-1">
-          <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-accent)]">
+    <div className="space-y-8">
+      {/* ============================ Header ============================ */}
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#818cf8]">
             Analytics
           </p>
-          <h2 className="mt-2 font-serif text-3xl">Comportamento dos visitantes</h2>
-          <p className="mt-3 max-w-2xl text-sm text-[var(--color-muted)]">
-            Sessões anônimas (sem cookies, sem IP), pensadas para entender o
-            interesse do público do escritório.
+          <h2 className="mt-1.5 font-serif text-3xl text-slate-900">
+            Desempenho do site
+          </h2>
+          <p className="mt-2 max-w-xl text-sm text-slate-500">
+            Sessões anônimas (sem cookies e sem IP) para entender o interesse do
+            público do escritório.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        {/* Segmented control de período */}
+        <div className="inline-flex shrink-0 rounded-full border border-slate-200 bg-white p-1 shadow-sm">
           {(['7d', '30d', '90d'] as PeriodKey[]).map((k) => (
             <button
               key={k}
               type="button"
               onClick={() => setPeriod(k)}
-              className={`inline-flex items-center gap-1 rounded-full border px-4 py-2 text-sm transition-colors ${
+              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
                 period === k
-                  ? 'border-[var(--color-accent)] bg-[var(--color-accent)] text-white'
-                  : 'border-[var(--color-border)] bg-white text-[var(--color-text)] hover:border-[var(--color-accent)]'
+                  ? 'bg-[#4f46e5] text-white shadow'
+                  : 'text-slate-500 hover:text-slate-800'
               }`}
             >
-              <Calendar size={14} />
               {PERIOD_LABEL[k]}
             </button>
           ))}
@@ -177,93 +235,117 @@ export function AdminAnalytics() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center rounded-[28px] border border-[var(--color-border)] bg-white p-16 text-sm text-[var(--color-muted)]">
-          <Loader2 size={18} className="mr-2 animate-spin" />
-          Carregando analytics...
-        </div>
+        <SkeletonState />
       ) : error ? (
-        <div className="flex items-start gap-3 rounded-[28px] border border-red-200 bg-red-50 p-6 text-sm text-red-700">
-          <AlertCircle size={18} className="mt-0.5 shrink-0" />
-          <div>
-            <p className="font-medium">Não foi possível carregar os dados</p>
-            <p className="mt-1">{error}</p>
-          </div>
-        </div>
+        <ErrorState message={error} onRetry={() => void load()} />
       ) : (
         <>
-          {/* Stat cards */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard icon={<Eye size={18} />} label="Sessões" value={formatNumber(summary?.sessions ?? 0)} />
-            <StatCard icon={<BarChart3 size={18} />} label="Pageviews" value={formatNumber(summary?.pageviews ?? 0)} />
-            <StatCard icon={<Clock size={18} />} label="Duração média" value={formatDuration(summary?.avg_duration ?? 0)} />
-            <StatCard icon={<Tags size={18} />} label="Páginas / sessão" value={String(summary?.pages_per_session ?? 0)} />
-          </div>
-
-          {/* Evolução temporal */}
-          <div className="rounded-[28px] border border-[var(--color-border)] bg-white p-6 shadow-sm">
-            <h3 className="mb-4 font-serif text-xl">Pageviews por dia</h3>
-            <LineChart
-              labels={series.map((s) => s.day)}
-              values={series.map((s) => s.pageviews)}
+          {/* ============================ KPIs ============================ */}
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <KpiCard
+              icon={<Users size={18} />}
+              accent={PALETTE.primary}
+              label="Sessões"
+              value={formatNumber(summary?.sessions ?? 0)}
+              trend={trend}
+            />
+            <KpiCard
+              icon={<Eye size={18} />}
+              accent={PALETTE.teal}
+              label="Pageviews"
+              value={formatNumber(summary?.pageviews ?? 0)}
+              trend={trend}
+            />
+            <KpiCard
+              icon={<Clock size={18} />}
+              accent={PALETTE.amber}
+              label="Duração média"
+              value={formatDuration(summary?.avg_duration ?? 0)}
+            />
+            <KpiCard
+              icon={<Activity size={18} />}
+              accent={PALETTE.violet}
+              label="Páginas / sessão"
+              value={String(summary?.pages_per_session ?? 0)}
             />
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* Projetos mais visualizados */}
-            <Card title="Projetos mais visualizados" icon={<MousePointerClick size={16} />}>
-              {topProjects.length === 0 ? (
-                <EmptyState />
-              ) : (
-                <BarChart data={toBar(topProjects)} maxItems={8} />
-              )}
-            </Card>
+          {/* ==================== Evolução temporal ==================== */}
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div className="mb-4">
+              <h3 className="flex items-center gap-2 font-serif text-xl text-slate-900">
+                <TrendingUp size={18} className="text-[#4f46e5]" />
+                Pageviews e sessões por dia
+              </h3>
+              <p className="mt-0.5 text-xs text-slate-400">
+                Fuso horário America/Sao_Paulo
+              </p>
+            </div>
+            <TrendAreaChart data={seriesChart} />
+          </section>
 
-            {/* Páginas mais acessadas */}
-            <Card title="Páginas mais acessadas" icon={<Eye size={16} />}>
-              {topPaths.length === 0 ? (
-                <EmptyState />
-              ) : (
-                <BarChart data={toBar(topPaths)} maxItems={8} />
-              )}
+          {/* ==================== Rankings ==================== */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Card
+              title="Páginas mais acessadas"
+              icon={<Eye size={16} />}
+              subtitle="Por pageviews reais"
+            >
+              <RankingBars data={pathRanking} maxItems={8} />
             </Card>
+            <Card
+              title="Projetos mais visualizados"
+              icon={<MousePointerClick size={16} />}
+              subtitle="Visitas às páginas de projeto"
+            >
+              <RankingBars data={projectRanking} maxItems={8} />
+            </Card>
+          </div>
 
-            {/* Origens */}
+          {/* ==================== Origem + conversões ==================== */}
+          <div className="grid gap-4 lg:grid-cols-2">
             <Card title="Origem do visitante" icon={<Globe size={16} />}>
-              {referrer.length === 0 ? (
-                <EmptyState />
-              ) : (
-                <BarChart data={toBar(referrer)} maxItems={6} />
-              )}
+              <DonutChart
+                data={referrerDonut}
+                totalLabel="Acessos"
+                formatValue={formatNumber}
+              />
             </Card>
 
-            {/* Conversões */}
             <Card title="Conversões" icon={<CheckCircle2 size={16} />}>
               {totalConversions === 0 ? (
-                <EmptyState text="Nenhuma conversão no período." />
+                <NoDataState text="Nenhuma conversão no período." />
               ) : (
-                <ConversionList map={conversionMap} total={totalConversions} />
+                <ConversionFunnel map={conversionMap} total={totalConversions} />
               )}
             </Card>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-3">
-            <Card title="Dispositivos" icon={<Smartphone size={16} />}>
-              <BarChart data={toBar(device)} maxItems={5} height={200} />
-            </Card>
-            <Card title="Navegadores" icon={<Globe size={16} />}>
-              <BarChart data={toBar(browser)} maxItems={6} height={200} />
-            </Card>
-            <Card title="Sistemas operacionais" icon={<Monitor size={16} />}>
-              <BarChart data={toBar(os)} maxItems={6} height={200} />
-            </Card>
-          </div>
+          {/* ==================== Tecnologia ==================== */}
+          <section className="space-y-4">
+            <h3 className="flex items-center gap-2 font-serif text-xl text-slate-900">
+              <Monitor size={18} className="text-[#4f46e5]" />
+              Dispositivos e tecnologia
+            </h3>
+            <div className="grid gap-4 md:grid-cols-3">
+              <Card title="Dispositivos" icon={<Smartphone size={16} />}>
+                <DonutChart data={deviceData} height={190} totalLabel="Sessões" />
+              </Card>
+              <Card title="Navegadores" icon={<Globe size={16} />}>
+                <CompareBars data={browserRanking} maxItems={6} />
+              </Card>
+              <Card title="Sistemas operacionais" icon={<Monitor size={16} />}>
+                <CompareBars data={osRanking} maxItems={6} />
+              </Card>
+            </div>
+          </section>
 
-          {/* País */}
+          {/* ==================== Localização ==================== */}
           <Card title="Localização (país)" icon={<MapPin size={16} />}>
-            {country.length === 0 ? (
-              <EmptyState text="Sem dados de localização no período." />
+            {countryRanking.length === 0 ? (
+              <NoDataState text="Sem dados de localização no período." />
             ) : (
-              <BarChart data={toBar(country)} maxItems={8} />
+              <RankingBars data={countryRanking} maxItems={8} />
             )}
           </Card>
         </>
@@ -273,21 +355,47 @@ export function AdminAnalytics() {
 }
 
 // ---------------------------------------------------------------------------
-// Sub-componentes de apresentação
+// Componentes de apresentação
 // ---------------------------------------------------------------------------
 
-function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function KpiCard({
+  icon,
+  accent,
+  label,
+  value,
+  trend,
+}: {
+  icon: React.ReactNode
+  accent: string
+  label: string
+  value: string
+  trend?: number | null
+}) {
+  const up = (trend ?? 0) >= 0
+  const showTrend = trend !== undefined && trend !== null
   return (
-    <div className="rounded-[24px] border border-[var(--color-border)] bg-white p-5">
-      <div className="flex items-center gap-3">
-        <div className="rounded-full bg-[var(--color-accent)]/10 p-2 text-[var(--color-accent)]">
+    <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between">
+        <div
+          className="flex h-10 w-10 items-center justify-center rounded-xl text-white"
+          style={{ background: accent }}
+        >
           {icon}
         </div>
-        <div>
-          <p className="text-sm text-[var(--color-muted)]">{label}</p>
-          <p className="truncate font-serif text-2xl">{value}</p>
-        </div>
+        {showTrend && (
+          <span
+            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums ${
+              up ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
+            }`}
+            title="Tendência da segunda metade do período vs. primeira"
+          >
+            {up ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
+            {Math.abs(trend).toFixed(0)}%
+          </span>
+        )}
       </div>
+      <p className="mt-4 text-sm text-slate-500">{label}</p>
+      <p className="mt-0.5 font-serif text-3xl tabular-nums text-slate-900">{value}</p>
     </div>
   )
 }
@@ -295,65 +403,128 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 function Card({
   title,
   icon,
+  subtitle,
   children,
 }: {
   title: string
   icon?: React.ReactNode
+  subtitle?: string
   children: React.ReactNode
 }) {
   return (
-    <div className="rounded-[28px] border border-[var(--color-border)] bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
       <div className="mb-4 flex items-center gap-2">
-        {icon && <span className="text-[var(--color-accent)]">{icon}</span>}
-        <h3 className="font-serif text-lg">{title}</h3>
+        {icon && <span className="text-[#818cf8]">{icon}</span>}
+        <div>
+          <h3 className="font-serif text-lg leading-tight text-slate-900">{title}</h3>
+          {subtitle && <p className="text-xs text-slate-400">{subtitle}</p>}
+        </div>
       </div>
       {children}
     </div>
   )
 }
 
-function EmptyState({ text = 'Sem dados no período.' }: { text?: string }) {
-  return (
-    <div className="flex h-32 items-center justify-center text-sm text-[var(--color-muted)]">
-      {text}
-    </div>
-  )
-}
-
-function ConversionList({
+function ConversionFunnel({
   map,
   total,
 }: {
   map: Record<string, number>
   total: number
 }) {
-  const rows: Array<{ key: string; label: string; count: number }> = [
-    { key: 'whatsapp', label: 'Cliques em WhatsApp', count: map.whatsapp },
-    { key: 'email', label: 'Cliques em E-mail', count: map.email },
-    { key: 'contact', label: 'Envios de contato', count: map.contact },
+  const rows: Array<{ key: string; label: string; count: number; color: string }> = [
+    { key: 'whatsapp', label: 'WhatsApp', count: map.whatsapp, color: PALETTE.teal },
+    { key: 'email', label: 'E-mail', count: map.email, color: PALETTE.primary },
+    { key: 'contact', label: 'Formulário', count: map.contact, color: PALETTE.amber },
   ]
+  const strongestCount = Math.max(...rows.map((r) => r.count))
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {rows.map((r) => {
         const pct = total > 0 ? Math.round((r.count / total) * 100) : 0
+        const strongest = r.count > 0 && r.count === strongestCount
         return (
           <div key={r.key}>
             <div className="mb-1 flex items-center justify-between text-sm">
-              <span className="text-[var(--color-muted)]">{r.label}</span>
-              <span className="font-medium">{r.count}</span>
+              <span className="flex items-center gap-2 text-slate-600">
+                {r.label}
+                {strongest && (
+                  <span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-emerald-600">
+                    Top
+                  </span>
+                )}
+              </span>
+              <span className="tabular-nums font-semibold text-slate-900">{r.count}</span>
             </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--color-border)]">
+            <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
               <div
-                className="h-full rounded-full bg-[var(--color-accent)]"
-                style={{ width: `${pct}%` }}
+                className="h-full rounded-full transition-all duration-500"
+                style={{ width: `${pct}%`, background: r.color }}
               />
             </div>
           </div>
         )
       })}
-      <p className="pt-2 text-xs text-[var(--color-muted)]">
-        Total de {total} conversões no período.
+      <p className="pt-1 text-xs text-slate-400">
+        Total de{' '}
+        <span className="font-semibold text-slate-600 tabular-nums">{total}</span>{' '}
+        conversões no período.
       </p>
+    </div>
+  )
+}
+
+function SkeletonState() {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-8">
+      <div className="flex items-center justify-center gap-2 py-4 text-sm text-slate-500">
+        <Loader2 size={18} className="animate-spin text-[#4f46e5]" />
+        Calculando métricas…
+      </div>
+      <div className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-28 animate-pulse rounded-2xl bg-slate-100" />
+          ))}
+        </div>
+        <div className="h-72 animate-pulse rounded-2xl bg-slate-100" />
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="h-64 animate-pulse rounded-2xl bg-slate-100" />
+          <div className="h-64 animate-pulse rounded-2xl bg-slate-100" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="flex flex-col items-center gap-4 rounded-2xl border border-rose-100 bg-rose-50/60 p-10 text-center">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 text-rose-500">
+        <AlertTriangle size={22} />
+      </div>
+      <div>
+        <p className="font-semibold text-rose-700">
+          Não foi possível carregar os dados
+        </p>
+        <p className="mt-1 text-sm text-rose-500">{message}</p>
+      </div>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="inline-flex items-center gap-2 rounded-full bg-rose-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-rose-700"
+      >
+        <RefreshCw size={15} /> Tentar novamente
+      </button>
+    </div>
+  )
+}
+
+function NoDataState({ text = 'Sem dados no período.' }: { text?: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-200 bg-slate-50/60 py-12 text-slate-400">
+      <BarChart3 size={22} />
+      <p className="text-sm">{text}</p>
     </div>
   )
 }

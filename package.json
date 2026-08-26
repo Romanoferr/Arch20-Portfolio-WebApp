@@ -22,7 +22,8 @@
     "react-dom": "^19.2.7",
     "react-helmet-async": "^3.0.0",
     "react-hook-form": "^7.81.0",
-    "react-router-dom": "^7.18.1"
+    "react-router-dom": "^7.18.1",
+    "recharts": "^3.10.1"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.1116.0",
