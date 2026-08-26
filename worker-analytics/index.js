@@ -260,9 +260,17 @@ async function handleCollect(request, env) {
 
   const ua = request.headers.get('User-Agent') || ''
   const { device_type, browser, os } = classifyUserAgent(ua)
+
+  // Geolocalização: o Cloudflare expõe country/region/city no objeto
+  // `request.cf` (disponível em todos os planos). Os headers `cf-region` e
+  // `cf-city` NÃO existem por padrão (só `cf-ipcountry`), por isso lemos do
+  // objeto `cf` — que traz city, region, regionCode, country, timezone,
+  // latitude e longitude.
+  const cfInfo = request.cf || {}
   const cf = request.headers.get('cf-ipcountry') || request.headers.get('CF-IPCountry')
-  const cfRegion = request.headers.get('cf-region') || request.headers.get('CF-Region')
-  const cfCity = request.headers.get('cf-city') || request.headers.get('CF-City')
+    || cfInfo.country || null
+  const cfRegion = cfInfo.region || cfInfo.regionCode || null
+  const cfCity = cfInfo.city || null
   const first = sessions[0] || {}
   const ref = classifyReferrer(first.referrer || request.headers.get('Referer'))
 
