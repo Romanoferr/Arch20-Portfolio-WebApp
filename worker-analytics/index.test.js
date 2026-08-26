@@ -3,6 +3,37 @@ import { describe, it, expect } from 'vitest'
 // Importa as funções puras do Worker de analytics para testes unitários.
 const { _test } = await import('./index.js')
 
+describe('isOriginAllowed', () => {
+  const env = {
+    ALLOWED_ORIGINS: 'https://brunacamara-arq.com.br,http://localhost:5173',
+  }
+
+  it('permite origin explícita da allowlist', () => {
+    expect(_test.isOriginAllowed(env, 'https://brunacamara-arq.com.br')).toBe(true)
+    expect(_test.isOriginAllowed(env, 'http://localhost:5173')).toBe(true)
+  })
+
+  it('permite domínio próprio com www (subdomínio)', () => {
+    expect(_test.isOriginAllowed(env, 'https://www.brunacamara-arq.com.br')).toBe(true)
+  })
+
+  it('permite qualquer subdomínio do domínio próprio', () => {
+    expect(_test.isOriginAllowed(env, 'https://preview.brunacamara-arq.com.br')).toBe(true)
+  })
+
+  it('rejeita origins não relacionadas e vazias', () => {
+    expect(_test.isOriginAllowed(env, 'https://evil.com')).toBe(false)
+    expect(_test.isOriginAllowed(env, 'https://brunacamara-arq.com.br.evil.com')).toBe(false)
+    expect(_test.isOriginAllowed(env, '')).toBe(false)
+    expect(_test.isOriginAllowed(env, null)).toBe(false)
+  })
+
+  it('permite subdomínio mesmo quando a allowlist só tem o apex', () => {
+    const envApex = { ALLOWED_ORIGINS: 'https://brunacamara-arq.com.br' }
+    expect(_test.isOriginAllowed(envApex, 'https://www.brunacamara-arq.com.br')).toBe(true)
+  })
+})
+
 describe('classifyUserAgent', () => {
   it('detecta desktop/Chrome/Windows', () => {
     const r = _test.classifyUserAgent(

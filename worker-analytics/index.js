@@ -49,13 +49,29 @@ function getSupabase(env) {
 }
 
 // ---------------------------------------------------------------------------
-// CORS — espelha Origin permitida (spowers ALLOWED_ORIGINS vírgula-separada)
+// CORS — permite origins explícitas (ALLOWED_ORIGINS vírgula-separada) E
+// também o domínio próprio do site + subdomínios (ex.: www.), para que o
+// rastreio funcione independente de o visitante acessar por www ou apex.
 // ---------------------------------------------------------------------------
 function isOriginAllowed(env, origin) {
   if (!origin) return false
+
+  // Origins explícitas (allowlist) — inclui localhost em dev.
   const raw = env.ALLOWED_ORIGINS || ''
   const allowed = raw.split(',').map((s) => s.trim()).filter(Boolean)
-  return allowed.includes(origin)
+  if (allowed.includes(origin)) return true
+
+  // Domínio próprio do site (sem www) e subdomínios dele.
+  // `new URL` normaliza e permite comparar hostname de forma segura.
+  let url
+  try {
+    url = new URL(origin)
+  } catch {
+    return false
+  }
+  const host = url.hostname.toLowerCase()
+  const apex = 'brunacamara-arq.com.br'
+  return host === apex || host.endsWith(`.${apex}`)
 }
 
 function buildCorsHeaders(env, origin) {
@@ -327,4 +343,5 @@ export const _test = {
   sanitizePaths,
   sanitizeEvents,
   clampInt,
+  isOriginAllowed,
 }
