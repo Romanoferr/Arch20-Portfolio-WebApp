@@ -124,12 +124,17 @@ export function flush(clear = false): void {
   }
 
   scheduleIdle(() => {
-    const blob = new Blob([JSON.stringify([payload])], { type: 'application/json' })
-    if (typeof navigator.sendBeacon === 'function') {
-      navigator.sendBeacon(ANALYTICS_ENDPOINT, blob)
-    } else {
-      fetch(ANALYTICS_ENDPOINT, { method: 'POST', body: blob, keepalive: true }).catch(() => {})
-    }
+    // fetch(keepalive) em vez de sendBeacon: o sendBeacon bloqueia localmente
+    // (blocked(other)) payloads cross-origin com Content-Type `application/json`
+    // (não é CORS-safelisted) — a requisição nunca chegava ao Worker.
+    // keepalive permite enviar no pagehide/unload e a requisição é concluída
+    // em segundo plano mesmo se a página fechar.
+    fetch(ANALYTICS_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify([payload]),
+      keepalive: true,
+    }).catch(() => {})
     if (clear) session = createNewSession()
   })
 }
