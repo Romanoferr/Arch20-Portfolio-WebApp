@@ -35,9 +35,9 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 // O issuer/URL são constantes (não são secrets). As chaves são buscadas
 // remotamente e cacheadas pelo createRemoteJWKSet.
 // ---------------------------------------------------------------------------
-const SUPABASE_ISSUER = 'https://etmykncryrcjbgiuoea.supabase.co/auth/v1'
+const SUPABASE_ISSUER = 'https://etmykncryrcjbcgiuoea.supabase.co/auth/v1'
 const SUPABASE_JWKS_URL =
-  'https://etmykncryrcjbgiuoea.supabase.co/auth/v1/.well-known/jwks.json'
+  'https://etmykncryrcjbcgiuoea.supabase.co/auth/v1/.well-known/jwks.json'
 
 // Conjunto de chaves públicas remoto (JWKS) com cache interno.
 const supabaseJWKS = createRemoteJWKSet(new URL(SUPABASE_JWKS_URL))
