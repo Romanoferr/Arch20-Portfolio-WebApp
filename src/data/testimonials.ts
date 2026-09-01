@@ -5,33 +5,38 @@ export interface Testimonial {
   project: string
 }
 
+/**
+ * Depoimentos de demonstração (fictícios). Substituir pelo conteúdo real do
+ * cliente no momento da instalação — ou remover o array para ocultar a seção.
+ */
 export const testimonials: Testimonial[] = [
-    {
+  {
     id: '1',
     quote:
-      'Minha experiência no desenvolvimento do projeto foi maravilhosa! Eu nunca havia feito nenhum trabalho com arquiteto, foi a minha primeira experiência e valeu todo o investimento. A Bruna é uma profissional super sensível, detalhista, organizada, busca soluções para adequar nossos sonhos a realidade do projeto, ela conseguiu traduzir a rotina da família e a personalidade de cada um no projeto da casa, ficou lindo demais. Queria destacar também a entrega um momento a parte, ela explica cada detalhe do projeto e a gente ainda recebe mimos!! A experiência foi tão boa que eu não queria que acabasse, ela é muito segura e transmite essa segurança em cada detalhe do projeto! Obrigada Bruna por fazer meu sonho se tornar realidade!! 🥰',
-    author: 'Luciana e Josemar',
-    project: 'Casa Ilha',
+      'A experiência de desenvolver nosso projeto foi maravilhosa. A equipe foi sensível, detalhista e organizada, buscando soluções para adequar nossos sonhos à realidade. Conseguimos traduzir a rotina da família em um projeto que ficou lindo.',
+    author: 'Cliente de Demonstração 1',
+    project: 'Residência Modelo',
   },
   {
     id: '2',
     quote:
-      'Transformar minha área de lazer em um espaço tão bonito e acolhedor foi uma experiência incrível. Desde o primeiro contato com a Bruna, percebi o carinho, a dedicação e a atenção a cada detalhe do projeto. O resultado superou minhas expectativas e traduziu exatamente o que eu sonhava para esse espaço. Sou muito grata pelo excelente trabalho e recomendo com toda a confiança!',
-    author: 'Paula e Flávio',
-    project: 'Área Externa PF',
+      'Transformar nosso espaço em um ambiente tão bonito e acolhedor foi uma experiência incrível. Desde o primeiro contato percebemos o carinho, a dedicação e a atenção a cada detalhe. O resultado superou nossas expectativas.',
+    author: 'Cliente de Demonstração 2',
+    project: 'Área de Lazer',
   },
   {
     id: '3',
     quote:
-      'Conduzir a revitalização da fachada do nosso condomínio foi um processo delicado, que exigia técnica, sensibilidade e muita responsabilidade. Desde o primeiro contato com a Bruna, sentimos o cuidado com cada detalhe do projeto, da escolha dos materiais e das cores até as soluções que garantiriam mais segurança e acessibilidade para os moradores. O resultado não apenas resolveu os problemas estruturais que enfrentávamos, como transformou a aparência do edifício, trazendo um novo brilho e devolvendo aos condôminos o orgulho de morar aqui. Sou muito grato pelo trabalho sério e competente da Bruna e recomendo com toda confiança.',
-    author: 'Fábio ',
-    project: 'Flat Praia Itacoatiara',
+      'Conduzir a revitalização da fachada do nosso condomínio foi um processo delicado, que exigia técnica e responsabilidade. O resultado não apenas resolveu os problemas estruturais, como transformou a aparência do edifício.',
+    author: 'Cliente de Demonstração 3',
+    project: 'Fachada Comercial',
   },
-  {id: '4',
+  {
+    id: '4',
     quote:
-      'A Bruna foi extremamente profissional durante todo o projeto, entendendo nossas necessidades e transformando o ambiente de forma prática e funcional. Demonstrou muito cuidado em cada escolha e atenção aos detalhes, sempre buscando as melhores soluções para o espaço. Ficamos muito satisfeitos com o resultado e com todo o profissionalismo demonstrado durante o processo.',
-    author: 'André',
-    project: 'Escritório SBA',
+      'Profissionalismo em todas as etapas. A equipe entendeu nossas necessidades e transformou o ambiente de forma prática e funcional, com muito cuidado e atenção aos detalhes. Ficamos muito satisfeitos com o resultado.',
+    author: 'Cliente de Demonstração 4',
+    project: 'Escritório Modelo',
   },
 ]
 

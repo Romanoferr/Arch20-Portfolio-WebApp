@@ -7,7 +7,8 @@
     "crons": ["0 3 * * *"]
   },
   "vars": {
-    "ALLOWED_ORIGINS": "https://brunacamara-arq.com.br,http://localhost:5173",
+    "ALLOWED_ORIGINS": "https://seu-dominio.com.br,http://localhost:5173",
+    "SITE_DOMAIN": "seu-dominio.com.br",
     "RETENTION_DAYS": "180"
   }
 }

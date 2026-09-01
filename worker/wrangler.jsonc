@@ -4,6 +4,6 @@
   "main": "index.js",
   "compatibility_date": "2026-08-24",
   "vars": {
-    "ALLOWED_ORIGINS": "https://brunacamara-arq.com.br,http://localhost:5173"
+    "ALLOWED_ORIGINS": "https://seu-dominio.com.br,http://localhost:5173"
   }
 }

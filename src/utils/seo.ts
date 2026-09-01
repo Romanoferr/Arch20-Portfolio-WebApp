@@ -1,31 +1,45 @@
 import type { Project, ProjectCategory } from '@/types/project'
 import { getImageUrl } from '@/lib/r2'
+import { siteConfig } from '@/config/site'
+import { createSeoConfig } from '@/config/seo'
 
-export const SITE_URL = 'https://brunacamara-arq.com.br'
-export const SITE_NAME = 'Bruna Câmara | Arquitetura e Design de Interiores'
-export const SITE_NAME_SHORT = 'Bruna Câmara'
-export const SITE_DESCRIPTION =
-  'Bruna Câmara, arquiteta no Rio de Janeiro e Niterói. Projetos de arquitetura residencial, comercial e design de interiores personalizados.'
-export const LOCALE = 'pt_BR'
-export const OG_IMAGE = `${SITE_URL}/images/og-image.jpg`
-export const OG_IMAGE_WIDTH = 1200
-export const OG_IMAGE_HEIGHT = 630
-export const OG_IMAGE_ALT =
-  'Bruna Câmara — Arquitetura e Design de Interiores no Rio de Janeiro e Niterói'
-export const TWITTER_HANDLE = '@brunacamara.arq'
+/**
+ * Configuração central de SEO.
+ *
+ * TODO (por cliente): definir a URL pública do site (sem barra final) e os
+ * textos padrão. Os textos das páginas podem ser ajustados em `pageSeo`.
+ */
+const seo = createSeoConfig({
+  siteUrl: 'https://site-exemplo.com.br',
+  siteName: siteConfig.name,
+  siteNameFull: siteConfig.name,
+  description: siteConfig.description,
+  locale: 'pt_BR',
+})
+
+export const SITE_URL = seo.siteUrl
+export const SITE_NAME = seo.siteNameFull
+export const SITE_NAME_SHORT = seo.siteName
+export const SITE_DESCRIPTION = seo.description
+export const LOCALE = seo.locale
+export const OG_IMAGE = seo.ogImage
+export const OG_IMAGE_WIDTH = seo.ogImageWidth
+export const OG_IMAGE_HEIGHT = seo.ogImageHeight
+export const OG_IMAGE_ALT = seo.ogImageAlt
+export const TWITTER_HANDLE = seo.twitterHandle
 
 /** Informações de contato e localização (usadas em SEO local e JSON-LD). */
 export const CONTACT = {
-  email: 'camarabruna.arq@gmail.com',
-  telephone: '+5521985330175',
-  instagram: 'https://instagram.com/brunacamara.arq',
-  city: 'Rio de Janeiro',
-  state: 'RJ',
-  country: 'BR',
-  areaServed: ['Rio de Janeiro', 'Niterói'],
+  email: siteConfig.contact.email,
+  telephone: siteConfig.contact.whatsapp || siteConfig.contact.phone,
+  instagram: siteConfig.social.instagram || '',
+  city: siteConfig.address.city,
+  state: siteConfig.address.state,
+  country: siteConfig.address.country,
+  areaServed: [siteConfig.address.city],
   geo: {
-    latitude: -22.9068,
-    longitude: -43.1729,
+    latitude: 0,
+    longitude: 0,
   },
 }
 
@@ -40,33 +54,32 @@ export interface SeoProps {
 
 export const pageSeo: Record<string, SeoProps> = {
   home: {
-    title: 'Bruna Câmara | Arquiteta Rio de Janeiro — Arquitetura e Design de Interiores',
-    description:
-      'Bruna Câmara, arquiteta no Rio de Janeiro e Niterói. Projetos de arquitetura residencial, comercial e design de interiores. Solicite seu orçamento.',
+    title: `${siteConfig.name} | Arquitetura e Design de Interiores`,
+    description: SITE_DESCRIPTION,
     canonical: SITE_URL,
   },
   projetos: {
-    title: 'Portfólio de Arquitetura | Bruna Câmara — Projetos no Rio de Janeiro',
+    title: `Portfólio de Arquitetura | ${siteConfig.name} — Projetos`,
     description:
-      'Conheça o portfólio de arquitetura de Bruna Câmara: projetos residenciais, comerciais e de interiores realizados no Rio de Janeiro e Niterói.',
+      'Conheça o portfólio de arquitetura e design de interiores com projetos residenciais e comerciais.',
     canonical: `${SITE_URL}/projetos/`,
   },
   servicos: {
-    title: 'Serviços de Arquitetura | Bruna Câmara — Arquiteta Rio de Janeiro',
+    title: `Serviços de Arquitetura | ${siteConfig.name}`,
     description:
-      'Serviços de arquitetura residencial, comercial, design de interiores, reformas, paisagismo e consultoria no Rio de Janeiro e Niterói.',
+      'Serviços de arquitetura residencial, comercial, design de interiores, reformas e consultoria.',
     canonical: `${SITE_URL}/servicos/`,
   },
   sobre: {
-    title: 'Sobre | Bruna Câmara — Arquiteta e Urbanista no Rio de Janeiro',
+    title: `Sobre | ${siteConfig.name} — Arquitetura`,
     description:
-      'Arquiteta e Urbanista formada pela UFRJ, especialista em Design de Interiores. Conheça minha trajetória e filosofia de trabalho.',
+      'Conheça a trajetória do escritório de arquitetura e sua filosofia de trabalho.',
     canonical: `${SITE_URL}/sobre/`,
   },
   contato: {
-    title: 'Contato | Bruna Câmara — Arquiteta no Rio de Janeiro e Niterói',
+    title: `Contato | ${siteConfig.name}`,
     description:
-      'Entre em contato com a arquiteta Bruna Câmara para solicitar um orçamento ou tirar dúvidas sobre projetos de arquitetura no Rio de Janeiro e Niterói.',
+      'Entre em contato para solicitar um orçamento ou tirar dúvidas sobre projetos de arquitetura.',
     canonical: `${SITE_URL}/contato/`,
   },
 }
@@ -88,7 +101,7 @@ function truncateAtWord(text: string, maxLength: number): string {
 export function getProjectSeo(project: Project): SeoProps {
   const category = categoryLabels[project.category]
   return {
-    title: `${project.title} | Bruna Câmara — Projeto de Arquitetura ${category}`,
+    title: `${project.title} | ${siteConfig.name} — Projeto de Arquitetura ${category}`,
     description: truncateAtWord(project.description, 155),
     canonical: `${SITE_URL}/projetos/${project.slug}/`,
     ogType: 'article',

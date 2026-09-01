@@ -8,12 +8,15 @@ continuam no Worker `portfolio-arquitetura-r2`.
 
 ```
 React
-  → img.brunacamara-arq.com.br/<objectKey>?preset=<preset>
+  → https://<img-domain>/<objectKey>?preset=<preset>
     → portfolio-image-delivery (este Worker)
-      → Cloudflare Image Transformations (fetcht com cf.image)
-        → images.brunacamara-arq.com.br (custom domain R2)
+      → Cloudflare Image Transformations (fetch com cf.image)
+        → https://<bucket-origin> (custom domain R2)
           → R2 bucket (originais, nunca modificados)
 ```
+
+> As URLs acima dependem do cliente. Configure `ORIGIN_BASE_URL` (origem dos
+> originais no R2) e o Custom Domain de entrega em `wrangler.jsonc`.
 
 ## Presets (whitelist fechada)
 
@@ -49,24 +52,24 @@ wrangler login
 wrangler deploy
 ```
 
-O Custom Domain `img.brunacamara-arq.com.br` é definido em `wrangler.jsonc`
-(`routes` com `custom_domain: true`). O DNS e o certificado são criados
-automaticamente pela Cloudflare.
+O Custom Domain de entrega (ex.: `img.<dominio>.com.br`) é definido em
+`wrangler.jsonc` (`routes` com `custom_domain: true`). O DNS e o certificado
+são criados automaticamente pela Cloudflare.
 
 ## Variáveis / configuração
 
-- `ORIGIN_BASE_URL` (var no `wrangler.jsonc`, padrão
-  `https://images.brunacamara-arq.com.br`): origem dos originais no R2.
+- `ORIGIN_BASE_URL` (var no `wrangler.jsonc`, ex.
+  `https://images.<dominio>.com.br`): origem dos originais no R2.
 - No dashboard Cloudflare, é necessário:
   1. Habilitar **Image Transformations** na zona.
-  2. Adicionar `images.brunacamara-arq.com.br` como **allowed origin** em
-     *Images → Transformations → Sources* (porque a origem é um subdomínio
-     diferente do domínio de entrega).
+  2. Adicionar o custom domain dos originais (ex.: `images.<dominio>.com.br`)
+     como **allowed origin** em *Images → Transformations → Sources* (porque a
+     origem é um subdomínio diferente do domínio de entrega).
 
 ## Teste local
 
 ```bash
 cd worker-image-delivery
 wrangler dev --port 8788
-curl "http://localhost:8788/heroes/Cena_01_v.png?preset=hero"
+curl "http://localhost:8788/heroes/hero-home.jpg?preset=hero"
 ```

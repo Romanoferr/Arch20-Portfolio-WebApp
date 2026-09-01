@@ -1,7 +1,15 @@
 import { Helmet } from 'react-helmet-async'
-import { CONTACT, SITE_URL, SITE_NAME } from '@/utils/seo'
+import {
+  CONTACT,
+  LOCALE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_NAME_SHORT,
+  SITE_URL,
+} from '@/utils/seo'
 import { getImageUrl } from '@/lib/r2'
 import type { Project } from '@/types/project'
+import { siteConfig } from '@/config/site'
 
 interface PersonSchema {
   name: string
@@ -26,12 +34,12 @@ function jsonLdString(data: Record<string, unknown>): string {
 export function JSONLDOrganization() {
   const schema = jsonLdString({
     '@type': 'Organization',
-    name: 'Bruna Câmara',
+    name: SITE_NAME_SHORT,
     url: SITE_URL,
     logo: `${SITE_URL}/favicon.png`,
     email: CONTACT.email,
     telephone: CONTACT.telephone,
-    sameAs: [CONTACT.instagram],
+    sameAs: CONTACT.instagram ? [CONTACT.instagram] : [],
     contactPoint: {
       '@type': 'ContactPoint',
       telephone: CONTACT.telephone,
@@ -51,7 +59,7 @@ export function JSONLDOrganization() {
 export function JSONLDLocalBusiness() {
   const schema = jsonLdString({
     '@type': 'ProfessionalService',
-    name: 'Bruna Câmara - Arquitetura e Design de Interiores',
+    name: `${siteConfig.name} - Arquitetura e Design de Interiores`,
     description:
       'Serviços de arquitetura residencial, comercial, design de interiores, reformas, paisagismo e consultoria.',
     url: SITE_URL,
@@ -156,14 +164,18 @@ export function JSONLDPerson(data: PersonSchema) {
     telephone: data.telephone,
     url: SITE_URL,
     sameAs: data.sameAs,
-    alumniOf: {
-      '@type': 'CollegeOrUniversity',
-      name: data.alumniOf,
-    },
-    areaServed: data.areaServed.map((city) => ({
-      '@type': 'City',
-      name: city,
-    })),
+    alumniOf: data.alumniOf
+      ? {
+          '@type': 'CollegeOrUniversity',
+          name: data.alumniOf,
+        }
+      : undefined,
+    areaServed: data.areaServed
+      .filter(Boolean)
+      .map((city) => ({
+        '@type': 'City',
+        name: city,
+      })),
   })
 
   return (
@@ -178,9 +190,8 @@ export function JSONLDWebsite() {
     '@type': 'WebSite',
     name: SITE_NAME,
     url: SITE_URL,
-    description:
-      'Portfólio de arquitetura com projetos residenciais, comerciais e design de interiores no Rio de Janeiro e Niterói.',
-    inLanguage: 'pt-BR',
+    description: SITE_DESCRIPTION,
+    inLanguage: LOCALE,
     potentialAction: {
       '@type': 'SearchAction',
       target: {
@@ -240,8 +251,8 @@ export function JSONLDProject({ project }: { project: Project }) {
     url: `${SITE_URL}/projetos/${project.slug}/`,
     mainEntityOfPage: `${SITE_URL}/projetos/${project.slug}/`,
     author: {
-      '@type': 'Person',
-      name: 'Bruna Câmara',
+      '@type': 'Organization',
+      name: SITE_NAME_SHORT,
     },
   })
 

@@ -16,7 +16,7 @@ node_modules/.tmp/
 
 ## Env files
 .env
-.env.*.local
+.env.*
 .env.local
 
 ## Logs

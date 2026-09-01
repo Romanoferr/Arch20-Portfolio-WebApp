@@ -1,7 +1,7 @@
 /**
  * Cloudflare Worker — Entrega otimizada de imagens (Image Delivery).
  *
- * Serve imagens do bucket R2 (custom domain `images.brunacamara-arq.com.br`)
+ * Serve imagens do bucket R2 (custom domain configurado em ORIGIN_BASE_URL)
  * aplicando Cloudflare Image Transformations em cache na edge.
  *
  * O arquivo original NUNCA é modificado: as transformações são aplicadas sob
@@ -9,19 +9,19 @@
  * cacheada automaticamente pela Cloudflare.
  *
  * Rota pública (Custom Domain):
- *   https://img.brunacamara-arq.com.br/<objectKey>?preset=<preset>
+ *   https://<img-domain>/<objectKey>?preset=<preset>
  *
  * Exemplos:
  *   /projects/{projectId}/original/{uuid}.jpg?preset=gallery
- *   /heroes/Cena_01_v.png?preset=hero&format=auto
+ *   /heroes/{nome}.jpg?preset=hero&format=auto
  *
  * Segurança:
  *   - Requer um `preset` válido (whitelist fechada) — nunca aceita width/height
  *     arbitrários vindos do cliente.
  *   - Valida o objectKey (structure conhecida), evitando acesso a URLs externas
  *     ou a qualquer caminho fora dos objetos de imagem do bucket R2.
- *   - Nunca expõe credenciais R2. A origem é construída a partir da constante
- *     ORIGIN_BASE_URL (env var do Worker) + o objectKey validado.
+ *   - Nunca expõe credenciais R2. A origem é construída a partir da env var
+ *     ORIGIN_BASE_URL (custom domain do bucket R2) + o objectKey validado.
  *
  * Custo:
  *   Cada combinação (objectKey + preset) conta como uma "unique transformation"
@@ -119,9 +119,10 @@ export default {
     }
 
     // Monta a origem REAL (R2) a partir do objectKey validado.
-    const originBase = (
-      env.ORIGIN_BASE_URL || 'https://images.brunacamara-arq.com.br'
-    ).replace(/\/+$/, '')
+    const originBase = (env.ORIGIN_BASE_URL || '').replace(/\/+$/, '')
+    if (!originBase) {
+      return jsonError('ORIGIN_BASE_URL not configured', 500)
+    }
     const originUrl = `${originBase}/${objectKey}`
 
     // Deixa a engine de transformação negociar o formato (auto), evitando

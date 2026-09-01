@@ -18,7 +18,9 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs'
 import { resolve } from 'path'
 
 const distDir = resolve(import.meta.dirname, '../dist')
-const SITE_URL = 'https://brunacamara-arq.com.br'
+// Configurável por VITE_SITE_URL (URL pública, sem barra final).
+const SITE_URL = (process.env.VITE_SITE_URL || 'https://seu-dominio.com.br').replace(/\/+$/, '')
+const SITE_NAME = process.env.VITE_SITE_NAME || 'Escritório de Arquitetura'
 
 /**
  * SEO por rota. As URLs usam trailing slash porque o GitHub Pages serve
@@ -28,30 +30,30 @@ const SITE_URL = 'https://brunacamara-arq.com.br'
 const routes = [
   {
     path: '/projetos',
-    title: 'Portfólio de Arquitetura | Bruna Câmara — Projetos no Rio de Janeiro',
+    title: `Portfólio de Arquitetura | ${SITE_NAME}`,
     description:
-      'Conheça o portfólio de arquitetura de Bruna Câmara: projetos residenciais, comerciais e de interiores realizados no Rio de Janeiro e Niterói.',
+      'Conheça o portfólio de projetos residenciais e comerciais do escritório.',
     canonical: `${SITE_URL}/projetos/`,
   },
   {
     path: '/servicos',
-    title: 'Serviços de Arquitetura | Bruna Câmara — Arquiteta Rio de Janeiro',
+    title: `Serviços de Arquitetura | ${SITE_NAME}`,
     description:
-      'Serviços de arquitetura residencial, comercial, design de interiores, reformas, paisagismo e consultoria no Rio de Janeiro e Niterói.',
+      'Serviços de arquitetura residencial, comercial, design de interiores e consultoria.',
     canonical: `${SITE_URL}/servicos/`,
   },
   {
     path: '/sobre',
-    title: 'Sobre | Bruna Câmara — Arquiteta e Urbanista no Rio de Janeiro',
+    title: `Sobre | ${SITE_NAME} — Arquitetura`,
     description:
-      'Arquiteta e Urbanista formada pela UFRJ, especialista em Design de Interiores. Conheça minha trajetória e filosofia de trabalho.',
+      'Conheça a trajetória do escritório e sua filosofia de trabalho.',
     canonical: `${SITE_URL}/sobre/`,
   },
   {
     path: '/contato',
-    title: 'Contato | Bruna Câmara — Arquiteta no Rio de Janeiro e Niterói',
+    title: `Contato | ${SITE_NAME}`,
     description:
-      'Entre em contato com a arquiteta Bruna Câmara para solicitar um orçamento ou tirar dúvidas sobre projetos de arquitetura no Rio de Janeiro e Niterói.',
+      'Entre em contato para solicitar um orçamento ou tirar dúvidas sobre projetos.',
     canonical: `${SITE_URL}/contato/`,
   },
 ]

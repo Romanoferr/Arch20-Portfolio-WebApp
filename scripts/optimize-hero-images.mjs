@@ -32,14 +32,14 @@ const DEST_FOLDER = 'heroes'
 
 // Mapeamento: caminho de origem no bucket -> larguras a gerar.
 // As larguras correspondem aos breakpoints usados no srcset do Hero.
+// TODO (por cliente): atualizar com os object keys reais dos heroes.
 const HERO_IMAGES = {
-  'heroes/Cena_01_v.png': [800, 1200, 1600, 2000],
-  'heroes/Cena_02.png': [800, 1200, 1600, 2000],
-  'heroes/sala_01.png': [800, 1200, 1600, 2000],
-  'heroes/Cena_13.png': [800, 1200, 1600, 2000],
-  'heroes/sobre.jpg': [800, 1200, 1600, 2000],
-  'heroes/IMG_2441.JPG': [400, 800, 1200],
-  'heroes/4932a4d8-9ca4-47e9-bee4-52dffdb2b78b.png': [800, 1200, 1600, 2000],
+  'heroes/hero-home.jpg': [800, 1200, 1600, 2000],
+  'heroes/hero-sobre.jpg': [800, 1200, 1600, 2000],
+  'heroes/hero-perfil.jpg': [400, 800, 1200],
+  'heroes/hero-projetos.jpg': [800, 1200, 1600, 2000],
+  'heroes/hero-servicos.jpg': [800, 1200, 1600, 2000],
+  'heroes/hero-contato.jpg': [800, 1200, 1600, 2000],
 }
 
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {

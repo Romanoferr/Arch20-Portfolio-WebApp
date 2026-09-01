@@ -4,33 +4,35 @@ import { describe, it, expect } from 'vitest'
 const { _test } = await import('./index.js')
 
 describe('isOriginAllowed', () => {
+  const DOMAIN = 'site-exemplo.com.br'
   const env = {
-    ALLOWED_ORIGINS: 'https://brunacamara-arq.com.br,http://localhost:5173',
+    ALLOWED_ORIGINS: `https://${DOMAIN},http://localhost:5173`,
+    SITE_DOMAIN: DOMAIN,
   }
 
   it('permite origin explícita da allowlist', () => {
-    expect(_test.isOriginAllowed(env, 'https://brunacamara-arq.com.br')).toBe(true)
+    expect(_test.isOriginAllowed(env, `https://${DOMAIN}`)).toBe(true)
     expect(_test.isOriginAllowed(env, 'http://localhost:5173')).toBe(true)
   })
 
   it('permite domínio próprio com www (subdomínio)', () => {
-    expect(_test.isOriginAllowed(env, 'https://www.brunacamara-arq.com.br')).toBe(true)
+    expect(_test.isOriginAllowed(env, `https://www.${DOMAIN}`)).toBe(true)
   })
 
   it('permite qualquer subdomínio do domínio próprio', () => {
-    expect(_test.isOriginAllowed(env, 'https://preview.brunacamara-arq.com.br')).toBe(true)
+    expect(_test.isOriginAllowed(env, `https://preview.${DOMAIN}`)).toBe(true)
   })
 
   it('rejeita origins não relacionadas e vazias', () => {
     expect(_test.isOriginAllowed(env, 'https://evil.com')).toBe(false)
-    expect(_test.isOriginAllowed(env, 'https://brunacamara-arq.com.br.evil.com')).toBe(false)
+    expect(_test.isOriginAllowed(env, `https://${DOMAIN}.evil.com`)).toBe(false)
     expect(_test.isOriginAllowed(env, '')).toBe(false)
     expect(_test.isOriginAllowed(env, null)).toBe(false)
   })
 
   it('permite subdomínio mesmo quando a allowlist só tem o apex', () => {
-    const envApex = { ALLOWED_ORIGINS: 'https://brunacamara-arq.com.br' }
-    expect(_test.isOriginAllowed(envApex, 'https://www.brunacamara-arq.com.br')).toBe(true)
+    const envApex = { ALLOWED_ORIGINS: `https://${DOMAIN}`, SITE_DOMAIN: DOMAIN }
+    expect(_test.isOriginAllowed(envApex, `https://www.${DOMAIN}`)).toBe(true)
   })
 })
 
@@ -90,7 +92,7 @@ describe('classifyReferrer', () => {
   })
 
   it('classifica interno (domínio do site)', () => {
-    const r = _test.classifyReferrer('https://brunacamara-arq.com.br/projetos')
+    const r = _test.classifyReferrer('https://site-exemplo.com.br/projetos', 'site-exemplo.com.br')
     expect(r.category).toBe('internal')
   })
 

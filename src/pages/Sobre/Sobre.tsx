@@ -7,21 +7,22 @@ import { SEO } from '@/components/SEO/SEO'
 import { JSONLDPerson } from '@/components/SEO/JSONLD'
 import { pageSeo } from '@/utils/seo'
 import { HERO_OBJECT_KEYS } from '@/lib/r2'
+import { siteConfig } from '@/config/site'
 
-const SOBRE_PROFILE_KEY = 'heroes/IMG_2441.JPG'
+const SOBRE_PROFILE_KEY = HERO_OBJECT_KEYS.sobrePerfil
 const PROFILE_PRESETS: ImagePreset[] = ['mobile', 'tablet', 'gallery']
 
 export function Sobre() {
   const personData = {
-    name: 'Bruna Câmara',
-    jobTitle: 'Arquiteta e Urbanista',
+    name: siteConfig.name,
+    jobTitle: 'Arquiteto(a) e Urbanista',
     description:
-      'Arquiteta e Urbanista formada pela UFRJ, especialista em Design de Interiores. À frente da Control B Home, atua com projetos de arquitetura residencial, comercial, design de interiores, financiamento imobiliário e regularização de imóveis no Rio de Janeiro e Niterói.',
-    email: 'camarabruna.arq@gmail.com',
-    telephone: '+5521985330175',
-    alumniOf: 'Universidade Federal do Rio de Janeiro (UFRJ)',
-    sameAs: ['https://instagram.com/brunacamara.arq'],
-    areaServed: ['Rio de Janeiro', 'Niterói'],
+      'Escritório de arquitetura dedicado a transformar ideias em espaços funcionais, confortáveis e duradouros.',
+    email: siteConfig.contact.email,
+    telephone: siteConfig.contact.whatsapp || siteConfig.contact.phone,
+    alumniOf: '',
+    sameAs: siteConfig.social.instagram ? [siteConfig.social.instagram] : [],
+    areaServed: [siteConfig.address.city].filter(Boolean),
   }
 
   return (
@@ -41,20 +42,25 @@ export function Sobre() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div variants={fadeInUp} initial="hidden" animate="visible">
               <h4 className="heading-section mt-2 mb-6">
-                Bruna Câmara
+                {siteConfig.name}
               </h4>
               <div className="space-y-4 text-muted leading-relaxed">
                 <p>
-                  Sou Arquiteta e Urbanista formada pela Universidade Federal do Rio de Janeiro (UFRJ). Atualmente, amplio minha formação por meio da especialização em Design de Interiores, também pela UFRJ, buscando oferecer soluções ainda mais completas, funcionais e personalizadas aos meus clientes. 
+                  Somos um escritório de arquitetura dedicado a transformar ideias em
+                  espaços bem planejados, confortáveis e duradouros. Acreditamos que um
+                  bom projeto vai muito além da estética: cada ambiente deve refletir a
+                  personalidade, as necessidades e o estilo de vida de quem o vivencia.
                 </p>
                 <p>
-                  À frente da Control B Home, atuo de forma integrada nas áreas de arquitetura e financiamento imobiliário, proporcionando um atendimento que acompanha o cliente em diferentes etapas do seu projeto. Além do desenvolvimento de projetos arquitetônicos e do gerenciamento de obras, ofereço serviços de avaliação de imóveis, regularização e legalização de imóveis, além de consultoria e elaboração de planilhas para financiamento imobiliário pela Caixa Econômica Federal. 
+                  Atuamos de forma integrada nas áreas de arquitetura e design de
+                  interiores, acompanhando o cliente em diferentes etapas do projeto —
+                  do desenvolvimento do projeto arquitetônico ao gerenciamento de obras,
+                  avaliação de imóveis e regularização.
                 </p>
                 <p>
-                  Acredito que um bom projeto vai muito além da estética. Cada ambiente deve refletir a personalidade, as necessidades e o estilo de vida de quem irá vivê-lo. Por isso, meu compromisso é desenvolver soluções que equilibrem funcionalidade, qualidade, criatividade e viabilidade financeira, sempre buscando o melhor custo-benefício sem abrir mão da excelência.
-                </p>
-                <p>
-                  Cada trabalho é conduzido com responsabilidade, atenção aos detalhes e transparência em todas as etapas, proporcionando segurança, organização e tranquilidade durante todo o processo. Meu objetivo é transformar ideias em espaços bem planejados, confortáveis e duradouros, entregando resultados que superem as expectativas e agreguem valor ao patrimônio e à experiência de cada cliente.
+                  Nosso compromisso é desenvolver soluções que equilibrem funcionalidade,
+                  qualidade, criatividade e viabilidade financeira, sempre buscando o
+                  melhor custo-benefício sem abrir mão da excelência.
                 </p>
               </div>
             </motion.div>
@@ -69,7 +75,7 @@ export function Sobre() {
                 src={imageUrl(SOBRE_PROFILE_KEY, 'tablet')}
                 srcSet={buildSrcSet(SOBRE_PROFILE_KEY, PROFILE_PRESETS)}
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                alt="Bruna Câmara — Arquiteta e Urbanista — foto de perfil profissional"
+                alt={`${siteConfig.name} — foto de perfil`}
                 loading="lazy"
                 decoding="async"
                 className="w-full aspect-[4/5] object-cover"

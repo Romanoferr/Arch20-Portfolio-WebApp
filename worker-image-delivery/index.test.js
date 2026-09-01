@@ -3,7 +3,7 @@ import { describe, it, expect, afterEach, vi } from 'vitest'
 // Importa o Worker de image delivery.
 const worker = (await import('./index.js')).default
 
-const ORIGIN = 'https://images.brunacamara-arq.com.br'
+const ORIGIN = 'https://origin.example.test'
 
 function makeRequest(url, method = 'GET') {
   return new Request(url, { method })
@@ -104,13 +104,13 @@ describe('Worker de image delivery', () => {
   it('aceita heroes com preset hero', async () => {
     mockFetchOk()
     const res = await worker.fetch(
-      makeRequest('https://img.br/heroes/Cena_01_v.png?preset=hero'),
+      makeRequest('https://img.br/heroes/hero-home.jpg?preset=hero'),
       env,
     )
     expect(res.status).toBe(200)
     const fetchMock = vi.mocked(fetch)
     const [url, opts] = fetchMock.mock.calls[0]
-    expect(url.url).toBe(`${ORIGIN}/heroes/Cena_01_v.png`)
+    expect(url.url).toBe(`${ORIGIN}/heroes/hero-home.jpg`)
     expect(opts.cf.image.width).toBe(1920)
   })
 })

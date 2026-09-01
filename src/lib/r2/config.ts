@@ -6,9 +6,9 @@
  * dezenas de componentes.
  *
  * A partir desta implementação, a entrega de imagens ao navegador passa pelo
- * Worker de image delivery (`img.brunacamara-arq.com.br`), que aplica
- * Cloudflare Image Transformations. O frontend NUNCA gera URLs diretamente
- * para os arquivos originais no R2.
+ * Worker de image delivery (`VITE_IMG_BASE_URL`), que aplica Cloudflare Image
+ * Transformations. O frontend NUNCA gera URLs diretamente para os arquivos
+ * originais no R2.
  */
 
 import type { ImagePreset } from './presets'
@@ -39,7 +39,7 @@ export const r2DeleteEndpoint =
  * `objectKey` e de um `preset` (whitelist).
  *
  * Ex.: getImageUrl("projects/../original/x.jpg", "gallery")
- *   → https://img.brunacamara-arq.com.br/projects/.../x.jpg?preset=gallery
+ *   → {VITE_IMG_BASE_URL}/projects/.../x.jpg?preset=gallery
  *
  * Fallbacks (para não quebrar em dev sem configuração):
  *   - Se `VITE_IMG_BASE_URL` não existir, volta para a URL pública original.
@@ -77,13 +77,16 @@ export function getImageUrl(
 
 /**
  * Object_keys canônicos das imagens de hero, para uso centralizado.
- * (Compatível com a estrutura atual do bucket.)
+ *
+ * TODO (por cliente): apontar para os heroes do novo bucket R2. Mantemos
+ * `heroes/` como convenção padrão do bucket (estructura genérica do Worker de
+ * image delivery). Substitua o nome do arquivo pelo hero real de cada página.
  */
 export const HERO_OBJECT_KEYS = {
-  home: 'heroes/Cena_01_v.png',
-  sobre: 'heroes/4932a4d8-9ca4-47e9-bee4-52dffdb2b78b.png',
-  sobrePerfil: 'heroes/IMG_2441.JPG',
-  projetos: 'heroes/d2315cb1-68a0-4760-bf97-4249af291c99.png',
-  servicos: 'heroes/1ac7d3b7-0637-4e34-8d0e-e8f9ec032aad.png',
-  contatoHero: 'heroes/Cena_13.png',
+  home: 'heroes/hero-home.jpg',
+  sobre: 'heroes/hero-sobre.jpg',
+  sobrePerfil: 'heroes/hero-perfil.jpg',
+  projetos: 'heroes/hero-projetos.jpg',
+  servicos: 'heroes/hero-servicos.jpg',
+  contatoHero: 'heroes/hero-contato.jpg',
 } as const

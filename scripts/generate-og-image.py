@@ -18,7 +18,9 @@ ACCENT = (139, 115, 85)   # --color-accent
 TEXT = (26, 26, 26)       # --color-text
 MUTED = (107, 107, 107)   # --color-muted
 
-LOGO_PATH = os.path.join('src', 'assets', 'logos', 'bc-logo-site.png')
+# Configurável por env (ex.: OG_TITLE="Escritório X"), com fallback genérico.
+TITLE = os.environ.get('OG_TITLE', 'Escritório de Arquitetura')
+LOGO_PATH = os.environ.get('LOGO_PATH', os.path.join('src', 'assets', 'logos', 'logo.png'))
 
 
 def load_font(size):
@@ -57,7 +59,7 @@ def main():
 
     # Título
     title_font = load_font(64)
-    title = 'Bruna Câmara'
+    title = TITLE
     title_bbox = draw.textbbox((0, 0), title, font=title_font)
     title_w = title_bbox[2] - title_bbox[0]
     draw.text(

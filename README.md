@@ -1,6 +1,29 @@
-# Estúdio Forma — Portfólio de Arquitetura
+# Template — Portfólio de Arquitetura
 
-Site responsivo de portfólio para arquitetura, desenvolvido com React, Vite e TypeScript.
+Template reutilizável de site de portfólio profissional para escritórios de
+arquitetura, desenvolvido com React, Vite e TypeScript.
+
+Use este template para criar novos sites de clientes (`architecture-portfolio-client01`,
+`architecture-portfolio-client02`, etc.), cada um com seu próprio repositório,
+Supabase, R2, Workers e domínio.
+
+## 1. Como criar um novo site a partir deste template
+
+1. **Crie um novo repositório** no GitHub (`Use this template` ou copie esta branch).
+2. **Clone** e rode `npm install`.
+3. Copie `.env.example` para `.env` e preencha com os dados do novo cliente
+   (veja a seção [Variáveis de ambiente](#variáveis-de-ambiente)).
+4. Crie o **Supabase** da instância e aplique as migrations
+   (`supabase/migrations/`).
+5. Crie o **bucket R2** e faça deploy dos **Workers** (upload/delete, analytics,
+   image delivery).
+6. Personalize `src/config/` (nome, contato, SEO), as cores em
+   `src/styles/index.css` e substitua as imagens.
+7. Configure o **GitHub Pages** e o domínio custom (veja a seção Deploy).
+
+> **Importante:** este template NÃO contém dados, credenciais, domínio ou
+> imagens de nenhum cliente específico. Toda a configuração específica fica em
+> `src/config/` e nas variáveis de ambiente.
 
 ## Tecnologias
 
@@ -93,10 +116,10 @@ e `display_order`.
 ```
 React
   → getImageUrl(objectKey, preset)
-    → img.brunacamara-arq.com.br/<objectKey>?preset=<preset>
+    → img.seu-dominio.com.br/<objectKey>?preset=<preset>
       → Image Delivery Worker (portfolio-image-delivery)
         → Cloudflare Image Transformations (cf.image)
-          → images.brunacamara-arq.com.br (custom domain R2)
+          → images.seu-dominio.com.br (custom domain R2)
             → R2 bucket (originais, nunca modificados)
 ```
 
@@ -125,10 +148,10 @@ arbitrárias de `width`/`height`/`quality`, para preservar cache e custo.
 ### Formato de URL
 
 ```
-https://img.brunacamara-arq.com.br/<objectKey>?preset=<preset>
+https://img.seu-dominio.com.br/<objectKey>?preset=<preset>
 ```
 
-Ex.: `https://img.brunacamara-arq.com.br/projects/123/original/abc.jpg?preset=gallery`
+Ex.: `https://img.seu-dominio.com.br/projects/123/original/abc.jpg?preset=gallery`
 
 ### Abstração central
 
@@ -147,19 +170,19 @@ Todo acesso a imagem passa por `getImageUrl(objectKey, preset)` em
 
 ### Configuração Cloudflare (dashboard)
 
-1. Habilitar **Image Transformations** na zona `brunacamara-arq.com.br`
+1. Habilitar **Image Transformations** na zona `seu-dominio.com.br`
    (*Images → Transformations*).
-2. Adicionar `images.brunacamara-arq.com.br` como **allowed origin** em
+2. Adicionar `images.seu-dominio.com.br` como **allowed origin** em
    *Images → Transformations → Sources* (a origem é um subdomínio diferente do
    domínio de entrega).
 3. Deploy do Worker `portfolio-image-delivery` e conectar o **Custom Domain**
-   `img.brunacamara-arq.com.br` (DNS/certificado automáticos).
+   `img.seu-dominio.com.br` (DNS/certificado automáticos).
 
 ### Variáveis de ambiente
 
-- `VITE_IMG_BASE_URL=https://img.brunacamara-arq.com.br` — base do Worker de
+- `VITE_IMG_BASE_URL=https://img.seu-dominio.com.br` — base do Worker de
   entrega (usada pelo frontend para todas as imagens).
-- `VITE_R2_PUBLIC_URL=https://images.brunacamara-arq.com.br` — origem dos
+- `VITE_R2_PUBLIC_URL=https://images.seu-dominio.com.br` — origem dos
   originais (fallback legado / origem do Worker).
 
 ### Deploy do Worker de entrega
@@ -189,8 +212,163 @@ npm run build     # typecheck + build
 1. Abra a URL da imagem no navegador e verifique o `Cache-Control`/status.
 2. Verifique se a combinação (objectKey + preset) já foi transformada
    (primeira requisição = cache miss; seguintes = cache hit).
-3. Confirme que `images.brunacamara-arq.com.br` está como allowed origin.
+3. Confirme que `images.seu-dominio.com.br` está como allowed origin.
 4. Verifique o custo/limite de transformações em *Images → Transformations*.
+
+## Variáveis de ambiente
+
+Copie `.env.example` para `.env` e preencha:
+
+| Variável | Obrigatória | Descrição |
+|---|---|---|
+| `VITE_SITE_URL` | sim | URL pública do site (sem barra final), ex. `https://clientename.com.br` |
+| `VITE_SUPABASE_URL` | sim | URL do projeto Supabase |
+| `VITE_SUPABASE_ANON_KEY` | sim | Chave pública anon do Supabase |
+| `VITE_EMAILJS_SERVICE_ID` | depende | Service ID do EmailJS (formulário) |
+| `VITE_EMAILJS_TEMPLATE_ID` | depende | Template ID do EmailJS |
+| `VITE_EMAILJS_PUBLIC_KEY` | depende | Public key do EmailJS |
+| `VITE_IMG_BASE_URL` | sim | Base do Worker de image delivery (ex. `https://img.<dominio>.com.br`) |
+| `VITE_R2_PUBLIC_URL` | fallback | Custom domain do bucket R2 |
+| `VITE_ANALYTICS_ENDPOINT` | não | Endpoint do Worker de analytics (`/api/collect`) |
+| `VITE_R2_UPLOAD_ENDPOINT` | admin | Endpoint do Worker de upload |
+| `VITE_R2_DELETE_ENDPOINT` | admin | Endpoint do Worker de delete |
+
+Server-side (NUNCA com prefixo `VITE_`, NUNCA no frontend — vão como **secrets**
+no Cloudflare/GitHub): `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ADMIN_EMAIL`,
+`SUPABASE_ADMIN_KEY`, `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`,
+`R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `CLOUDFLARE_API_TOKEN`.
+
+## 2. Supabase (por cliente)
+
+1. Crie um projeto novo no Supabase.
+2. Aplique as migrations em `supabase/migrations/` (**0001** projetos, **0002–0004**
+   analytics) via **SQL Editor** ou `supabase db push`. Elas criam tabelas, índices,
+   RLS, RPCs e o bucket `project-images`.
+3. Em **Authentication → Settings**, habilite o provedor Email e defina as
+   **Redirect URLs**:
+   - `http://localhost:5173/admin/login`
+   - `https://<seu-dominio>/admin/login`
+4. Crie o primeiro usuário administrador em **Authentication → Users**.
+5. Defina os **secrets** no Worker/R2 (ver seções abaixo).
+
+## 3. Cloudflare R2 (por cliente)
+
+1. Crie um **bucket R2** (ex.: `project-images`).
+2. Crie um **Custom Domain** público (ex.: `images.<dominio>.com.br`) para servir os originais.
+3. Gere `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` em **R2 → Manage R2 API Tokens**.
+4. Configure os **secrets** do Worker de upload/delete:
+   `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`,
+   `ALLOWED_ORIGINS`, `SUPABASE_URL`.
+
+Deploy do Worker de upload/delete:
+
+```bash
+cd worker
+npm install
+wrangler login
+wrangler secret put R2_ACCOUNT_ID
+wrangler secret put R2_ACCESS_KEY_ID
+wrangler secret put R2_SECRET_ACCESS_KEY
+wrangler secret put R2_BUCKET_NAME
+wrangler secret put SUPABASE_URL
+wrangler deploy
+```
+
+> Ajuste `ALLOWED_ORIGINS` em `worker/wrangler.jsonc` com o domínio do cliente.
+
+## 4. Image Delivery (por cliente)
+
+1. Crie o Worker em `worker-image-delivery/`.
+2. Ajuste `wrangler.jsonc`: `ORIGIN_BASE_URL` (custom domain do bucket, ex.
+   `https://images.<dominio>.com.br`) e o `pattern` do *Custom Domain* de entrega
+   (ex. `img.<dominio>.com.br`).
+3. Habilite **Image Transformations** na zona e adicione o custom domain dos
+   originais como **allowed origin**.
+4. Deploy:
+
+```bash
+cd worker-image-delivery
+npm install
+wrangler deploy
+```
+
+5. Defina `VITE_IMG_BASE_URL=https://img.<dominio>.com.br` no frontend.
+
+## 5. Analytics (opcional, por cliente)
+
+O Worker em `worker-analytics/` coleta sessões (privacy-first). Configure os
+secrets `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` e as vars `ALLOWED_ORIGINS`
+e `SITE_DOMAIN` (domínio do cliente) em `wrangler.jsonc`. Depois aponte
+`VITE_ANALYTICS_ENDPOINT` para o endpoint publicado.
+
+## 6. Personalização
+
+> **Regra geral:** a **identidade do cliente** (nome, contato, redes, endereço,
+> SEO) fica **só** em `src/config/`. O **conteúdo** editável do site (serviços,
+> depoimentos, links do menu) fica em `src/data/`. Não duplique dados de
+> identidade em mais de um lugar — edite `siteConfig` e o restante se reflete
+> automaticamente.
+
+### Identidade e contato
+
+Edite `src/config/site.ts` (`siteConfig`): nome, tagline, e-mail, telefone,
+WhatsApp, redes sociais e endereço. Campos vazios omitem o respectivo elemento
+(ex.: botão de WhatsApp se `contact.whatsapp` estiver vazio, link do Instagram
+se `social.instagram` estiver vazio).
+
+### SEO
+
+Edite `src/config/seo.ts` (função `createSeoConfig`): URL pública do site,
+nome, descrição, locale.
+
+### Conteúdo editável (`src/data/`)
+
+- `services.ts` — serviços prestados.
+- `testimonials.ts` — depoimentos.
+- `navigation.ts` — links do menu (`navLinks`).
+
+### Cores e tipografia
+
+Edite as variáveis em `src/styles/index.css` (`@theme`):
+
+```css
+--color-bg: #fafaf8;
+--color-accent: #8b7355;
+/* ... */
+```
+
+### Imagens
+
+- **Heroes:** substitua os object keys em `src/lib/r2/config.ts` (`HERO_OBJECT_KEYS`)
+  e faça upload das imagens para o bucket em `heroes/`.
+- **Logo/favicons:** coloque os novos em `public/` e remova os placeholders.
+- **Projetos:** faça upload via painel Admin (`/admin`).
+
+### Textos institucionais
+
+- `Sobre` → `src/pages/Sobre/Sobre.tsx` (conteúdo institucional do escritório).
+- Depoimentos → `src/data/testimonials.ts`.
+- Serviços → `src/data/services.ts`.
+
+## 7. GitHub Pages (por cliente)
+
+1. Vá em **Settings → Pages** do repositório → fonte: *GitHub Actions*.
+2. Defina os **secrets** do repositório (Settings → Secrets and variables → Actions):
+   `VITE_SITE_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`,
+   `VITE_EMAILJS_*`, `VITE_IMG_BASE_URL`,
+   `VITE_R2_PUBLIC_URL`, `VITE_ANALYTICS_ENDPOINT`, `VITE_R2_UPLOAD_ENDPOINT`,
+   `VITE_R2_DELETE_ENDPOINT`, `CLOUDFLARE_API_TOKEN`.
+3. Se usar domínio custom, atualize `public/CNAME` e o DNS (registro CNAME).
+
+## 8. Deploy
+
+O workflow `.github/workflows/deploy.yml` roda no push para `main` e faz:
+build → sitemap → pré-renderização SEO → copy 404 → deploy GitHub Pages, e em
+paralelo o deploy dos Workers (R2 capa e image delivery).
+
+```bash
+git push origin main
+```
 
 ## Estrutura do projeto
 
@@ -198,37 +376,16 @@ npm run build     # typecheck + build
 src/
 ├── assets/          # Imagens e logos
 ├── components/      # Navbar, Hero, Footer, Gallery, etc.
+├── config/          # Identidade do cliente (site.ts) e SEO (seo.ts)
 ├── pages/           # Home, Projetos, Serviços, Sobre, Contato
-├── data/            # Conteúdo (projetos, serviços, depoimentos)
+├── data/            # Conteúdo editável (navegação, serviços, depoimentos)
 ├── hooks/           # useMediaQuery, useScrollToTop, useProjects
 ├── utils/           # Helpers e animações
 └── styles/          # CSS global e tema
 ```
 
-## Personalização
-
-### Conteúdo
-
-Edite os arquivos em `src/data/`:
-
-- `projects.ts` — projetos do portfólio
-- `services.ts` — serviços prestados
-- `testimonials.ts` — depoimentos de clientes
-- `navigation.ts` — links do menu e informações de contato
-
-### Imagens
-
-Substitua as URLs do Unsplash por suas próprias imagens em `src/assets/imagens/` e atualize os caminhos nos arquivos de dados.
-
-### Cores e tipografia
-
-Ajuste as variáveis CSS em `src/styles/index.css`:
-
-```css
---color-bg: #fafaf8;
---color-accent: #8b7355;
-/* ... */
-```
+> **Dica:** a identidade/contato do cliente ficam **só** em `src/config/site.ts`.
+> O conteúdo editável (serviços, depoimentos, links do menu) fica em `src/data/`.
 
 ### Formulário de contato (EmailJS)
 
@@ -286,4 +443,4 @@ No GitHub, vá em Settings → Secrets and variables → Actions e adicione os v
 
 ## Licença
 
-Projeto privado — Estúdio Forma.
+Projeto privado — Template de portfólio de arquitetura.

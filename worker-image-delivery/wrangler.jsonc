@@ -5,11 +5,11 @@
   "compatibility_date": "2026-08-24",
   "routes": [
     {
-      "pattern": "img.brunacamara-arq.com.br",
+      "pattern": "img.seu-dominio.com.br",
       "custom_domain": true
     }
   ],
   "vars": {
-    "ORIGIN_BASE_URL": "https://images.brunacamara-arq.com.br"
+    "ORIGIN_BASE_URL": "https://images.seu-dominio.com.br"
   }
 }

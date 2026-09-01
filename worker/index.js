@@ -20,10 +20,10 @@
  *
  * Variables de entorno (secrets no Worker):
  *   R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME,
- *   ALLOWED_ORIGIN
+ *   ALLOWED_ORIGIN, SUPABASE_URL
  *
  * Nota: a validação de sessão NÃO usa SUPABASE_JWT_SECRET. Os tokens ES256
- * são validados com o JWKS público do Supabase.
+ * são validados com o JWKS público do Supabase (derivado de SUPABASE_URL).
  */
 
 import { createRemoteJWKSet, jwtVerify } from 'jose'
@@ -32,15 +32,20 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 // ---------------------------------------------------------------------------
 // Supabase Auth — JWKS pública (validação JWT ES256)
-// O issuer/URL são constantes (não são secrets). As chaves são buscadas
-// remotamente e cacheadas pelo createRemoteJWKSet.
+// O issuer/URL vem de env vars do Worker (SUPABASE_URL). As chaves são
+// buscadas remotamente e cacheadas pelo createRemoteJWKSet.
 // ---------------------------------------------------------------------------
-const SUPABASE_ISSUER = 'https://etmykncryrcjbcgiuoea.supabase.co/auth/v1'
-const SUPABASE_JWKS_URL =
-  'https://etmykncryrcjbcgiuoea.supabase.co/auth/v1/.well-known/jwks.json'
 
 // Conjunto de chaves públicas remoto (JWKS) com cache interno.
-const supabaseJWKS = createRemoteJWKSet(new URL(SUPABASE_JWKS_URL))
+// Criado sob demanda porque depende de env (definido no fetch()).
+let supabaseJWKS = null
+function getSupabaseJWKS(env) {
+  if (supabaseJWKS) return supabaseJWKS
+  const base = (env.SUPABASE_URL || '').replace(/\/+$/, '')
+  if (!base) return null
+  supabaseJWKS = createRemoteJWKSet(new URL(`${base}/auth/v1/.well-known/jwks.json`))
+  return supabaseJWKS
+}
 
 // ---------------------------------------------------------------------------
 // CORS — espelha dinamicamente o Origin da request, SE ele estiver na lista
@@ -84,16 +89,21 @@ function json(body, status = 200, env, origin) {
 // ---------------------------------------------------------------------------
 // Verificación de la sesión de Supabase (JWT ES256 via JWKS)
 // ---------------------------------------------------------------------------
-async function verifySupabaseSession(authorization) {
+async function verifySupabaseSession(authorization, env) {
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return null
   }
 
   const token = authorization.slice(7)
+  const jwks = getSupabaseJWKS(env)
+  if (!jwks) {
+    return null
+  }
 
   try {
-    const { payload } = await jwtVerify(token, supabaseJWKS, {
-      issuer: SUPABASE_ISSUER,
+    const base = (env.SUPABASE_URL || '').replace(/\/+$/, '')
+    const { payload } = await jwtVerify(token, jwks, {
+      issuer: `${base}/auth/v1`,
       algorithms: ['ES256'],
     })
 
@@ -149,7 +159,7 @@ async function buildPresignedUrl(method, objectKey, env, expiresIn = 3600) {
 // ---------------------------------------------------------------------------
 async function handleUpload(request, env) {
   const origin = request.headers.get('Origin')
-  const session = await verifySupabaseSession(request.headers.get('Authorization'))
+  const session = await verifySupabaseSession(request.headers.get('Authorization'), env)
   if (!session) {
     return json({ error: 'No autorizado' }, 401, env, origin)
   }
@@ -172,7 +182,7 @@ async function handleUpload(request, env) {
 
 async function handleDelete(request, env) {
   const origin = request.headers.get('Origin')
-  const session = await verifySupabaseSession(request.headers.get('Authorization'))
+  const session = await verifySupabaseSession(request.headers.get('Authorization'), env)
   if (!session) {
     return json({ error: 'No autorizado' }, 401, env, origin)
   }

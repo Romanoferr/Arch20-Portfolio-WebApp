@@ -11,10 +11,11 @@ export const navLinks: NavLink[] = [
   { label: 'Contato', path: '/contato/' },
 ]
 
-export const siteInfo = {
-  name: 'Bruna Câmara',
-  tagline: 'Arquitetura & Design de Interiores',
-  email: 'camarabruna.arq@gmail.com',
-  phone: '+55 (21) 98533-0175',
-  instagram: 'https://instagram.com/brunacamara.arq'
-}
+/**
+ * Identidade/contato do escritório ficam centralizados em `src/config/site.ts`
+ * (siteConfig). Esta pasta contém apenas conteúdo/navegação editável:
+ *   - navigation.ts  → links do menu
+ *   - services.ts    → serviços prestados
+ *   - testimonials.ts→ depoimentos
+ *   - projects.ts    → reexporta o serviço de projetos (banco)
+ */

@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/login
 
-Sitemap: https://brunacamara-arq.com.br/sitemap.xml
+Sitemap: https://seu-dominio.com.br/sitemap.xml

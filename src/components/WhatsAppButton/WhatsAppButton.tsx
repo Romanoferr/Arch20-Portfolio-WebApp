@@ -1,18 +1,21 @@
 // Mensagem pré-preenchida enviada ao abrir a conversa no WhatsApp.
 // Edite aqui para alterar o texto padrão.
+import { siteConfig } from '@/config/site'
 import { trackEvent } from '@/lib/analytics/tracker'
 
 const WHATSAPP_MESSAGE = 'Olá! Vim pelo site e gostaria de mais informações.'
 
 export function WhatsAppButton() {
-  const phoneNumber = import.meta.env.VITE_WHATSAPP_NUMBER
+  const phoneNumber = siteConfig.contact.whatsapp
 
   // Se o número não estiver configurado, não renderiza o botão.
   if (!phoneNumber) {
     return null
   }
 
-  const href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`
+  // Garante apenas dígitos (DDI+DDD+número) para o https://wa.me/<numero>.
+  const cleanNumber = phoneNumber.replace(/\D+/g, '')
+  const href = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`
 
   return (
     <a

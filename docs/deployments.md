@@ -25,12 +25,12 @@ adicionar as secrets em *Settings → Variables and Secrets*.
 ### CORS / ALLOWED_ORIGIN
 
 Defina `ALLOWED_ORIGIN` (no `wrangler.jsonc` ou como secret) para o domínio do
-site, ex.: `https://brunacamara-arq.com.br`. Durante o desenvolvimento local,
+site, ex.: `https://exemplo.com.br`. Durante o desenvolvimento local,
 pode usar `http://localhost:5173`.
 
 ## URL pública R2
 
-- O bucket R2 usa um **custom domain** ativo: `https://images.brunacamara-arq.com.br`.
+- O bucket R2 usa um **custom domain** ativo: `https://images.exemplo.com.br`.
 - Configure `VITE_R2_PUBLIC_URL` para esse domínio no `.env`.
 
 ## Site estático (GitHub Pages)

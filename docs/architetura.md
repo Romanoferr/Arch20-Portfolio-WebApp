@@ -56,10 +56,10 @@ trocar de provedor (R2 → outro CDN) sem alterar dezenas de componentes.
 
 ```
 React → getImageUrl(objectKey, preset)
-  → https://img.brunacamara-arq.com.br/<objectKey>?preset=<preset>
+  → https://img.exemplo.com.br/<objectKey>?preset=<preset>
     → portfolio-image-delivery (Worker)
       → Cloudflare Image Transformations (cf.image)
-        → https://images.brunacamara-arq.com.br/<objectKey> (custom domain R2)
+        → https://images.exemplo.com.br/<objectKey> (custom domain R2)
           → R2 bucket (originais)
 ```
 
@@ -102,7 +102,7 @@ Admin → DELETE /api/delete { objectKey } (JWT)
 
 ```
 React → getImageUrl(objectKey, preset)
-  → https://img.brunacamara-arq.com.br/<objectKey>?preset=<preset>
+  → https://img.exemplo.com.br/<objectKey>?preset=<preset>
   → Image Delivery Worker → Cloudflare Image Transformations → R2
 ```
 

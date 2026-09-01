@@ -22,7 +22,8 @@ import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const SITE_URL = 'https://brunacamara-arq.com.br'
+// Configurável por VITE_SITE_URL (URL pública, sem barra final).
+const SITE_URL = (process.env.VITE_SITE_URL || 'https://seu-dominio.com.br').replace(/\/+$/, '')
 const PUBLIC_DIR = resolve(__dirname, '../public')
 const SITEMAP_PATH = resolve(PUBLIC_DIR, 'sitemap.xml')
 

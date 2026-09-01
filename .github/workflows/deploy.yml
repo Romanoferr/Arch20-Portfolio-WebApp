@@ -33,12 +33,12 @@ jobs:
       - name: Build
         env:
           VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || '/' }}
+          VITE_SITE_URL: ${{ secrets.VITE_SITE_URL }}
           VITE_EMAILJS_SERVICE_ID: ${{ secrets.VITE_EMAILJS_SERVICE_ID }}
           VITE_EMAILJS_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_TEMPLATE_ID }}
           VITE_EMAILJS_PUBLIC_KEY: ${{ secrets.VITE_EMAILJS_PUBLIC_KEY }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_WHATSAPP_NUMBER: ${{ secrets.VITE_WHATSAPP_NUMBER }}
           VITE_R2_PUBLIC_URL: ${{ secrets.VITE_R2_PUBLIC_URL }}
           VITE_IMG_BASE_URL: ${{ secrets.VITE_IMG_BASE_URL }}
           VITE_ANALYTICS_ENDPOINT: ${{ secrets.VITE_ANALYTICS_ENDPOINT }}
@@ -48,12 +48,14 @@ jobs:
 
       - name: Generate dynamic sitemap (includes project pages)
         env:
+          VITE_SITE_URL: ${{ secrets.VITE_SITE_URL }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: node scripts/generate-sitemap.mjs
 
       - name: Prerender static routes for Google indexing
         env:
+          VITE_SITE_URL: ${{ secrets.VITE_SITE_URL }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: node scripts/prerender-static.mjs

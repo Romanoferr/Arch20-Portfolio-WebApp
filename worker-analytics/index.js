@@ -24,6 +24,8 @@
  * Secrets (no Dashboard/Wrangler):
  *   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (NUNCA no frontend)
  *   ALLOWED_ORIGINS  (var pública espelhada do wrangler.jsonc)
+ *   SITE_DOMAIN      (domínio próprio do site, ex.: exemplo.com.br — também
+ *                     aceito como var em wrangler.jsonc)
  *   RETENTION_DAYS   (var, padrão 180)
  */
 
@@ -70,7 +72,10 @@ function isOriginAllowed(env, origin) {
     return false
   }
   const host = url.hostname.toLowerCase()
-  const apex = 'brunacamara-arq.com.br'
+  const apex = (env.SITE_DOMAIN || '').toLowerCase().replace(/^https?:\/\//, '')
+  if (!apex) {
+    return false
+  }
   return host === apex || host.endsWith(`.${apex}`)
 }
 
@@ -123,7 +128,7 @@ function classifyUserAgent(ua) {
 }
 
 /** Classifica a origem a partir do Referer (sem armazenar query/PII). */
-function classifyReferrer(ref) {
+function classifyReferrer(ref, internalDomain = '') {
   if (!ref) return { category: 'direct', domain: null }
   let hostname
   try {
@@ -134,7 +139,8 @@ function classifyReferrer(ref) {
   if (!hostname) return { category: 'direct', domain: null }
 
   const h = hostname.toLowerCase()
-  if (h === 'brunacamara-arq.com.br' || h.endsWith('.brunacamara-arq.com.br')) {
+  const apex = (internalDomain || '').toLowerCase().replace(/^https?:\/\//, '')
+  if (apex && (h === apex || h.endsWith(`.${apex}`))) {
     return { category: 'internal', domain: hostname }
   }
   if (/(^|\.)(google\.|bing\.|yahoo\.|duckduckgo\.|baidu\.)/.test(h)) {
@@ -272,7 +278,7 @@ async function handleCollect(request, env) {
   const cfRegion = cfInfo.region || cfInfo.regionCode || null
   const cfCity = cfInfo.city || null
   const first = sessions[0] || {}
-  const ref = classifyReferrer(first.referrer || request.headers.get('Referer'))
+  const ref = classifyReferrer(first.referrer || request.headers.get('Referer'), env.SITE_DOMAIN)
 
   const enriched = sessions.map((s) => ({
     ...s,

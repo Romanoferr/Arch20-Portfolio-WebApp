@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, type JSX } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { navLinks, siteInfo } from '@/data/navigation'
+import { navLinks } from '@/data/navigation'
+import { siteConfig } from '@/config/site'
 import { cn } from '@/utils/cn'
-import logo from '@/assets/logos/bc-logo-site.png'
 
 export function Navbar(): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
@@ -44,14 +44,13 @@ export function Navbar(): JSX.Element {
       <header className="fixed inset-x-4 top-6 z-50 mx-auto flex max-w-7xl rounded-[36px] border border-white/70 bg-white/70 px-4 py-1 shadow-[0_24px_80px_rgba(0,0,0,0.12)] backdrop-blur-md md:inset-x-6 md:px-8">
         <nav className="container-main flex h-10 items-center justify-between gap-6 md:h-12">
           <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-4 group">
-              <img src={logo} alt={siteInfo.name} className="h-8 w-auto" />
+            <Link to="/" className="flex items-center group">
               <div className="hidden sm:block">
                 <span className="block text-sm tracking-[0.15em] leading-none text-[#94714D]">
-                  {siteInfo.name}
+                  {siteConfig.name}
                 </span>
                 <span className="mt-0.5 block text-[10px] tracking-[0.2em] text-[#94714D]">
-                  {siteInfo.tagline}
+                  {siteConfig.tagline}
                 </span>
               </div>
             </Link>
@@ -77,19 +76,21 @@ export function Navbar(): JSX.Element {
             </ul>
             </div>
             <div className="flex items-center gap-4">
-              <a
-                href={siteInfo.instagram}
-                target="_blank"
-                rel="noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#94714D]/20 bg-white/80 text-[#94714D] transition-colors hover:bg-[#94714D]/10"
-                aria-label="Instagram"
-              >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.6" />
-                <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.6" />
-                <circle cx="17" cy="7" r="1" fill="currentColor" />
-              </svg>
-            </a>
+              {siteConfig.social.instagram && (
+                <a
+                  href={siteConfig.social.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#94714D]/20 bg-white/80 text-[#94714D] transition-colors hover:bg-[#94714D]/10"
+                  aria-label="Instagram"
+                >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.6" />
+                  <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.6" />
+                  <circle cx="17" cy="7" r="1" fill="currentColor" />
+                </svg>
+              </a>
+              )}
 
             <button
               ref={menuButtonRef}

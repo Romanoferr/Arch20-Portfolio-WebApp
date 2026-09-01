@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { Mail, Phone } from 'lucide-react'
 import { Hero } from '@/components/Hero/Hero'
 import { ContactForm } from '@/components/ContactForm/ContactForm'
-import { siteInfo } from '@/data/navigation'
+import { siteConfig } from '@/config/site'
 import { fadeInUp } from '@/utils/animations'
 import { SEO } from '@/components/SEO/SEO'
 import { pageSeo } from '@/utils/seo'
@@ -44,7 +44,7 @@ export function Contato() {
                   </div>
                   <div>
                     <p className="text-xs tracking-[0.15em] uppercase text-muted mb-1">Telefone</p>
-                    <p className="text-sm">{siteInfo.phone}</p>
+                    <p className="text-sm">{siteConfig.contact.phone}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
@@ -54,11 +54,11 @@ export function Contato() {
                   <div>
                     <p className="text-xs tracking-[0.15em] uppercase text-muted mb-1">E-mail</p>
                     <a
-                      href={`mailto:${siteInfo.email}`}
+                      href={`mailto:${siteConfig.contact.email}`}
                       onClick={() => trackEvent('email')}
                       className="text-sm text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)]"
                     >
-                      {siteInfo.email}
+                      {siteConfig.contact.email}
                     </a>
                   </div>
                 </li>
