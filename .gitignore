@@ -35,6 +35,12 @@ coverage/
 .wrangler/
 .wrangler-check/
 
+## Arquivos de secrets temporários (gerados no CI para `wrangler --secrets-file`)
+worker/*-secrets.env
+worker-analytics/*-secrets.env
+worker-image-delivery/*-secrets.env
+secrets.env
+
 ## Misc
 .cache/
 .sass-cache/

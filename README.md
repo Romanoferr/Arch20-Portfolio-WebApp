@@ -217,26 +217,46 @@ npm run build     # typecheck + build
 
 ## Variáveis de ambiente
 
-Copie `.env.example` para `.env` e preencha:
+Copie `.env.example` para `.env` (dev local). Em produção, os valores são
+fornecidos ao pipeline como **GitHub Variables** (públicas) ou **GitHub
+Secrets** (sensíveis). Veja a seção [Automação de deploy](#9-deploy-automático).
 
-| Variável | Obrigatória | Descrição |
+### GitHub Variables (públicas — vão ao bundle do frontend `VITE_*`)
+
+| Variável | Coluna | Descrição |
 |---|---|---|
-| `VITE_SITE_URL` | sim | URL pública do site (sem barra final), ex. `https://clientename.com.br` |
-| `VITE_SUPABASE_URL` | sim | URL do projeto Supabase |
-| `VITE_SUPABASE_ANON_KEY` | sim | Chave pública anon do Supabase |
-| `VITE_EMAILJS_SERVICE_ID` | depende | Service ID do EmailJS (formulário) |
-| `VITE_EMAILJS_TEMPLATE_ID` | depende | Template ID do EmailJS |
-| `VITE_EMAILJS_PUBLIC_KEY` | depende | Public key do EmailJS |
-| `VITE_IMG_BASE_URL` | sim | Base do Worker de image delivery (ex. `https://img.<dominio>.com.br`) |
-| `VITE_R2_PUBLIC_URL` | fallback | Custom domain do bucket R2 |
-| `VITE_ANALYTICS_ENDPOINT` | não | Endpoint do Worker de analytics (`/api/collect`) |
+| `VITE_SITE_URL` | requerida | URL pública do site (sem barra final) |
+| `VITE_SUPABASE_URL` | requerida | URL do projeto Supabase (pública, vai ao bundle) |
+| `VITE_SUPABASE_ANON_KEY` | requerida | Chave pública anon (vai ao bundle) |
+| `VITE_EMAILJS_SERVICE_ID` | opcional | Service ID do EmailJS |
+| `VITE_EMAILJS_TEMPLATE_ID` | opcional | Template ID do EmailJS |
+| `VITE_EMAILJS_PUBLIC_KEY` | opcional | Public key do EmailJS |
+| `VITE_R2_PUBLIC_URL` | fallback | Custom domain do bucket R2 (origens) |
+| `VITE_IMG_BASE_URL` | requerida | Base do Worker de image delivery |
+| `VITE_ANALYTICS_ENDPOINT` | opcional | Endpoint do Worker de analytics (`/api/collect`) |
 | `VITE_R2_UPLOAD_ENDPOINT` | admin | Endpoint do Worker de upload |
 | `VITE_R2_DELETE_ENDPOINT` | admin | Endpoint do Worker de delete |
+| `VITE_BASE_PATH` | opcional | Base path do GitHub Pages (ex.: `/repo/`) |
+| `SITE_URL_FRONTEND` | recomendada | Mesmo valor de `VITE_SITE_URL`; usada nas `ALLOWED_ORIGINS` dos Workers |
+| `IMG_DELIVERY_DOMAIN` | image-delivery | Custom domain de entrega (ex.: `img.<dominio>.com.br`) |
 
-Server-side (NUNCA com prefixo `VITE_`, NUNCA no frontend — vão como **secrets**
-no Cloudflare/GitHub): `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ADMIN_EMAIL`,
-`SUPABASE_ADMIN_KEY`, `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`,
-`R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `CLOUDFLARE_API_TOKEN`.
+### GitHub Secrets (sensíveis — NUNCA no bundle, só nos Workers)
+
+| Variável | Worker | Descrição |
+|---|---|---|
+| `CLOUDFLARE_API_TOKEN` | todos | Token Cloudflare (escopo Workers/R2) |
+| `SUPABASE_SERVICE_ROLE_KEY` | analytics/upload | Chave service_role (NUNCA no frontend) |
+| `SUPABASE_URL` | analytics/upload | URL do projeto (server-side, igual a `VITE_SUPABASE_URL`) |
+| `R2_ACCOUNT_ID` | upload | Account ID Cloudflare |
+| `R2_ACCESS_KEY_ID` | upload | Access key R2 |
+| `R2_SECRET_ACCESS_KEY` | upload | Secret key R2 |
+| `R2_BUCKET_NAME` | upload | Nome do bucket R2 |
+
+**Regras de ouro:**
+- `VITE_*` → públicas (vão ao bundle) → **GitHub Variables**.
+- credenciais/keys (`CLOUDFLARE_API_TOKEN`, `SUPABASE_SERVICE_ROLE_KEY`, `R2_*`)
+  → **GitHub Secrets** → injetados nos Workers via `wrangler --secrets-file`.
+- Nunca transforme secret em `VITE_*`.
 
 ## 2. Supabase (por cliente)
 
@@ -249,57 +269,53 @@ no Cloudflare/GitHub): `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ADMIN_EMAIL`,
    - `http://localhost:5173/admin/login`
    - `https://<seu-dominio>/admin/login`
 4. Crie o primeiro usuário administrador em **Authentication → Users**.
-5. Defina os **secrets** no Worker/R2 (ver seções abaixo).
+5. Configure `SUPABASE_SERVICE_ROLE_KEY` e `SUPABASE_URL` como **GitHub Secrets**
+   — o pipeline os injeta nos Workers de analytics/upload via `--secrets-file`.
+
+> Criar o projeto, aplicar migrations e criar o bucket permanecem **manuais**
+> (dashboard/CLI). O deploy NÃO faz provisionamento de banco.
 
 ## 3. Cloudflare R2 (por cliente)
 
 1. Crie um **bucket R2** (ex.: `project-images`).
 2. Crie um **Custom Domain** público (ex.: `images.<dominio>.com.br`) para servir os originais.
 3. Gere `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` em **R2 → Manage R2 API Tokens**.
-4. Configure os **secrets** do Worker de upload/delete:
-   `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`,
-   `ALLOWED_ORIGINS`, `SUPABASE_URL`.
+4. Configure como **GitHub Secrets**: `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`,
+   `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `SUPABASE_URL` — o pipeline os
+   injeta no Worker de upload/delete via `--secrets-file`.
 
-Deploy do Worker de upload/delete:
-
-```bash
-cd worker
-npm install
-wrangler login
-wrangler secret put R2_ACCOUNT_ID
-wrangler secret put R2_ACCESS_KEY_ID
-wrangler secret put R2_SECRET_ACCESS_KEY
-wrangler secret put R2_BUCKET_NAME
-wrangler secret put SUPABASE_URL
-wrangler deploy
-```
-
-> Ajuste `ALLOWED_ORIGINS` em `worker/wrangler.jsonc` com o domínio do cliente.
+Etapa **manual** (única): criar o bucket e o custom domain no dashboard. O
+pipeline apenas faz o deploy do Worker com os secrets.
 
 ## 4. Image Delivery (por cliente)
 
-1. Crie o Worker em `worker-image-delivery/`.
-2. Ajuste `wrangler.jsonc`: `ORIGIN_BASE_URL` (custom domain do bucket, ex.
-   `https://images.<dominio>.com.br`) e o `pattern` do *Custom Domain* de entrega
-   (ex. `img.<dominio>.com.br`).
-3. Habilite **Image Transformations** na zona e adicione o custom domain dos
-   originais como **allowed origin**.
-4. Deploy:
+1. Garanta **Image Transformations** habilitada na zona e o custom domain dos
+   originais como **allowed origin** (etapa manual no dashboard).
+2. Configure as **GitHub Variables**:
+   - `ORIGIN_BASE_URL` **ou** `VITE_R2_PUBLIC_URL`: custom domain do bucket R2,
+     ex. `https://images.<dominio>.com.br`.
+   - `IMG_DELIVERY_DOMAIN`: custom domain de entrega, ex. `img.<dominio>.com.br`.
+3. `git push origin main` → o pipeline executa
+   `wrangler deploy --var ORIGIN_BASE_URL=... --domain <img-domínio>`.
 
-```bash
-cd worker-image-delivery
-npm install
-wrangler deploy
-```
-
-5. Defina `VITE_IMG_BASE_URL=https://img.<dominio>.com.br` no frontend.
+> **Fallback local:** 
+> ```bash
+> cd worker-image-delivery
+> npm install
+> wrangler deploy --var ORIGIN_BASE_URL:https://images.<dominio>.com.br --domain img.<dominio>.com.br
+> ```
 
 ## 5. Analytics (opcional, por cliente)
 
-O Worker em `worker-analytics/` coleta sessões (privacy-first). Configure os
-secrets `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` e as vars `ALLOWED_ORIGINS`
-e `SITE_DOMAIN` (domínio do cliente) em `wrangler.jsonc`. Depois aponte
-`VITE_ANALYTICS_ENDPOINT` para o endpoint publicado.
+O Worker em `worker-analytics/` coleta sessões (privacy-first). É deployado
+**apenas se** o secret `SUPABASE_SERVICE_ROLE_KEY` estiver configurado no GitHub
+(condição `if:` no workflow).
+
+- **GitHub Secrets:** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`.
+- **GitHub Variables:** `SITE_DOMAIN` (ou derivada de `SITE_URL_FRONTEND`), e
+  `ALLOWED_ORIGINS` derivada de `SITE_URL_FRONTEND`.
+
+Depois aponte `VITE_ANALYTICS_ENDPOINT` (Variable) para o endpoint publicado.
 
 ## 6. Personalização
 
@@ -353,22 +369,68 @@ Edite as variáveis em `src/styles/index.css` (`@theme`):
 ## 7. GitHub Pages (por cliente)
 
 1. Vá em **Settings → Pages** do repositório → fonte: *GitHub Actions*.
-2. Defina os **secrets** do repositório (Settings → Secrets and variables → Actions):
-   `VITE_SITE_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`,
-   `VITE_EMAILJS_*`, `VITE_IMG_BASE_URL`,
-   `VITE_R2_PUBLIC_URL`, `VITE_ANALYTICS_ENDPOINT`, `VITE_R2_UPLOAD_ENDPOINT`,
-   `VITE_R2_DELETE_ENDPOINT`, `CLOUDFLARE_API_TOKEN`.
-3. Se usar domínio custom, atualize `public/CNAME` e o DNS (registro CNAME).
+2. Crie o domínio custom no Pages e atualize `public/CNAME` com o domínio
+   (o pipeline não altera o CNAME automaticamente) e o DNS (registro CNAME).
+3. Se o site não estiver na raiz de um repositório `<login>.github.io`, defina
+   a Variable `VITE_BASE_PATH` (ex.: `/nome-do-repo/`).
 
 ## 8. Deploy
 
 O workflow `.github/workflows/deploy.yml` roda no push para `main` e faz:
-build → sitemap → pré-renderização SEO → copy 404 → deploy GitHub Pages, e em
-paralelo o deploy dos Workers (R2 capa e image delivery).
 
-```bash
-git push origin main
 ```
+git push origin main
+   └─ build           (frontend com VITE_* de GitHub Variables)
+       ├─ sitemap + prerender SEO
+       ├─ copy 404     (fallback SPA)
+       └─ upload artifact → GitHub Pages
+   ├─ deploy-worker                   (upload/delete — vars + secrets)
+   ├─ deploy-image-delivery-worker     (vars: ORIGIN_BASE_URL + --domain)
+   └─ deploy-analytics-worker          (opcional, se service_role configurado)
+```
+
+## 9. Deploy automático (CI/CD)
+
+### Como funciona
+
+O `deploy.yml` usa `wrangler v4` com duas flags que mantêm secrets fora do
+código:
+
+- **Vars** (`wrangler deploy --var KEY:VALUE`): valores públicos por-cliente
+  (origens permitidas, domínio do site, origem R2). Vêm de **GitHub Variables**.
+- **Secrets** (`wrangler deploy --secrets-file <arquivo>`): credenciais
+  (R2, service_role). Um passo monta um arquivo `.env` temporário a partir dos
+  **GitHub Secrets** via `scripts/write-worker-secrets.mjs` — que **nunca imprime
+  valores** — e o wrangler o consome. O arquivo é descartado e gitignored.
+
+Isso é a **Opção C** (mais segura): secrets não ficam no `wrangler.jsonc` nem em
+`VITE_*`; são enviados diretamente ao Worker via CLI em cada deploy.
+
+### Por que não `--secrets-file` + vars no `wrangler.jsonc`
+
+Antes, os secrets R2/Supabase eram configurados manualmente no dashboard e o
+deploy preservava-os. Isso exigia abrir o Cloudflare a cada cliente. Agora o
+pipeline os injeta automaticamente a partir do GitHub, removendo a etapa manual.
+
+### Flags importantes
+
+- `--keep-vars`: se você definir vars manualmente no dashboard, considere
+  adicioná-la no comando para não apagá-las no deploy (por padrão o wrangler
+  limpa as vars antes de aplicar as declaradas). No template as vars vêm todas
+  do CI, então o padrão já é determinístico.
+- `--secrets-file` é **aditivo**: secrets não declarados no arquivo não são
+  removidos do Worker anterior.
+
+### Etapas ainda manuais (por cliente)
+
+| Etapa | Onde | Motivo |
+|---|---|---|
+| Criar projeto Supabase + aplicar migrations | Supabase | Provisionamento de banco (fora do escopo do CI) |
+| Criar usuário admin | Supabase Auth | Credenciais do admin |
+| Criar bucket R2 + custom domain | Cloudflare R2 | Provisionamento de storage |
+| Habilitar Image Transformations + allowed origin | Cloudflare Images | Config de zona (dashboard) |
+| Apontar DNS do domínio (CNAME) | Provedor DNS | DNS externo |
+| Configurar GitHub Secrets/Variables | GitHub | Dados do ambiente do cliente |
 
 ## Estrutura do projeto
 
@@ -420,13 +482,15 @@ npm run dev
 
 ### Deploy no GitHub Pages
 
-Para que o formulário funcione também em produção, defina estes valores como secrets no repositório GitHub:
+Para que o formulário funcione em produção, defina estes valores como **GitHub
+Variables** no repositório (são públicos e vão ao bundle):
 
 - `VITE_EMAILJS_SERVICE_ID`
 - `VITE_EMAILJS_TEMPLATE_ID`
 - `VITE_EMAILJS_PUBLIC_KEY`
 
-No GitHub, vá em Settings → Secrets and variables → Actions e adicione os valores. O workflow já passa esses secrets para o build do Vite.
+No GitHub, vá em *Settings → Secrets and variables → Actions → Variables* e
+adicione os valores. O workflow já passa essas vars para o build do Vite.
 
 > O template do EmailJS deve usar exatamente os nomes das variáveis `from_name`, `from_email`, `phone` e `message` para que o envio funcione corretamente.
 

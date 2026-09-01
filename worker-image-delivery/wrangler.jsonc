@@ -3,13 +3,8 @@
   "name": "portfolio-image-delivery",
   "main": "index.js",
   "compatibility_date": "2026-08-24",
-  "routes": [
-    {
-      "pattern": "img.seu-dominio.com.br",
-      "custom_domain": true
-    }
-  ],
-  "vars": {
-    "ORIGIN_BASE_URL": "https://images.seu-dominio.com.br"
-  }
+  // ORIGIN_BASE_URL (origem pública do bucket R2) é injetada pelo CI via `--var`.
+  // O Custom Domain de entrega (ex.: img.<dominio>.com.br) é passado pelo CI
+  // via `--domain` para que o template não tenha domínio fixo versionado.
+  // Requer Image Transformations habilitado e allowed origin configurados no dashboard.
 }

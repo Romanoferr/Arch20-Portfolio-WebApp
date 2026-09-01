@@ -6,9 +6,11 @@
   "triggers": {
     "crons": ["0 3 * * *"]
   },
+  // Vars (não-segredos) são injetadas pelo CI via `--var`:
+  //   ALLOWED_ORIGINS, SITE_DOMAIN, RETENTION_DAYS
+  // Secrets são injetadas pelo CI via `--secrets-file`:
+  //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
   "vars": {
-    "ALLOWED_ORIGINS": "https://seu-dominio.com.br,http://localhost:5173",
-    "SITE_DOMAIN": "seu-dominio.com.br",
     "RETENTION_DAYS": "180"
   }
 }
